@@ -210,26 +210,27 @@
 <div class="container">
     <header>
         <h1>Born To B Cafe & Garden</h1>
-        <p>🌿 ລະບົບຄວບຄຸມສະຕັອກ ແລະ ຄຳນວນຕົ້ນທຶນວັດຖຸດິບລາຍເດືອນແບບຮຽວທາມ 🌿</p>
+        <p>🌿 ລະບົບຄວບຄຸມສະຕັອກ ແລະ ຄຳນວນຕົ້ນທຶນວັດຖຸດິບລາຍເດືອນ 🌿</p>
         <div class="time-sync-badge" id="timeSyncStatus">🔄 กำลังเชื่อมต่อเวลาสากล Internet...</div>
     </header>
 
     <div class="form-card">
-        <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິบໃໝ່">
+        <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
         <input type="number" id="itemQty" placeholder="ສຕັອກໃນຄັງ">
-        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶนຕໍ່ໜ່ວຍ (ກີບ)">
+        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)">
         <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
     </div>
 
     <div class="dashboard-grid">
         <div class="dashboard-card">
-            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ວມື້ນີ້ (ແຍກຕາມລາຍການ)</h3>
+            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ວ (ແຍກຕາມລາຍການ)</h3>
+            <div class="analytics-scroll-box" id="analyticsList">
             <div class="analytics-scroll-box" id="analyticsList">
                 </div>
         </div>
         
         <div class="dashboard-card highlight">
-            <h3>📅 ສະຫຼຸບຕົ້ນທຶนວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
+            <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
             <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ປະມານການລາຍຈ່າຍທັງໝົດໃນຮ້ານຕາມການນໍາໃຊ້ຈິງ</p>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
             <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ / ເດືອນ</p>
@@ -240,13 +241,13 @@
         <table>
             <thead>
                 <tr>
-                    <th>ชື່ວັດຖຸດິບ</th>
+                    <th>ຊື່ວັດຖຸດິບ</th>
                     <th style="text-align: center;">ລາຄາ/ໜ່ວຍ</th>
                     <th style="text-align: center;">ສຕັອກໃນຄັງ</th>
                     <th style="text-align: center;">ຕື່ມລະຫວ່າງວັນ (+)</th>
-                    <th style="text-align: center;">ໃຊ້ໄປມື້ນີ້ (-)</th>
-                    <th style="text-align: center;">ຄົງເຫຼືອຈิง</th>
-                    <th style="text-align: right;">ລວມເງິນມື້ນີ້</th>
+                    <th style="text-align: center;">ທີ່ໃຊ້ໄປແລ້ວ (-)</th>
+                    <th style="text-align: center;">ຄົງເຫຼືອຈິງ</th>
+                    <th style="text-align: right;">ລວມເປັນເງິນ</th>
                     <th>ຈັດການ</th>
                 </tr>
             </thead>
@@ -256,7 +257,7 @@
     </div>
 
     <div class="history-section">
-        <h3>📅 ສະຫຼຸບຍອດລາຄາລວມໃນເດືอนທີ່ຜ່ານໆ ມາ</h3>
+        <h3>📅 ສະຫຼຸບຍອດລາຄາລວມໃນເດືอນທີ່ຜ່ານໆມາ</h3>
         <div class="history-grid" id="historyMonthsGrid">
             <div class="history-box" style="color: var(--text-muted);">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
         </div>
@@ -394,7 +395,7 @@
                 <div class="avg-item">
                     <span>☕ <strong>${item.name}</strong></span>
                     <span>
-                        ໃຊ້ໄປແລ້ວມື້ນີ້: <strong style="color:var(--danger);">${totalTodayCost.toLocaleString('lo-LA')} ₭</strong>
+                        ລວມເປັນເງິນ: <strong style="color:var(--danger);">${totalTodayCost.toLocaleString('lo-LA')} ₭</strong>
                     </span>
                 </div>`;
         });
