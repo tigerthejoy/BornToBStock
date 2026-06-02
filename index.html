@@ -105,7 +105,6 @@
             flex-direction: column;
         }
 
-        /* เปิดระบบเลื่อน Scroll เฉพาะกล่องฝั่งซ้ายเมื่อสินค้าเยอะ */
         .analytics-scroll-box {
             max-height: 180px; 
             overflow-y: auto;
@@ -149,7 +148,7 @@
         }
         .avg-item:last-child { border-bottom: none; }
 
-        /* ตารางหลักกว้างเต็มจอ ไม่มี Scroll แล้ว */
+        /* ตารางหลัก */
         .table-container {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -175,7 +174,7 @@
         .badge-total { background: var(--accent-light); color: #705e55; padding: 6px 12px; border-radius: 6px; font-weight: 700; display: inline-block; min-width: 40px; text-align: center; }
         .btn-delete { background: none; color: var(--danger); border: none; cursor: pointer; font-size: 14px; font-family: 'Phetsarath', sans-serif; }
 
-        /* โซนสรุปประวัติยอดเงินรายเดือนย้อนหลัง */
+        /* โซนสรุปประวัติยอดเงินแยกปี */
         .history-section {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -191,16 +190,33 @@
             padding-bottom: 10px;
             margin-bottom: 15px;
         }
+        .year-group {
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            background: #fbfbfb;
+        }
+        .year-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
         .history-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
+            gap: 12px;
         }
         .history-box {
-            background: var(--bg-color);
+            background: var(--card-bg);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 16px;
+            border-radius: 6px;
+            padding: 10px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -218,9 +234,9 @@
 
     <div class="form-card">
         <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
-        <input type="number" id="itemQty" placeholder="ສຕັອກໃນຄັງ">
+        <input type="number" id="itemQty" placeholder="ສตັອກໃນຄັງ">
         <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)">
-        <button onclick="addNewItem()">ເພີ່ມລายการ</button>
+        <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
     </div>
 
     <div class="dashboard-grid">
@@ -232,9 +248,9 @@
         
         <div class="dashboard-card highlight">
             <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
-            <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ລວມລາຍຈ່າຍທັງໝົດໃນຮ້ານຕາມການນໍາໃຊ້ຈິງ</p>
+            <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ລວມລາຍຈ່າຍທັງໝົດໃນຮ້านຕາມການນໍາໃຊ້ຈິງມື້ນີ້</p>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
-            <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ / ເດືອນ</p>
+            <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ / ມື້ນີ້</p>
         </div>
     </div>
 
@@ -242,13 +258,13 @@
         <table>
             <thead>
                 <tr>
-                    <th>ชື່ວັດຖຸດິບ</th>
+                    <th>ຊື່ວັດຖຸດິບ</th>
                     <th style="text-align: center;">ລາຄາ/ໜ່ວຍ</th>
                     <th style="text-align: center;">ສຕັອກໃນຄັງ</th>
-                    <th style="text-align: center;">ຕື່ມລະຫວ່າງວัน (+)</th>
+                    <th style="text-align: center;">ຕື່ມລະຫວ່າງວັນ (+)</th>
                     <th style="text-align: center;">ທີ່ໃຊ້ໄປແລ້ວ (-)</th>
-                    <th style="text-align: center;">ຄົງເเหลือຈິງ</th>
-                    <th style="text-align: right;">ລວມເປັນເງິນ</th>
+                    <th style="text-align: center;">ຄົງເຫຼືອຈິງ</th>
+                    <th style="text-align: right;">...ລວມເປັນເງິນ...</th>
                     <th>ຈັດການ</th>
                 </tr>
             </thead>
@@ -259,14 +275,13 @@
 
     <div class="history-section">
         <h3>📅 ສະຫຼຸບຍອດລາຄາລວມໃນເດືອນທີ່ຜ່ານໆມາ</h3>
-        <div class="history-grid" id="historyMonthsGrid">
-            <div class="history-box" style="color: var(--text-muted);">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
+        <div id="historyContainer">
+            <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືอนທີ່ຜ່ານມາ</div>
         </div>
     </div>
 </div>
 
 <script>
-    // รหัสคลาวด์ Firebase ของร้าน Born To B Cafe & Garden
     const firebaseConfig = {
         apiKey: "AIzaSyBA69yzHf-BlMhYKySCDlP68zFFkysgpcA",
         authDomain: "borntobstock.firebaseapp.com",
@@ -283,6 +298,8 @@
 
     let coffeeStock = [];
     let currentMonthYearStr = ""; 
+    let currentMonthNum = "";
+    let currentYearNum = "";
 
     async function syncInternetTime() {
         try {
@@ -291,37 +308,66 @@
             const internetDate = new Date(data.datetime);
             
             const months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
-            currentMonthYearStr = months[internetDate.getMonth()] + "-" + internetDate.getFullYear();
+            currentMonthNum = months[internetDate.getMonth()];
+            currentYearNum = internetDate.getFullYear().toString();
+            currentMonthYearStr = currentMonthNum + "-" + currentYearNum;
             
             document.getElementById("timeSyncStatus").innerHTML = `🟢 ເຊື່ອມຕໍ່ເວລາສຳເລັດ (ເດືອນປະຈຸບັນ: ${currentMonthYearStr})`;
         } catch (error) {
             const localDate = new Date();
             const months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
-            currentMonthYearStr = months[localDate.getMonth()] + "-" + localDate.getFullYear();
-            document.getElementById("timeSyncStatus").innerHTML = `🟡 ໃຊ້ເວລາຈາກເຄື່ອງ (ເດືອນປະຈຸບັນ: ${currentMonthYearStr})`;
+            currentMonthNum = months[localDate.getMonth()];
+            currentYearNum = localDate.getFullYear().toString();
+            currentMonthYearStr = currentMonthNum + "-" + currentYearNum;
+            document.getElementById("timeSyncStatus").innerHTML = `🟡 ໃຊ້ເວລາຈາກເຄື່ອງ (เດືອນປະຈຸບັນ: ${currentMonthYearStr})`;
         }
+        
+        // เมื่อผูกเวลาเสร็จ ค่อยเรียกฟังชันก์ดึงข้อมูลสต็อก
+        listenToStockData();
         loadMonthlyHistory();
     }
 
-    // ดึงข้อมูลเรียลไทม์จากคลาวด์
-    db.ref('bornToBStock').on('value', (snapshot) => {
-        const data = snapshot.val();
-        coffeeStock = [];
-        if (data) {
-            Object.keys(data).forEach(key => {
-                coffeeStock.push({ fbKey: key, ...data[key] });
-            });
-        }
-        renderTable();
-        renderAnalyticsAndCosts(); 
-    });
+    function listenToStockData() {
+        db.ref('bornToBStock').on('value', (snapshot) => {
+            const data = snapshot.val();
+            coffeeStock = [];
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    let item = data[key];
+                    
+                    // ระบบ Auto-Reset ข้ามเดือน: เช็กว่าเดือนล่าสุดของสินค้านี้ตรงกับปัจจุบันไหม
+                    if (item.lastUpdatedMonth && item.lastUpdatedMonth !== currentMonthYearStr) {
+                        // คำนวณสต็อกคงเหลือจริงเพื่อยกยอดไปเป็นสต็อกเริ่มแรกของเดือนใหม่
+                        let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
+                        if (remaining < 0) remaining = 0;
+                        
+                        // อัปเดตรีเซ็ตค่าบน Cloud ให้กลับเป็น 0 เองอัตโนมัติ
+                        db.ref('bornToBStock/' + key).update({
+                            initialQty: remaining,
+                            added: 0,
+                            used: 0,
+                            lastUpdatedMonth: currentMonthYearStr
+                        });
+                        item.initialQty = remaining;
+                        item.added = 0;
+                        item.used = 0;
+                        item.lastUpdatedMonth = currentMonthYearStr;
+                    }
+                    
+                    coffeeStock.push({ fbKey: key, ...item });
+                });
+            }
+            renderTable();
+            renderAnalyticsAndCosts(); 
+        });
+    }
 
     function renderTable() {
         const tableBody = document.getElementById("stockTableBody");
         tableBody.innerHTML = "";
 
         if(coffeeStock.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບໃນລະບົບ, ກະລຸນາເພີ່ມລາຍການໃໝ່</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບໃນລະບົບ, ກະລຸນາເພີ່ມລายການໃໝ่</td></tr>`;
             return;
         }
 
@@ -375,7 +421,7 @@
         const grandMonthlyCostEl = document.getElementById("grandMonthlyCost");
         
         analyticsList.innerHTML = "";
-        let grandTodayCostTotal = 0; // เปลี่ยนตัวแปรมารับค่าราคารวมของวันนี้แทน
+        let grandTodayCostTotal = 0; 
 
         if (coffeeStock.length === 0) {
             analyticsList.innerHTML = `<div style="color:var(--text-muted); font-size:14px;">ຍັງບໍ່ມີຂໍ້ມູນການຄຳນວນ</div>`;
@@ -388,7 +434,7 @@
             let itemCost = item.cost || 0;
 
             let totalTodayCost = usedToday * itemCost; 
-            grandTodayCostTotal += totalTodayCost; // นำผลรวมจริงวันนี้มาบวกสะสมรวมกันตรงๆ ไม่คูณ 30 วันแล้ว
+            grandTodayCostTotal += totalTodayCost; 
 
             analyticsList.innerHTML += `
                 <div class="avg-item">
@@ -399,26 +445,69 @@
                 </div>`;
         });
 
-        // แสดงผลรวมราคาวันนี้ทั้งหมดที่กล่องฝั่งขวา
         grandMonthlyCostEl.innerText = grandTodayCostTotal.toLocaleString('lo-LA');
         
+        // บันทึกยอดเงินลงประวัติรายเดือน
         if(currentMonthYearStr && grandTodayCostTotal > 0) {
             db.ref('bornToBHistory/' + currentMonthYearStr).set(grandTodayCostTotal);
         }
     }
 
     function loadMonthlyHistory() {
-        const historyGrid = document.getElementById("historyMonthsGrid");
+        const historyContainer = document.getElementById("historyContainer");
         db.ref('bornToBHistory').on('value', (snapshot) => {
             const data = snapshot.val();
             if(data) {
-                historyGrid.innerHTML = "";
+                historyContainer.innerHTML = "";
+                
+                // จัดโครงสร้างแบ่งข้อมูลกลุ่มตามปี
+                let groupedByYear = {};
+
                 Object.keys(data).forEach(monthKey => {
-                    historyGrid.innerHTML += `
-                        <div class="history-box">
-                            <span style="font-weight:700; color:var(--accent);">📅 ເດືອນ ${monthKey}</span>
-                            <span style="font-weight:700; color:var(--text-main);">${data[monthKey].toLocaleString('lo-LA')} ₭</span>
-                        </div>`;
+                    // monthKey รูปแบบคือ "MM-YYYY" เช่น "06-2026"
+                    let parts = monthKey.split('-');
+                    if(parts.length === 2) {
+                        let month = parts[0];
+                        let year = parts[1];
+                        
+                        if(!groupedByYear[year]) {
+                            groupedByYear[year] = [];
+                        }
+                        groupedByYear[year].push({
+                            monthStr: month,
+                            fullKey: monthKey,
+                            amount: data[monthKey]
+                        });
+                    }
+                });
+
+                // เรียงปีจากใหม่ไปเก่า
+                let sortedYears = Object.keys(groupedByYear).sort((a, b) => b - a);
+
+                sortedYears.forEach(year => {
+                    let yearHtml = `
+                        <div class="year-group">
+                            <div class="year-title">📂 ປີ ${year}</div>
+                            <div class="history-grid">
+                    `;
+                    
+                    // เรียงเดือนในแต่ละปีจากมากไปน้อย
+                    groupedByYear[year].sort((a, b) => b.monthStr - a.monthStr);
+
+                    groupedByYear[year].forEach(item => {
+                        yearHtml += `
+                            <div class="history-box">
+                                <span style="font-weight:700; color:var(--accent);">ເດືອນ ${item.monthStr}</span>
+                                <span style="font-weight:700; color:var(--text-main);">${item.amount.toLocaleString('lo-LA')} ₭</span>
+                            </div>
+                        `;
+                    });
+
+                    yearHtml += `
+                            </div>
+                        </div>
+                    `;
+                    historyContainer.innerHTML += yearHtml;
                 });
             }
         });
@@ -427,7 +516,12 @@
     function updateCloudField(fbKey, field, value) {
         let intValue = parseInt(value) || 0;
         if (intValue < 0) intValue = 0;
-        db.ref('bornToBStock/' + fbKey).update({ [field]: intValue });
+        
+        // เมื่อมีการอัปเดตข้อมูล ให้ผูกเงื่อนไขเดือนปัจจุบันเข้าไปด้วย
+        db.ref('bornToBStock/' + fbKey).update({ 
+            [field]: intValue,
+            lastUpdatedMonth: currentMonthYearStr
+        });
     }
 
     function addNewItem() {
@@ -436,7 +530,7 @@
         const costInput = document.getElementById("itemCost");
 
         if (!nameInput.value) {
-            alert("ກະລຸນາປ້ອນຊື່ວັດຖຸດິບກ່ອນ");
+            alert("ກະລຸນາປ້อนຊື່ວັດຖຸດິບກ່ອນ");
             return;
         }
 
@@ -445,7 +539,8 @@
             initialQty: parseInt(qtyInput.value) || 0,
             cost: parseInt(costInput.value) || 0,
             added: 0,
-            used: 0
+            used: 0,
+            lastUpdatedMonth: currentMonthYearStr // บันทึกเดือนกำกับตั้งแต่เพิ่มชิ้นใหม่
         };
 
         db.ref('bornToBStock').push(newItem);
@@ -455,11 +550,12 @@
     }
 
     function deleteFromCloud(fbKey) {
-        if(confirm("ເຈົ້າต้องการລຶບລາຍການນີ້ອອກຈາກລະບົບແທ້ບໍ່?")) {
+        if(confirm("ເຈົ້າຕ້ອງການລຶບລາຍການນີ້ອອກຈາກລະບົບແທ້ບໍ່?")) {
             db.ref('bornToBStock/' + fbKey).remove();
         }
     }
 
+    // เริ่มทำงานดึงเวลาจากเน็ต
     syncInternetTime();
 </script>
 </body>
