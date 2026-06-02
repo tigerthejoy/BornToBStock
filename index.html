@@ -219,8 +219,8 @@
     <div class="form-card">
         <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
         <input type="number" id="itemQty" placeholder="ສຕັອກໃນຄັງ">
-        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶนຕໍ່ໜ່ວຍ (ກີบ)">
-        <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
+        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)">
+        <button onclick="addNewItem()">ເພີ່ມລายการ</button>
     </div>
 
     <div class="dashboard-grid">
@@ -232,9 +232,9 @@
         
         <div class="dashboard-card highlight">
             <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
-            <p style="color: var(--text-muted); margin: 0; font-size: 14px;">...ປະມານการລາຍຈ່າຍທັງໝົດໃນຮ້ານຕາມການນໍາໃຊ້ຈິງ...</p>
+            <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ລວມລາຍຈ່າຍທັງໝົດໃນຮ້ານຕາມການນໍາໃຊ້ຈິງມື້ນີ້</p>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
-            <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ / ເດືອນ</p>
+            <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ / ມື້ນີ້</p>
         </div>
     </div>
 
@@ -242,12 +242,12 @@
         <table>
             <thead>
                 <tr>
-                    <th>ຊື່ວັດຖຸດິບ</th>
-                    <th style="text-align: center;">ລາຄา/ໜ່ວຍ</th>
+                    <th>ชື່ວັດຖຸດິບ</th>
+                    <th style="text-align: center;">ລາຄາ/ໜ່ວຍ</th>
                     <th style="text-align: center;">ສຕັອກໃນຄັງ</th>
-                    <th style="text-align: center;">ຕື່ມລະຫວ່າງວັນ (+)</th>
+                    <th style="text-align: center;">ຕື່ມລະຫວ່າງວัน (+)</th>
                     <th style="text-align: center;">ທີ່ໃຊ້ໄປແລ້ວ (-)</th>
-                    <th style="text-align: center;">ຄົງເຫຼືອຈິງ</th>
+                    <th style="text-align: center;">ຄົງເเหลือຈິງ</th>
                     <th style="text-align: right;">ລວມເປັນເງິນ</th>
                     <th>ຈັດການ</th>
                 </tr>
@@ -375,7 +375,7 @@
         const grandMonthlyCostEl = document.getElementById("grandMonthlyCost");
         
         analyticsList.innerHTML = "";
-        let grandMonthlyCostTotal = 0;
+        let grandTodayCostTotal = 0; // เปลี่ยนตัวแปรมารับค่าราคารวมของวันนี้แทน
 
         if (coffeeStock.length === 0) {
             analyticsList.innerHTML = `<div style="color:var(--text-muted); font-size:14px;">ຍັງບໍ່ມີຂໍ້ມູນການຄຳນວນ</div>`;
@@ -388,11 +388,8 @@
             let itemCost = item.cost || 0;
 
             let totalTodayCost = usedToday * itemCost; 
-            let monthlyCostEstimate = usedToday * itemCost * 30;
+            grandTodayCostTotal += totalTodayCost; // นำผลรวมจริงวันนี้มาบวกสะสมรวมกันตรงๆ ไม่คูณ 30 วันแล้ว
 
-            grandMonthlyCostTotal += monthlyCostEstimate;
-
-            // อัปเดตตรงนี้: เพิ่มการแสดงข้อความบอกจำนวนที่ใช้ไป (ใช้ไป: X) ถัดจากชื่อวัตถุดิบ
             analyticsList.innerHTML += `
                 <div class="avg-item">
                     <span>☕ <strong>${item.name}</strong> <span style="font-size: 13px; color: var(--text-muted); margin-left: 5px;">(ໃຊ້ໄປ: ${usedToday})</span></span>
@@ -402,10 +399,11 @@
                 </div>`;
         });
 
-        grandMonthlyCostEl.innerText = grandMonthlyCostTotal.toLocaleString('lo-LA');
+        // แสดงผลรวมราคาวันนี้ทั้งหมดที่กล่องฝั่งขวา
+        grandMonthlyCostEl.innerText = grandTodayCostTotal.toLocaleString('lo-LA');
         
-        if(currentMonthYearStr && grandMonthlyCostTotal > 0) {
-            db.ref('bornToBHistory/' + currentMonthYearStr).set(grandMonthlyCostTotal);
+        if(currentMonthYearStr && grandTodayCostTotal > 0) {
+            db.ref('bornToBHistory/' + currentMonthYearStr).set(grandTodayCostTotal);
         }
     }
 
@@ -438,7 +436,7 @@
         const costInput = document.getElementById("itemCost");
 
         if (!nameInput.value) {
-            alert("ກະລຸນาປ້ອນຊື່ວັດຖຸດິບກ່ອນ");
+            alert("ກະລຸນາປ້ອນຊື່ວັດຖຸດິບກ່ອນ");
             return;
         }
 
@@ -457,7 +455,7 @@
     }
 
     function deleteFromCloud(fbKey) {
-        if(confirm("ເຈົ້າຕ້ອງການລຶບລາຍການນີ້ອອກຈາກລະບົບແທ້ບໍ່?")) {
+        if(confirm("ເຈົ້າต้องการລຶບລາຍການນີ້ອອກຈາກລະບົບແທ້ບໍ່?")) {
             db.ref('bornToBStock/' + fbKey).remove();
         }
     }
