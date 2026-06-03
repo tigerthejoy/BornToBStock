@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V3</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V4</title>
     
+    <!-- ดึงฟอนต์ Phetsarath จาก Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath&display=swap" rel="stylesheet">
 
+    <!-- ดึงฐานข้อมูล Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
@@ -262,18 +264,55 @@
         }
         .history-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: 1fr; /* ปรับให้เป็นแบบลิสต์แถวยาวเพื่อความอ่านง่ายเวลาขยายดีเทล */
             gap: 12px;
         }
-        .history-box {
-            background: var(--card-bg);
+        
+        /* กล่องหีบเพลง Accordion */
+        .accordion-item {
             border: 1px solid var(--border);
             border-radius: 6px;
-            padding: 10px 14px;
+            background: var(--card-bg);
+            overflow: hidden;
+        }
+        .accordion-header {
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
         }
+        .accordion-header:hover { background: var(--accent-light); }
+        
+        .accordion-content {
+            padding: 0 16px;
+            max-height: 0;
+            overflow: hidden;
+            transition: padding 0.2s ease-out, max-height 0.2s ease-out;
+            background: #fdfdfd;
+            border-top: 0 solid var(--border);
+            font-size: 14px;
+            color: #5c524d;
+        }
+        .accordion-item.active .accordion-content {
+            padding: 12px 16px;
+            max-height: 500px;
+            border-top: 1px dashed var(--border);
+        }
+
+        .detail-tag {
+            display: inline-block;
+            background: #f2ede9;
+            color: var(--text-main);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+
         .btn-clear-log {
             background-color: var(--danger);
             font-size: 12px;
@@ -304,18 +343,21 @@
         <div class="time-sync-badge" id="timeSyncStatus">🔄 กำลังเชื่อมต่อเวลาสากล Internet...</div>
     </header>
 
+    <!-- ฟอร์มเพิ่มวัตถุดิบ -->
     <div class="form-card">
         <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
         <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (เช่น: ກາແຟ, ນົມ, ແກ້ວ)">
         <input type="number" id="itemQty" placeholder="ສຕັອກໃນຄັງ">
-        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວย (ກີບ)">
-        <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
+        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶนຕໍ່ໜ່ວຍ (ກີບ)">
+        <button onclick="addNewItem()">ເພີ່ມລายການ</button>
     </div>
 
+    <!-- ปุ่มตัวกรองหมวดหมู่สินค้า -->
     <div class="filter-container" id="categoryFilters">
         <button class="filter-btn active" onclick="filterCategory('ALL')">ທັງໝົດ</button>
     </div>
 
+    <!-- โซนแดชบอร์ดซ้ายขวา -->
     <div class="dashboard-grid">
         <div class="dashboard-card">
             <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ວ (ແຍກຕາມລາຍການ)</h3>
@@ -323,13 +365,14 @@
         </div>
         
         <div class="dashboard-card highlight">
-            <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
+            <h3>📅 ສະຫຼຸບຕົ້ນທຶนວັດຖຸດິບລວມ (ລາຍເດືอน)</h3>
             <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ລວມລາຍຈ່າຍທັງໝົດໃນຮ້ານຕາມການນໍາໃຊ້ຈິງມື້ນີ້</p>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
             <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ / ມື້ນີ້</p>
         </div>
     </div>
 
+    <!-- ตารางหลัก -->
     <div class="table-container">
         <table>
             <thead>
@@ -337,7 +380,7 @@
                     <th>ຊື່ວັດຖຸດິບ</th>
                     <th style="text-align: center;">ລາຄາ/ໜ່ວຍ</th>
                     <th style="text-align: center;">ສຕັອກໃນຄັງ</th>
-                    <th style="text-align: center;">ຕື່ມລະຫວ່າງວັນ (+)</th>
+                    <th style="text-align: center;">ຕື່ມລະຫວ่างວັນ (+)</th>
                     <th style="text-align: center;">ທີ່ໃຊ້ໄປແລ້ວ (-)</th>
                     <th style="text-align: center;">ຄົງເຫຼືອຈິງ</th>
                     <th style="text-align: right;">ລວມເປັນເງິນ</th>
@@ -348,15 +391,18 @@
         </table>
     </div>
 
+    <!-- โซนรวมประวัติย้อนหลังทั้งหมด -->
     <div class="history-section">
         <h3>📅 ສະຫຼຸບຍອດລາຄາລວມຍ້ອນຫຼັງ</h3>
         
-        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກລາຍວັນໃນສັບດານີ້</div>
+        <!-- โซนที่ 1: ประวัติรายวันประจำสัปดาห์ (คลิกขยายดูตัวอักษรได้) -->
+        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກລາຍວັນໃນສັບດານີ້ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
         <div id="dailyLogsContainer">
-            <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີ...</div >
+            <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກວັນທີຜ່ານມາ</div>
         </div>
 
-        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເດືອນ (ແຍກຕາມປີ)</div>
+        <!-- โซนที่ 2: ประวัติรายเดือนรวบตามปี (คลิกขยายดูตัวอักษรได้) -->
+        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເດືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
         <div id="monthlyHistoryContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
         </div>
@@ -383,7 +429,7 @@
     let currentDayStr = ""; 
     let currentMonthYearStr = ""; 
     let currentHour = 0;
-    let fullMonthlyDataRaw = {}; // เก็บข้อมูลดิบรายเดือนเพื่อใช้สั่งลบรายปี
+    let fullMonthlyDataRaw = {}; 
 
     async function syncInternetTime() {
         try {
@@ -403,7 +449,7 @@
             currentDayStr = pad(localDate.getDate()) + "-" + pad(localDate.getMonth() + 1) + "-" + localDate.getFullYear();
             currentMonthYearStr = pad(localDate.getMonth() + 1) + "-" + localDate.getFullYear();
             currentHour = localDate.getHours();
-            document.getElementById("timeSyncStatus").innerHTML = `🟡 ໃຊ້ເວລາจากเครื่อง (${currentDayStr})`;
+            document.getElementById("timeSyncStatus").innerHTML = `🟡 ໃຊ້ເວລາຈາກເຄື່ອງ (${currentDayStr})`;
         }
         
         listenToStockData();
@@ -535,6 +581,7 @@
         
         analyticsList.innerHTML = "";
         let grandTodayCostTotal = 0; 
+        let itemsDetailsArray = []; // เก็บตัวอักษรของของที่ใช้
 
         coffeeStock.forEach(item => {
             let usedToday = item.used || 0;
@@ -543,6 +590,7 @@
             grandTodayCostTotal += totalTodayCost;
 
             if (usedToday > 0) {
+                itemsDetailsArray.push(`${item.name} (${usedToday})`);
                 analyticsList.innerHTML += `
                     <div class="avg-item">
                         <span>☕ <strong>${item.name}</strong> <span style="font-size: 13px; color: var(--text-muted); margin-left: 5px;">(ໃຊ້ໄປ: ${usedToday})</span></span>
@@ -557,9 +605,14 @@
 
         grandMonthlyCostEl.innerText = grandTodayCostTotal.toLocaleString('lo-LA');
         
+        // เซฟข้อมูลลงคลาวด์โดยรวมโครงสร้างเป็น Object { total: ยอดเงิน, details: ข้อความแจงสิ่งของ }
         if(grandTodayCostTotal > 0) {
-            if(currentDayStr) db.ref('bornToBDailyLogs/' + currentDayStr).set(grandTodayCostTotal);
-            if(currentMonthYearStr) db.ref('bornToBHistory/' + currentMonthYearStr).set(grandTodayCostTotal);
+            let logPayload = {
+                total: grandTodayCostTotal,
+                details: itemsDetailsArray.join(', ')
+            };
+            if(currentDayStr) db.ref('bornToBDailyLogs/' + currentDayStr).set(logPayload);
+            if(currentMonthYearStr) db.ref('bornToBHistory/' + currentMonthYearStr).set(logPayload);
         }
     }
 
@@ -578,7 +631,7 @@
         db.ref('bornToBStock/' + targetItem.fbKey).update({ indexOrder: tempOrder });
     }
 
-    // 📋 โซนที่ 1: โหลดข้อมูลประวัติรายวันประจำสัปดาห์ (ปุ่มลบอยู่ข้างหัวข้อปี)
+    // 📋 โซนที่ 1: โหลดข้อมูลสรุปรายวันประจำสัปดาห์ (คลิกขยายเพื่อดูดีเทลได้)
     function loadDailyLogs() {
         const container = document.getElementById("dailyLogsContainer");
         db.ref('bornToBDailyLogs').on('value', (snapshot) => {
@@ -587,33 +640,46 @@
                 container.innerHTML = `
                     <div class="year-group" style="border-color:#e4e1dc;">
                         <div class="year-title">
-                            <span style="font-weight:700; color:var(--text-main);">📋 ລາຍວັນຫຼ້າສຸດໃນສັບດານີ້</span>
-                            <button class="btn-clear-log" onclick="clearAllDailyLogs()">ລຶບປະຫວັດລາຍວັນ</button>
+                            <span style="font-weight:700; color:var(--text-main);">📋 ປະຫວັດບັນທຶກລາຍວັນ</span>
+                            <button class="btn-clear-log" onclick="clearAllDailyLogs()">ລຶບປະຫວັດລายວັນ</button>
                         </div>
                         <div class="history-grid" id="dailyLogGrid"></div>
                     </div>`;
                 
                 const dailyLogGrid = document.getElementById("dailyLogGrid");
                 Object.keys(data).sort().reverse().forEach(dateKey => {
+                    let record = data[dateKey];
+                    // ดึงค่ารองรับทั้งแบบเก่า (ตัวเลขเพียวๆ) และแบบใหม่ (Object)
+                    let amount = typeof record === 'object' ? (record.total || 0) : record;
+                    let textDetails = typeof record === 'object' && record.details ? record.details : "ไม่มีข้อมูลวัตถุดิบแนบไว้";
+
+                    let tagsHtml = textDetails.split(', ').map(t => `<span class="detail-tag">📦 ${t}</span>`).join('');
+
                     dailyLogGrid.innerHTML += `
-                        <div class="history-box" style="background:#fff7f2;">
-                            <span style="font-weight:700; color:var(--accent);">📆 ວันທີ ${dateKey}</span>
-                            <span style="font-weight:700; color:var(--text-main);">${data[dateKey].toLocaleString('lo-LA')} ₭</span>
+                        <div class="accordion-item">
+                            <div class="accordion-header" onclick="toggleAccordion(this)">
+                                <span style="font-weight:700; color:var(--accent);">📆 ວັນທີ ${dateKey} <span style="font-size:12px; color:var(--text-muted); font-weight:normal; margin-left:6px;">(ຄລິກເບິ່ງ ▾)</span></span>
+                                <span style="font-weight:700; color:var(--text-main);">${amount.toLocaleString('lo-LA')} ₭</span>
+                            </div>
+                            <div class="accordion-content">
+                                <div style="font-weight:700; margin-bottom:6px; font-size:13px; color:var(--text-muted);">ວັດຖຸດິບທີ່ໃຊ້ໄປ:</div>
+                                <div>${tagsHtml}</div>
+                            </div>
                         </div>`;
                 });
             } else {
-                container.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີข้อมูลบันทึกวันทีผ่านๆ มา</div>`;
+                container.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກວັນທີຜ່ານມາ</div>`;
             }
         });
     }
 
     function clearAllDailyLogs() {
-        if (confirm("ທ່ານແน່ໃຈບໍ່ວ່າต้องการລຶບຂໍ້ຄວາມປະຫວັດລາຍວັນທັງໝົດອອກ?")) {
+        if (confirm("ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບຂໍ້ຄວາມປະຫວັດລາຍວັນທังໝົດອອກ?")) {
             db.ref('bornToBDailyLogs').remove();
         }
     }
 
-    // 📂 โซนที่ 2: โหลดข้อมูลประวัติรายเดือน (เพิ่มปุ่มลบแยกตามปี ข้างหัวข้อเลขปี)
+    // 📂 โซนที่ 2: โหลดข้อมูลประวัติรายเดือน (คลิกขยายเพื่อดูดีเทลได้)
     function loadMonthlyHistory() {
         const container = document.getElementById("monthlyHistoryContainer");
         db.ref('bornToBHistory').on('value', (snapshot) => {
@@ -631,10 +697,15 @@
                         let year = parts[1];
                         if(!groupedByYear[year]) groupedByYear[year] = [];
                         
+                        let record = data[monthKey];
+                        let amount = typeof record === 'object' ? (record.total || 0) : record;
+                        let textDetails = typeof record === 'object' && record.details ? record.details : "ไม่มีข้อมูลวัตถุดิบแนบไว้";
+
                         groupedByYear[year].push({
                             monthStr: month,
                             fullKey: monthKey,
-                            amount: data[monthKey]
+                            amount: amount,
+                            details: textDetails
                         });
                     }
                 });
@@ -653,10 +724,18 @@
                     groupedByYear[year].sort((a, b) => b.monthStr - a.monthStr);
 
                     groupedByYear[year].forEach(item => {
+                        let tagsHtml = item.details.split(', ').map(t => `<span class="detail-tag">🌿 ${t}</span>`).join('');
+                        
                         yearHtml += `
-                            <div class="history-box">
-                                <span style="font-weight:700; color:var(--text-muted);">ເດືອນ ${item.monthStr}</span>
-                                <span style="font-weight:700; color:var(--text-main);">${item.amount.toLocaleString('lo-LA')} ₭</span>
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleAccordion(this)">
+                                    <span style="font-weight:700; color:var(--text-muted);">ເດືອນ ${item.monthStr} <span style="font-size:11px; font-weight:normal; margin-left:6px;">(ຄລິກເບິ່ງ ▾)</span></span>
+                                    <span style="font-weight:700; color:var(--text-main);">${item.amount.toLocaleString('lo-LA')} ₭</span>
+                                </div>
+                                <div class="accordion-content">
+                                    <div style="font-weight:700; margin-bottom:6px; font-size:13px; color:var(--text-muted);">ສະຫຼຸບວັດຖຸດິບປະຈຳເດືອນ:</div>
+                                    <div>${tagsHtml}</div>
+                                </div>
                             </div>`;
                     });
 
@@ -669,10 +748,14 @@
         });
     }
 
-    // ฟังก์ชันสั่งลบประวัติรายเดือนเฉพาะปีที่เลือก
+    // ฟังก์ชันสั่งสลับ เปิด/ปิด ดีเทลกล่องพับ
+    function toggleAccordion(element) {
+        const item = element.parentElement;
+        item.classList.toggle('active');
+    }
+
     function clearMonthlyLogByYear(yearTarget) {
-        if (confirm(`ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບປະຫວັດລາຍເດືອນທັງໝົດຂອງ "ປີ ${yearTarget}" ອອກຈາກລະບົບ? (ຂໍ້ມູນປີອື່ນຈະຍັງຄົງຢູ່)`)) {
-            // วนลูปหา key เดือนที่ตรงกับปีเป้าหมายแล้วทะยอยสั่งลบออกทีละตัว
+        if (confirm(`ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບປະຫວັດລາຍເດືອນທັງໝົດຂອງ "ປີ ${yearTarget}" ອອກຈາກລະບົບ?`)) {
             Object.keys(fullMonthlyDataRaw).forEach(monthKey => {
                 let parts = monthKey.split('-');
                 if (parts.length === 2 && parts[1] === yearTarget) {
@@ -698,7 +781,7 @@
         const costInput = document.getElementById("itemCost");
 
         if (!nameInput.value) {
-            alert("ກະລຸນาປ້ອນຊື່ວັດຖຸດິບກ່ອນ");
+            alert("ກະລຸນາປ້ອນຊື່ວັດຖຸດິບກ່ອນ");
             return;
         }
 
