@@ -1,13 +1,21 @@
-จัดให้เลยครับ! ผมทำการปรับความกว้างของช่องอินพุตตัวเลขจำนวน **ຕື່ມ (+)** และ **ໃຊ້ໄປ (-)** (รวมถึงช่อง ในคັງ) ให้แคบลงเหลือ **38px** พร้อมปรับพิกเซลการเว้นระยะข้างใน (Padding) ให้พอดิบพอดีกับ**ตัวเลข 3 หลัก (เช่น 999)** ไม่ขาดไม่เกินตามที่ขอครับ
+อ๋อ! ผมเข้าใจปัญหาที่คุณเจอแล้วครับ มันเป็น **"บั๊กด้านประสบการณ์ผู้ใช้งาน (UX Illusion)"** ที่เกิดจากจังหวะการทำงานของโค้ด ไม่ใช่เพราะโค้ดไม่สมบูรณ์ครับ
 
-นอกจากนี้ ผมยังได้สลับเปอร์เซ็นต์ความกว้างของหัวตาราง (`<th>`) อีกเล็กน้อย เพื่อเอาพื้นที่ที่เหลือจากการบีบช่องตัวเลขนี้ ไปเพิ่มให้ช่อง **ຊື່ວັດຖຸດິບ** และช่อง **ລວມເປັນເງິນ** ให้กว้างและดูโปร่งสบายตาขึ้นอีกครับ โดยที่ระบบตรรกะเบื้องหลังและการคำนวณทั้งหมด (เวอร์ชัน V6 ที่เสถียรแล้ว) ยังคงอยู่ครบถ้วนไม่มีการแก้ไขให้กระทบครับ
+---
 
-### 🛠️ สิ่งที่ปรับเปลี่ยนในเวอร์ชัน V7 นี้:
+### 💡 สาเหตุที่แท้จริงคืออะไร?
 
-* **CSS:** ปรับ `.input-qty { width: 38px; padding: 6px 2px; }` เพื่อให้กล่องกระชับพอดีกับเลข 3 หลัก
-* **HTML Table:** ปรับลด % ของคอลัมน์ตัวเลขลง และไปเพิ่มให้ช่องชื่อสินค้าแทน
+ในโค้ดเดิม ช่องตัวเลขใช้คำสั่ง `onchange` ซึ่งข้อดีของมันคือระบบจะบันทึกฐานข้อมูลลง Firebase ก็ต่อเมื่อเรา **"คลิกเอาเมาส์ออกไปข้างนอกช่องพิมพ์แล้ว"** เท่านั้น
 
-คุณสามารถคัดลอกโค้ดสมบูรณ์ **Super Pro V7** ด้านล่างนี้ไปวางทับใช้งานได้ทันทีครับ:
+* **สิ่งที่คุณเจอคือ:** พอเผลอพิมพ์เลขเยอะๆ (เช่น ในคลังมี 10 แต่พิมพ์ช่องใช้ไป 50) ช่อง `เหลือจริง` จะติดลบและกลายเป็น**สีแดง**ทันที
+* **ทำไมลบออกแล้วไม่หายแดง?:** เพราะในขณะที่คุณกดลบเลขออกจนช่องว่างเปล่า **เมาส์และเคอร์เซอร์ของคุณยังคงกะพริบคาอยู่ในช่องนั้นอยู่** โค้ด `onchange` เลยยังไม่ทำงาน ระบบเลยยังไม่รู้ว่าคุณลบเลขออกแล้ว สีแดงมันก็เลยค้างอยู่แบบนั้น จนทำให้รู้สึกเหมือนระบบมันค้างหรือบั๊กครับ
+
+---
+
+### 🛠️ วิธีแก้ไขในเวอร์ชัน Super Pro V8
+
+ผมได้เพิ่มระบบ **"คำนวณหน้าจอแบบเรียลไทม์ (Live Sync UI)"** โดยใช้คำสั่ง `oninput` เข้าไปเสริมครับ คราวนี้**ทันทีที่คุณกดปุ่มลบเลข (Backspace) หรือเปลี่ยนตัวเลข สีแดงจะหายวับไปกับตาในเศษเสี้ยววินาที** โดยไม่ต้องคลิกเมาส์ออกไปข้างนอกก่อนอีกแล้วครับ! และระบบจะยังคงเซฟลงฐานข้อมูลได้อย่างปลอดภัยเหมือนเดิม ไม่มีการแย่ง Focus ของเมาส์แน่นอน
+
+นี่คือโค้ดตัวเต็มฉบับปรับปรุง **Super Pro V8** นำไปวางใช้งานแทนตัวเก่าได้เลยครับ:
 
 ```html
 <!DOCTYPE html>
@@ -15,7 +23,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V7</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V8</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -213,11 +221,11 @@
             word-break: break-word;
         }
 
-        /* [แก้ไขใหม่] ปรับอินพุตจำนวนให้แคบลงพอดีกับเลข 3 หลักเป๊ะๆ และลด padding ข้างเพื่อไม่ให้ตัวเลขเบียด */
+        /* ปรับอินพุตจำนวนให้แคบลงพอดีกับเลข 3 หลักเป๊ะๆ และลด padding ข้างเพื่อไม่ให้ตัวเลขเบียด */
         .input-qty { width: 38px; text-align: center; padding: 6px 2px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; }
         .input-cost { width: 85px; text-align: right; padding: 6px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; }
         
-        .badge-total { background: var(--accent-light); color: #705e55; padding: 6px 8px; border-radius: 6px; font-weight: 700; display: inline-block; min-width: 25px; text-align: center; }
+        .badge-total { background: var(--accent-light); color: #705e55; padding: 6px 8px; border-radius: 6px; font-weight: 700; display: inline-block; min-width: 25px; text-align: center; transition: all 0.15s ease; }
         .btn-delete { background: none; color: var(--danger); border: none; cursor: pointer; font-size: 14px; font-family: 'Phetsarath', sans-serif; }
         
         /* ปุ่มลูกศรเลื่อนลำดับ */
@@ -365,9 +373,9 @@
 
     <div class="form-card">
         <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
-        <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (เช่น: ກາແຟ, ນົມ, ແກ້ວ)">
+        <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (เช่น: ກາແຟ, ນົມ, แກ້ວ)">
         <input type="number" id="itemQty" placeholder="ສຕັອກໃນຄັງ">
-        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶนຕໍ່ໜ່ວຍ (ກີບ)">
+        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)">
         <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
     </div>
 
@@ -377,13 +385,13 @@
 
     <div class="dashboard-grid">
         <div class="dashboard-card">
-            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ้ວ (ແຍກຕາມລາຍການ)</h3>
+            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ວ (ແຍກຕາມລາຍການ)</h3>
             <div class="analytics-scroll-box" id="analyticsList"></div>
         </div>
         
         <div class="dashboard-card highlight">
             <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
-            <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ລວມລາຍຈ່າຍທັງໝົດในຮ້ານຕາມການນໍາໃຊ້ຈິງມື້ນີ້</p>
+            <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ລວມລາຍຈ່າຍທັງໝົດໃນຮ້ານຕາມການນໍາໃຊ້ຈິງມື້ນີ້</p>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
             <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ</p>
         </div>
@@ -394,7 +402,7 @@
             <thead>
                 <tr>
                     <th style="width: 38%;">ຊື່ວັດຖຸດິບ</th>
-                    <th style="text-align: center; width: 12%;">ລາຄา/ໜ່ວຍ</th>
+                    <th style="text-align: center; width: 12%;">ລາຄາ/ໜ່ວຍ</th>
                     <th style="text-align: center; width: 9%;">ໃນຄັງ</th>
                     <th style="text-align: center; width: 8%;">ຕື່ມ (+)</th>
                     <th style="text-align: center; width: 8%;">ໃຊ້ໄປ (-)</th>
@@ -415,7 +423,7 @@
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກວັນທີຜ່ານມາ</div>
         </div>
 
-        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເດືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
+        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເດືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽด)</div>
         <div id="monthlyHistoryContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
         </div>
@@ -541,6 +549,7 @@
         filteredItems.forEach((item, idx) => {
             let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
             let totalCostToday = (item.used || 0) * (item.cost || 0);
+            let isLowStock = remaining <= 2;
 
             let row = `<tr>
                 <td class="col-item-name">
@@ -553,32 +562,36 @@
                 </td>
                 
                 <td style="text-align: center;">
-                    <input type="number" class="input-cost" value="${item.cost || 0}" min="0"
+                    <input type="number" id="qty-cost-${item.fbKey}" class="input-cost" value="${item.cost || 0}" min="0"
+                        oninput="calculateRowLive('${item.fbKey}')"
                         onchange="updateCloudField('${item.fbKey}', 'cost', this.value)">
                 </td>
 
                 <td style="text-align: center;">
-                    <input type="number" class="input-qty" value="${item.initialQty || 0}"
+                    <input type="number" id="qty-initial-${item.fbKey}" class="input-qty" value="${item.initialQty || 0}"
+                        oninput="calculateRowLive('${item.fbKey}')"
                         onchange="updateCloudField('${item.fbKey}', 'initialQty', this.value)">
                 </td>
                 
                 <td style="text-align: center;">
-                    <input type="number" class="input-qty" value="${item.added || 0}" style="color: var(--success);"
+                    <input type="number" id="qty-added-${item.fbKey}" class="input-qty" value="${item.added || 0}" style="color: var(--success);"
+                        oninput="calculateRowLive('${item.fbKey}')"
                         onchange="updateCloudField('${item.fbKey}', 'added', this.value)">
                 </td>
                 
                 <td style="text-align: center;">
-                    <input type="number" class="input-qty" value="${item.used || 0}" style="color: var(--danger);"
+                    <input type="number" id="qty-used-${item.fbKey}" class="input-qty" value="${item.used || 0}" style="color: var(--danger);"
+                        oninput="calculateRowLive('${item.fbKey}')"
                         onchange="updateCloudField('${item.fbKey}', 'used', this.value)">
                 </td>
                 
                 <td style="text-align: center;">
-                    <span class="badge-total" style="${remaining <= 2 ? 'background-color: #fde8e8; color: var(--danger);' : ''}">
+                    <span id="badge-remaining-${item.fbKey}" class="badge-total" style="${isLowStock ? 'background-color: #fde8e8; color: var(--danger);' : 'background-color: var(--accent-light); color: #705e55;'}">
                         ${remaining}
                     </span>
                 </td>
 
-                <td style="text-align: right; font-weight: 700; white-space: nowrap;">
+                <td id="total-cost-${item.fbKey}" style="text-align: right; font-weight: 700; white-space: nowrap;">
                     ${totalCostToday.toLocaleString('lo-LA')} ₭
                 </td>
                 
@@ -588,6 +601,39 @@
             </tr>`;
             tableBody.innerHTML += row;
         });
+    }
+
+    // 🌟 [ฟังก์ชันใหม่] คำนวณเปลี่ยนสีบนหน้าจอแบบเรียลไทม์ทันทีที่พิมพ์/ลบเลข ไม่ต้องรอคลิกออกข้างนอก
+    function calculateRowLive(fbKey) {
+        const costInput = document.getElementById(`qty-cost-${fbKey}`);
+        const initialInput = document.getElementById(`qty-initial-${fbKey}`);
+        const addedInput = document.getElementById(`qty-added-${fbKey}`);
+        const usedInput = document.getElementById(`qty-used-${fbKey}`);
+        const badge = document.getElementById(`badge-remaining-${fbKey}`);
+        const totalCostEl = document.getElementById(`total-cost-${fbKey}`);
+
+        if (!badge || !totalCostEl) return;
+
+        let cost = parseInt(costInput.value) || 0;
+        let initial = parseInt(initialInput.value) || 0;
+        let added = parseInt(addedInput.value) || 0;
+        let used = parseInt(usedInput.value) || 0;
+
+        let remaining = initial + added - used;
+        let totalCostToday = used * cost;
+
+        badge.innerText = remaining;
+
+        // ปรับสีแบบทันทีทันใด (ถ้าติดลบหรือเหลือน้อยกว่า 2 ให้แดงทันที ถ้าลบเลขออกเป็นปกติให้กลับเป็นสีน้ำตาลอ่อน)
+        if (remaining <= 2) {
+            badge.style.backgroundColor = "#fde8e8";
+            badge.style.color = "var(--danger)";
+        } else {
+            badge.style.backgroundColor = "var(--accent-light)";
+            badge.style.color = "#705e55";
+        }
+
+        totalCostEl.innerText = totalCostToday.toLocaleString('lo-LA') + " ₭";
     }
 
     function renderAnalyticsAndCosts() {
@@ -679,7 +725,7 @@
                         </div>`;
                 });
             } else {
-                container.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶกວັນທີຜ່ານມາ</div>`;
+                container.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກວັນທີຜ່ານມາ</div>`;
             }
         });
     }
@@ -738,7 +784,7 @@
                         let detailsArray = Array.from(monthData.detailsSet);
                         let tagsHtml = detailsArray.length > 0 
                             ? detailsArray.map(t => `<span class="detail-tag">🌿 ${t}</span>`).join('')
-                            : `<span style="color:var(--text-muted)">ບໍ່ມີຂໍ້ມູນວັດຖຸດິบ</span>`;
+                            : `<span style="color:var(--text-muted)">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບ</span>`;
                         
                         yearHtml += `
                             <div class="accordion-item">
@@ -799,7 +845,7 @@
         const costInput = document.getElementById("itemCost");
 
         if (!nameInput.value) {
-            alert("ກະລຸນາປ້ອນຊື່ວັດຖຸດິບກ່ອນ");
+            alert("ກະລຸນาປ້ອນຊື່ວັດຖຸດິບກ່ອນ");
             return;
         }
 
