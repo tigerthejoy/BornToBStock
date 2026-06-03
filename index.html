@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Pro</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,7 +65,7 @@
             flex-wrap: wrap;
         }
 
-        input {
+        input, select {
             background: var(--bg-color);
             border: 1px solid var(--border);
             border-radius: 6px;
@@ -75,6 +75,7 @@
             color: var(--text-main);
             outline: none;
             flex: 1;
+            min-width: 150px;
         }
 
         button {
@@ -86,6 +87,30 @@
             font-size: 15px;
             font-family: 'Phetsarath', sans-serif;
             cursor: pointer;
+        }
+
+        /* ปุ่ม Filter หมวดหมู่ */
+        .filter-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Phetsarath', sans-serif;
+            transition: all 0.2s;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
         }
 
         /* โซนแดชบอร์ดคู่กันซ้ายขวา */
@@ -173,8 +198,36 @@
         .input-cost { width: 100px; text-align: right; padding: 8px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; }
         .badge-total { background: var(--accent-light); color: #705e55; padding: 6px 12px; border-radius: 6px; font-weight: 700; display: inline-block; min-width: 40px; text-align: center; }
         .btn-delete { background: none; color: var(--danger); border: none; cursor: pointer; font-size: 14px; font-family: 'Phetsarath', sans-serif; }
+        
+        /* ปุ่มสลับลำดับของลูกศร */
+        .order-arrows {
+            display: inline-flex;
+            flex-direction: column;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        .arrow-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 11px;
+            padding: 1px 3px;
+            line-height: 1;
+        }
+        .arrow-btn:hover { color: var(--accent); }
 
-        /* โซนสรุปประวัติยอดเงินแยกปี */
+        .badge-cat {
+            font-size: 11px;
+            background: #f0ede9;
+            color: var(--text-muted);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            font-weight: normal;
+        }
+
+        /* โซนสรุปประวัติ */
         .history-section {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -204,12 +257,12 @@
             margin-top: 0;
             margin-bottom: 12px;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 6px;
         }
         .history-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
             gap: 12px;
         }
         .history-box {
@@ -220,6 +273,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+        .btn-clear-log {
+            background-color: var(--danger);
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 4px;
         }
     </style>
 </head>
@@ -233,24 +292,28 @@
     </header>
 
     <div class="form-card">
-        <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
-        <input type="number" id="itemQty" placeholder="ສตັອກໃນຄັງ">
-        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)">
+        <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດิບໃໝ່">
+        <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (เช่น: ກາແຟ, ນົມ, ແກ້ວ)">
+        <input type="number" id="itemQty" placeholder="ສຕັອກໃນຄັງ">
+        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶนຕໍ່ໜ່ວຍ (ກີບ)">
         <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
+    </div>
+
+    <div class="filter-container" id="categoryFilters">
+        <button class="filter-btn active" onclick="filterCategory('ALL')">ທັງໝົດ</button>
     </div>
 
     <div class="dashboard-grid">
         <div class="dashboard-card">
-            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ວ (ແຍກຕາມລາຍການ)</h3>
-            <div class="analytics-scroll-box" id="analyticsList">
-                </div>
+            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ว (ແຍกຕາມລາຍການ)</h3>
+            <div class="analytics-scroll-box" id="analyticsList"></div>
         </div>
         
         <div class="dashboard-card highlight">
-            <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
-            <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ລວມລາຍຈ່າຍທັງໝົດໃນຮ້านຕາມການນໍາໃຊ້ຈິງມື້ນີ້</p>
+            <h3>📅 ສະຫຼຸບຕົ້ນທຶนວັດຖຸດິບລວມ (ລາຍເດืອນ)</h3>
+            <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ລວມລາຍຈ່າຍທັງໝົດໃນຮ້ານຕາມການນໍາໃຊ້ຈິງມື້ນີ້</p>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
-            <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ / ມື້ນີ້</p>
+            <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ</p>
         </div>
     </div>
 
@@ -264,20 +327,17 @@
                     <th style="text-align: center;">ຕື່ມລະຫວ່າງວັນ (+)</th>
                     <th style="text-align: center;">ທີ່ໃຊ້ໄປແລ້ວ (-)</th>
                     <th style="text-align: center;">ຄົງເຫຼືອຈິງ</th>
-                    <th style="text-align: right;">...ລວມເປັນເງິນ...</th>
+                    <th style="text-align: right;">ລວมເປັນເງິນ</th>
                     <th>ຈັດການ</th>
                 </tr>
             </thead>
-            <tbody id="stockTableBody">
-                </tbody>
+            <tbody id="stockTableBody"></tbody>
         </table>
     </div>
 
     <div class="history-section">
-        <h3>📅 ສະຫຼຸບຍອດລາຄາລວມໃນເດືອນທີ່ຜ່ານໆມາ</h3>
-        <div id="historyContainer">
-            <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືอนທີ່ຜ່ານມາ</div>
-        </div>
+        <h3>📅 ສະຫຼຸບຍອດລາຄາລວມໃນແຕ່ລະວັນທີ່ຜ່ານມາ (ປະຈຳສັບດາ)</h3>
+        <div id="historyContainer"></div>
     </div>
 </div>
 
@@ -297,9 +357,9 @@
     const db = firebase.database();
 
     let coffeeStock = [];
-    let currentMonthYearStr = ""; 
-    let currentMonthNum = "";
-    let currentYearNum = "";
+    let currentCategory = "ALL";
+    let currentDayStr = ""; // รูปแบบ "DD-MM-YYYY"
+    let currentHour = 0;
 
     async function syncInternetTime() {
         try {
@@ -307,76 +367,105 @@
             const data = await response.json();
             const internetDate = new Date(data.datetime);
             
-            const months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
-            currentMonthNum = months[internetDate.getMonth()];
-            currentYearNum = internetDate.getFullYear().toString();
-            currentMonthYearStr = currentMonthNum + "-" + currentYearNum;
+            const pad = (n) => n < 10 ? '0' + n : n;
+            currentDayStr = pad(internetDate.getDate()) + "-" + pad(internetDate.getMonth() + 1) + "-" + internetDate.getFullYear();
+            currentHour = internetDate.getHours();
             
-            document.getElementById("timeSyncStatus").innerHTML = `🟢 ເຊື່ອມຕໍ່ເວລາສຳເລັດ (ເດືອນປະຈຸບັນ: ${currentMonthYearStr})`;
+            document.getElementById("timeSyncStatus").innerHTML = `🟢 ເຊື່ອມຕໍ່ເວລາສຳເລັດ (${currentDayStr} ເວລາ ${pad(currentHour)}:00)`;
         } catch (error) {
             const localDate = new Date();
-            const months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
-            currentMonthNum = months[localDate.getMonth()];
-            currentYearNum = localDate.getFullYear().toString();
-            currentMonthYearStr = currentMonthNum + "-" + currentYearNum;
-            document.getElementById("timeSyncStatus").innerHTML = `🟡 ໃຊ້ເວລາຈາກເຄື່ອງ (เດືອນປະຈຸບັນ: ${currentMonthYearStr})`;
+            const pad = (n) => n < 10 ? '0' + n : n;
+            currentDayStr = pad(localDate.getDate()) + "-" + pad(localDate.getMonth() + 1) + "-" + localDate.getFullYear();
+            currentHour = localDate.getHours();
+            document.getElementById("timeSyncStatus").innerHTML = `🟡 ໃຊ້ເວລາຈາກເຄື່ອງ (${currentDayStr})`;
         }
         
-        // เมื่อผูกเวลาเสร็จ ค่อยเรียกฟังชันก์ดึงข้อมูลสต็อก
         listenToStockData();
-        loadMonthlyHistory();
+        loadDailyHistory();
     }
 
     function listenToStockData() {
         db.ref('bornToBStock').on('value', (snapshot) => {
             const data = snapshot.val();
             coffeeStock = [];
+            let categories = new Set();
+
             if (data) {
                 Object.keys(data).forEach(key => {
                     let item = data[key];
+                    if (item.category) categories.add(item.category.trim());
                     
-                    // ระบบ Auto-Reset ข้ามเดือน: เช็กว่าเดือนล่าสุดของสินค้านี้ตรงกับปัจจุบันไหม
-                    if (item.lastUpdatedMonth && item.lastUpdatedMonth !== currentMonthYearStr) {
-                        // คำนวณสต็อกคงเหลือจริงเพื่อยกยอดไปเป็นสต็อกเริ่มแรกของเดือนใหม่
+                    // 🌟 ระบบตัดยอด Auto-Reset คำนวณสต็อกเข้าคลังหลังเวลา 08:00 น. ในวันถัดไป
+                    if (item.lastLogDate && item.lastLogDate !== currentDayStr && currentHour >= 8) {
                         let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
                         if (remaining < 0) remaining = 0;
                         
-                        // อัปเดตรีเซ็ตค่าบน Cloud ให้กลับเป็น 0 เองอัตโนมัติ
                         db.ref('bornToBStock/' + key).update({
                             initialQty: remaining,
                             added: 0,
                             used: 0,
-                            lastUpdatedMonth: currentMonthYearStr
+                            lastLogDate: currentDayStr
                         });
+                        
                         item.initialQty = remaining;
                         item.added = 0;
                         item.used = 0;
-                        item.lastUpdatedMonth = currentMonthYearStr;
+                        item.lastLogDate = currentDayStr;
                     }
                     
                     coffeeStock.push({ fbKey: key, ...item });
                 });
             }
+
+            // จัดเรียงลำดับอิงตามค่าตัวแปร indexOrder จากน้อยไปมาก
+            coffeeStock.sort((a, b) => (a.indexOrder || 0) - (b.indexOrder || 0));
+            
+            renderFilterTabs(categories);
             renderTable();
             renderAnalyticsAndCosts(); 
         });
+    }
+
+    function renderFilterTabs(categories) {
+        const container = document.getElementById("categoryFilters");
+        container.innerHTML = `<button class="filter-btn ${currentCategory === 'ALL' ? 'active' : ''}" onclick="filterCategory('ALL')">ທັງໝົດ</button>`;
+        categories.forEach(cat => {
+            container.innerHTML += `<button class="filter-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterCategory('${cat}')">${cat}</button>`;
+        });
+    }
+
+    function filterCategory(cat) {
+        currentCategory = cat;
+        renderTable();
     }
 
     function renderTable() {
         const tableBody = document.getElementById("stockTableBody");
         tableBody.innerHTML = "";
 
-        if(coffeeStock.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບໃນລະບົບ, ກະລຸນາເພີ່ມລายການໃໝ่</td></tr>`;
+        let filteredItems = coffeeStock;
+        if (currentCategory !== "ALL") {
+            filteredItems = coffeeStock.filter(item => item.category === currentCategory);
+        }
+
+        if(filteredItems.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບໃນໝວດນີ້</td></tr>`;
             return;
         }
 
-        coffeeStock.forEach(item => {
+        filteredItems.forEach((item, idx) => {
             let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
             let totalCostToday = (item.used || 0) * (item.cost || 0);
 
             let row = `<tr>
-                <td><strong>${item.name}</strong></td>
+                <td>
+                    <div class="order-arrows">
+                        <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', -1)">▲</button>
+                        <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', 1)">▼</button>
+                    </div>
+                    <strong>${item.name}</strong>
+                    ${item.category ? `<span class="badge-cat">${item.category}</span>` : ''}
+                </td>
                 
                 <td style="text-align: center;">
                     <input type="number" class="input-cost" value="${item.cost || 0}" min="0"
@@ -423,128 +512,124 @@
         analyticsList.innerHTML = "";
         let grandTodayCostTotal = 0; 
 
-        if (coffeeStock.length === 0) {
-            analyticsList.innerHTML = `<div style="color:var(--text-muted); font-size:14px;">ຍັງບໍ່ມີຂໍ້ມູນການຄຳນວນ</div>`;
-            grandMonthlyCostEl.innerText = "0";
-            return;
-        }
-
         coffeeStock.forEach(item => {
             let usedToday = item.used || 0;
             let itemCost = item.cost || 0;
-
             let totalTodayCost = usedToday * itemCost; 
-            grandTodayCostTotal += totalTodayCost; 
+            grandTodayCostTotal += totalTodayCost;
 
-            analyticsList.innerHTML += `
-                <div class="avg-item">
-                    <span>☕ <strong>${item.name}</strong> <span style="font-size: 13px; color: var(--text-muted); margin-left: 5px;">(ໃຊ້ໄປ: ${usedToday})</span></span>
-                    <span>
-                        ລວມເປັນເງິນ: <strong style="color:var(--danger);">${totalTodayCost.toLocaleString('lo-LA')} ₭</strong>
-                    </span>
-                </div>`;
+            if (usedToday > 0) {
+                analyticsList.innerHTML += `
+                    <div class="avg-item">
+                        <span>☕ <strong>${item.name}</strong> <span style="font-size: 13px; color: var(--text-muted); margin-left: 5px;">(ໃຊ້ໄປ: ${usedToday})</span></span>
+                        <span>ລວມ: <strong style="color:var(--danger);">${totalTodayCost.toLocaleString('lo-LA')} ₭</strong></span>
+                    </div>`;
+            }
         });
+
+        if (analyticsList.innerHTML === "") {
+            analyticsList.innerHTML = `<div style="color:var(--text-muted); font-size:14px;">ຍັງບໍ່ມີການນຳໃຊ້ວັດຖຸດິບໃນມື້ນີ້</div>`;
+        }
 
         grandMonthlyCostEl.innerText = grandTodayCostTotal.toLocaleString('lo-LA');
         
-        // บันทึกยอดเงินลงประวัติรายเดือน
-        if(currentMonthYearStr && grandTodayCostTotal > 0) {
-            db.ref('bornToBHistory/' + currentMonthYearStr).set(grandTodayCostTotal);
+        // ส่งยอดผลรวมประจำวันไปเก็บในกลุ่มประวัติสัปดาห์
+        if(currentDayStr && grandTodayCostTotal > 0) {
+            db.ref('bornToBDailyLogs/' + currentDayStr).set(grandTodayCostTotal);
         }
     }
 
-    function loadMonthlyHistory() {
-        const historyContainer = document.getElementById("historyContainer");
-        db.ref('bornToBHistory').on('value', (snapshot) => {
+    // 🌟 ฟังก์ชันสลับตำแหน่งลำดับวัตถุดิบ ขึ้น-ลง
+    function moveOrder(fbKey, direction) {
+        let currentIdx = coffeeStock.findIndex(item => item.fbKey === fbKey);
+        if (currentIdx === -1) return;
+        
+        let targetIdx = currentIdx + direction;
+        if (targetIdx < 0 || targetIdx >= coffeeStock.length) return; // หลุดขอบบน-ล่าง
+
+        // สลับค่า indexOrder ของชิ้นปัจจุบันกับชิ้นเป้าหมาย
+        let currentItem = coffeeStock[currentIdx];
+        let targetItem = coffeeStock[targetIdx];
+
+        let tempOrder = currentItem.indexOrder || 0;
+        
+        // ทำการอัปเดตตำแหน่งแลกเปลี่ยนบนคลาวด์ Firebase
+        db.ref('bornToBStock/' + currentItem.fbKey).update({ indexOrder: targetItem.indexOrder || 0 });
+        db.ref('bornToBStock/' + targetItem.fbKey).update({ indexOrder: tempOrder });
+    }
+
+    function loadDailyHistory() {
+        const container = document.getElementById("historyContainer");
+        db.ref('bornToBDailyLogs').on('value', (snapshot) => {
             const data = snapshot.val();
             if(data) {
-                historyContainer.innerHTML = "";
-                
-                // จัดโครงสร้างแบ่งข้อมูลกลุ่มตามปี
-                let groupedByYear = {};
-
-                Object.keys(data).forEach(monthKey => {
-                    // monthKey รูปแบบคือ "MM-YYYY" เช่น "06-2026"
-                    let parts = monthKey.split('-');
-                    if(parts.length === 2) {
-                        let month = parts[0];
-                        let year = parts[1];
-                        
-                        if(!groupedByYear[year]) {
-                            groupedByYear[year] = [];
-                        }
-                        groupedByYear[year].push({
-                            monthStr: month,
-                            fullKey: monthKey,
-                            amount: data[monthKey]
-                        });
-                    }
-                });
-
-                // เรียงปีจากใหม่ไปเก่า
-                let sortedYears = Object.keys(groupedByYear).sort((a, b) => b - a);
-
-                sortedYears.forEach(year => {
-                    let yearHtml = `
-                        <div class="year-group">
-                            <div class="year-title">📂 ປີ ${year}</div>
-                            <div class="history-grid">
-                    `;
-                    
-                    // เรียงเดือนในแต่ละปีจากมากไปน้อย
-                    groupedByYear[year].sort((a, b) => b.monthStr - a.monthStr);
-
-                    groupedByYear[year].forEach(item => {
-                        yearHtml += `
-                            <div class="history-box">
-                                <span style="font-weight:700; color:var(--accent);">ເດືອນ ${item.monthStr}</span>
-                                <span style="font-weight:700; color:var(--text-main);">${item.amount.toLocaleString('lo-LA')} ₭</span>
-                            </div>
-                        `;
-                    });
-
-                    yearHtml += `
-                            </div>
+                container.innerHTML = `
+                    <div class="year-group">
+                        <div class="year-title">
+                            <span>📋 ປະຫວັດບັນທຶກລາຍວັນໃນສັບດານີ້</span>
+                            <button class="btn-clear-log" onclick="clearAllLogs()">ລຶບປະຫວັດທັງໝົດ</button>
                         </div>
-                    `;
-                    historyContainer.innerHTML += yearHtml;
+                        <div class="history-grid" id="logGrid"></div>
+                    </div>`;
+                
+                const logGrid = document.getElementById("logGrid");
+                // เรียงวันที่บันทึกจากล่าสุดย้อนหลังไป
+                Object.keys(data).sort().reverse().forEach(dateKey => {
+                    logGrid.innerHTML += `
+                        <div class="history-box">
+                            <span style="font-weight:700; color:var(--accent);">📆 ວັນທີ ${dateKey}</span>
+                            <span style="font-weight:700; color:var(--text-main);">${data[dateKey].toLocaleString('lo-LA')} ₭</span>
+                        </div>`;
                 });
+            } else {
+                container.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກວັນທີຜ່ານມາ</div>`;
             }
         });
+    }
+
+    function clearAllLogs() {
+        if (confirm("ທ່ານแน່ໃຈບໍ່ว่าຕ້ອງການລຶບຂໍ້ຄວາມປະຫວັດລາຍວັນທັງໝົດອອກ?")) {
+            db.ref('bornToBDailyLogs').remove();
+        }
     }
 
     function updateCloudField(fbKey, field, value) {
         let intValue = parseInt(value) || 0;
         if (intValue < 0) intValue = 0;
-        
-        // เมื่อมีการอัปเดตข้อมูล ให้ผูกเงื่อนไขเดือนปัจจุบันเข้าไปด้วย
         db.ref('bornToBStock/' + fbKey).update({ 
             [field]: intValue,
-            lastUpdatedMonth: currentMonthYearStr
+            lastLogDate: currentDayStr
         });
     }
 
     function addNewItem() {
         const nameInput = document.getElementById("itemName");
+        const catInput = document.getElementById("itemCategory");
         const qtyInput = document.getElementById("itemQty");
         const costInput = document.getElementById("itemCost");
 
         if (!nameInput.value) {
-            alert("ກະລຸນາປ້อนຊື່ວັດຖຸດິບກ່ອນ");
+            alert("ກະລຸນາປ້ອນຊື່ວັດຖຸດິບກ່ອນ");
             return;
         }
 
+        // ตั้งค่าลำดับ indexOrder ต่อท้ายสุดของแถวที่มีอยู่
+        let nextOrder = coffeeStock.length > 0 ? (coffeeStock[coffeeStock.length - 1].indexOrder || 0) + 1 : 0;
+
         let newItem = {
             name: nameInput.value,
+            category: catInput.value.trim() || "ทั่วไป",
             initialQty: parseInt(qtyInput.value) || 0,
             cost: parseInt(costInput.value) || 0,
             added: 0,
             used: 0,
-            lastUpdatedMonth: currentMonthYearStr // บันทึกเดือนกำกับตั้งแต่เพิ่มชิ้นใหม่
+            indexOrder: nextOrder,
+            lastLogDate: currentDayStr
         };
 
         db.ref('bornToBStock').push(newItem);
         nameInput.value = "";
+        catInput.value = "";
         qtyInput.value = "";
         costInput.value = "";
     }
@@ -555,7 +640,6 @@
         }
     }
 
-    // เริ่มทำงานดึงเวลาจากเน็ต
     syncInternetTime();
 </script>
 </body>
