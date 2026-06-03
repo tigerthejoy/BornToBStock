@@ -1,9 +1,21 @@
+จัดให้เลยครับ! ผมทำการปรับความกว้างของช่องอินพุตตัวเลขจำนวน **ຕື່ມ (+)** และ **ໃຊ້ໄປ (-)** (รวมถึงช่อง ในคັງ) ให้แคบลงเหลือ **38px** พร้อมปรับพิกเซลการเว้นระยะข้างใน (Padding) ให้พอดิบพอดีกับ**ตัวเลข 3 หลัก (เช่น 999)** ไม่ขาดไม่เกินตามที่ขอครับ
+
+นอกจากนี้ ผมยังได้สลับเปอร์เซ็นต์ความกว้างของหัวตาราง (`<th>`) อีกเล็กน้อย เพื่อเอาพื้นที่ที่เหลือจากการบีบช่องตัวเลขนี้ ไปเพิ่มให้ช่อง **ຊື່ວັດຖຸດິບ** และช่อง **ລວມເປັນເງິນ** ให้กว้างและดูโปร่งสบายตาขึ้นอีกครับ โดยที่ระบบตรรกะเบื้องหลังและการคำนวณทั้งหมด (เวอร์ชัน V6 ที่เสถียรแล้ว) ยังคงอยู่ครบถ้วนไม่มีการแก้ไขให้กระทบครับ
+
+### 🛠️ สิ่งที่ปรับเปลี่ยนในเวอร์ชัน V7 นี้:
+
+* **CSS:** ปรับ `.input-qty { width: 38px; padding: 6px 2px; }` เพื่อให้กล่องกระชับพอดีกับเลข 3 หลัก
+* **HTML Table:** ปรับลด % ของคอลัมน์ตัวเลขลง และไปเพิ่มให้ช่องชื่อสินค้าแทน
+
+คุณสามารถคัดลอกโค้ดสมบูรณ์ **Super Pro V7** ด้านล่างนี้ไปวางทับใช้งานได้ทันทีครับ:
+
+```html
 <!DOCTYPE html>
 <html lang="lo">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V6</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V7</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -201,11 +213,11 @@
             word-break: break-word;
         }
 
-        /* อินพุตปรับบีบให้สั้นลงและกะทัดรัดขึ้น */
-        .input-qty { width: 50px; text-align: center; padding: 6px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; }
+        /* [แก้ไขใหม่] ปรับอินพุตจำนวนให้แคบลงพอดีกับเลข 3 หลักเป๊ะๆ และลด padding ข้างเพื่อไม่ให้ตัวเลขเบียด */
+        .input-qty { width: 38px; text-align: center; padding: 6px 2px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; }
         .input-cost { width: 85px; text-align: right; padding: 6px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; }
         
-        .badge-total { background: var(--accent-light); color: #705e55; padding: 6px 10px; border-radius: 6px; font-weight: 700; display: inline-block; min-width: 30px; text-align: center; }
+        .badge-total { background: var(--accent-light); color: #705e55; padding: 6px 8px; border-radius: 6px; font-weight: 700; display: inline-block; min-width: 25px; text-align: center; }
         .btn-delete { background: none; color: var(--danger); border: none; cursor: pointer; font-size: 14px; font-family: 'Phetsarath', sans-serif; }
         
         /* ปุ่มลูกศรเลื่อนลำดับ */
@@ -355,7 +367,7 @@
         <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
         <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (เช่น: ກາແຟ, ນົມ, ແກ້ວ)">
         <input type="number" id="itemQty" placeholder="ສຕັອກໃນຄັງ">
-        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶนຕໍ່ໜ່ວย (ກີບ)">
+        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶนຕໍ່ໜ່ວຍ (ກີບ)">
         <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
     </div>
 
@@ -365,13 +377,13 @@
 
     <div class="dashboard-grid">
         <div class="dashboard-card">
-            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ວ (ແຍກຕາມລາຍການ)</h3>
+            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ้ວ (ແຍກຕາມລາຍການ)</h3>
             <div class="analytics-scroll-box" id="analyticsList"></div>
         </div>
         
         <div class="dashboard-card highlight">
             <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
-            <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ລວມລາຍຈ່າຍທັງໝົດໃນຮ້ານຕາມການນໍາໃຊ້ຈິງມື້ນີ້</p>
+            <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ລວມລາຍຈ່າຍທັງໝົດในຮ້ານຕາມການນໍາໃຊ້ຈິງມື້ນີ້</p>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
             <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ</p>
         </div>
@@ -381,13 +393,13 @@
         <table>
             <thead>
                 <tr>
-                    <th style="width: 34%;">ຊື່ວັດຖຸດິບ</th>
-                    <th style="text-align: center; width: 12%;">ລາຄາ/ໜ່ວຍ</th>
-                    <th style="text-align: center; width: 10%;">ໃນຄັງ</th>
-                    <th style="text-align: center; width: 10%;">ຕື່ມ (+)</th>
-                    <th style="text-align: center; width: 10%;">ໃຊ້ໄປ (-)</th>
-                    <th style="text-align: center; width: 10%;">ເຫຼືອຈິງ</th>
-                    <th style="text-align: right; width: 11%;">ລວມເປັນເງິນ</th>
+                    <th style="width: 38%;">ຊື່ວັດຖຸດິບ</th>
+                    <th style="text-align: center; width: 12%;">ລາຄา/ໜ່ວຍ</th>
+                    <th style="text-align: center; width: 9%;">ໃນຄັງ</th>
+                    <th style="text-align: center; width: 8%;">ຕື່ມ (+)</th>
+                    <th style="text-align: center; width: 8%;">ໃຊ້ໄປ (-)</th>
+                    <th style="text-align: center; width: 9%;">ເຫຼືອຈິງ</th>
+                    <th style="text-align: right; width: 13%;">ລວມເປັນເງິນ</th>
                     <th style="text-align: center; width: 3%;">ຈັດການ</th>
                 </tr>
             </thead>
@@ -396,14 +408,14 @@
     </div>
 
     <div class="history-section">
-        <h3>📅 ສະຫຼຸບຍອດລາຄาລວມຍ້ອນຫຼັງ</h3>
+        <h3>📅 ສະຫຼຸບຍອດລາຄາລວມຍ້ອນຫຼັງ</h3>
         
         <div class="sub-history-title">📋 ປະຫວັດບັນທຶກລາຍວັນໃນສັບດານີ້ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
         <div id="dailyLogsContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກວັນທີຜ່ານມາ</div>
         </div>
 
-        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄาລວມລາຍເດືອນ (ຄລິກເພື່ອເບິ່ງລายລະອຽດ)</div>
+        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເດືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
         <div id="monthlyHistoryContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
         </div>
@@ -446,7 +458,6 @@
         loadMonthlyHistory();
     }
 
-    // ฟังก์ชันคำนวณวันของธุรกิจ (แก้ไขบั๊กรีเซ็ตช่วงเช้าตรู่: หากก่อน 08:00 น. จะถือเป็นวันเก่าของเมื่อวาน)
     function calculateBusinessDate(dateObj, statusText) {
         const pad = (n) => n < 10 ? '0' + n : n;
         let hour = dateObj.getHours();
@@ -472,7 +483,6 @@
                     let item = data[key];
                     if (item.category) categories.add(item.category.trim());
                     
-                    // เงื่อนไขล้างค่าข้ามวันใหม่ (ตรวจสอบแบบเฉียบคมจาก Business Date ไม่ใช้ Hour เช็กซ้ำซ้อน)
                     if (item.lastLogDate && item.lastLogDate !== currentDayStr) {
                         let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
                         if (remaining < 0) remaining = 0;
@@ -610,7 +620,6 @@
 
         grandMonthlyCostEl.innerText = grandTodayCostTotal.toLocaleString('lo-LA');
         
-        // บันทึกเฉพาะข้อมูลรายวัน (แก้ไขบั๊กตัดการเซฟทับรายเดือนทิ้งไป)
         if(grandTodayCostTotal > 0 && currentDayStr) {
             let logPayload = {
                 total: grandTodayCostTotal,
@@ -635,7 +644,6 @@
         db.ref('bornToBStock/' + targetItem.fbKey).update({ indexOrder: tempOrder });
     }
 
-    // 📋 โซนโหลดประวัติรายวัน
     function loadDailyLogs() {
         const container = document.getElementById("dailyLogsContainer");
         db.ref('bornToBDailyLogs').on('value', (snapshot) => {
@@ -671,28 +679,27 @@
                         </div>`;
                 });
             } else {
-                container.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກວັນທີຜ່ານມາ</div>`;
+                container.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶกວັນທີຜ່ານມາ</div>`;
             }
         });
     }
 
     function clearAllDailyLogs() {
-        if (confirm("ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບຂໍ้ຄວາມປະຫວັດລາຍວັນທັງໝົດອອກ?")) {
+        if (confirm("ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບຂໍ້ຄວາມປະຫວັດລາຍວັນທັງໝົດອອກ?")) {
             db.ref('bornToBDailyLogs').remove();
         }
     }
 
-    // 📂 โซนโหลดประวัติรายเดือน (แก้ไขบั๊ก: เปลี่ยนมาคำนวณสะสมแบบไดนามิกจากข้อมูลประวัติรายวัน เพื่อป้องการข้อมูลโดนเขียนทับ)
     function loadMonthlyHistory() {
         const container = document.getElementById("monthlyHistoryContainer");
         db.ref('bornToBDailyLogs').on('value', (snapshot) => {
             const data = snapshot.val();
             if(data) {
                 container.innerHTML = "";
-                let groupedByMonthYear = {}; // โครงสร้าง { ปี: { เดือน: { total, detailsSet } } }
+                let groupedByMonthYear = {};
 
                 Object.keys(data).forEach(dateKey => {
-                    let parts = dateKey.split('-'); // [DD, MM, YYYY]
+                    let parts = dateKey.split('-'); 
                     if(parts.length === 3) {
                         let month = parts[1];
                         let year = parts[2];
@@ -707,7 +714,7 @@
                         }
                         
                         groupedByMonthYear[year][month].total += amount;
-                        if (textDetails && textDetails !== "ບໍ່ມີຂໍ້ມູນວັດຖຸດິบແນບໄວ້") {
+                        if (textDetails && textDetails !== "ບໍ່ມີຂໍ້ມູນວັດຖຸດິບແນບໄວ້") {
                             textDetails.split(', ').forEach(item => groupedByMonthYear[year][month].detailsSet.add(item));
                         }
                     }
@@ -731,7 +738,7 @@
                         let detailsArray = Array.from(monthData.detailsSet);
                         let tagsHtml = detailsArray.length > 0 
                             ? detailsArray.map(t => `<span class="detail-tag">🌿 ${t}</span>`).join('')
-                            : `<span style="color:var(--text-muted)">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບ</span>`;
+                            : `<span style="color:var(--text-muted)">ບໍ່ມີຂໍ້ມູນວັດຖຸດິบ</span>`;
                         
                         yearHtml += `
                             <div class="accordion-item">
@@ -826,3 +833,5 @@
 </script>
 </body>
 </html>
+
+```
