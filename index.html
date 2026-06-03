@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Pro</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V3</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -199,7 +199,7 @@
         .badge-total { background: var(--accent-light); color: #705e55; padding: 6px 12px; border-radius: 6px; font-weight: 700; display: inline-block; min-width: 40px; text-align: center; }
         .btn-delete { background: none; color: var(--danger); border: none; cursor: pointer; font-size: 14px; font-family: 'Phetsarath', sans-serif; }
         
-        /* ปุ่มสลับลำดับของลูกศร */
+        /* ปุ่มลูกศรเลื่อนลำดับ */
         .order-arrows {
             display: inline-flex;
             flex-direction: column;
@@ -227,7 +227,7 @@
             font-weight: normal;
         }
 
-        /* โซนสรุปประวัติ */
+        /* โซนสรุปประวัติประวัติ */
         .history-section {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -262,7 +262,7 @@
         }
         .history-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 12px;
         }
         .history-box {
@@ -279,6 +279,19 @@
             font-size: 12px;
             padding: 4px 10px;
             border-radius: 4px;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-family: 'Phetsarath', sans-serif;
+        }
+        .sub-history-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-top: 25px;
+            margin-bottom: 10px;
+            padding-left: 5px;
+            border-left: 3px solid var(--accent);
         }
     </style>
 </head>
@@ -292,10 +305,10 @@
     </header>
 
     <div class="form-card">
-        <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດิບໃໝ່">
+        <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
         <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (เช่น: ກາແຟ, ນົມ, ແກ້ວ)">
         <input type="number" id="itemQty" placeholder="ສຕັອກໃນຄັງ">
-        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶนຕໍ່ໜ່ວຍ (ກີບ)">
+        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວย (ກີບ)">
         <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
     </div>
 
@@ -305,15 +318,15 @@
 
     <div class="dashboard-grid">
         <div class="dashboard-card">
-            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ว (ແຍกຕາມລາຍການ)</h3>
+            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ວ (ແຍກຕາມລາຍການ)</h3>
             <div class="analytics-scroll-box" id="analyticsList"></div>
         </div>
         
         <div class="dashboard-card highlight">
-            <h3>📅 ສະຫຼຸບຕົ້ນທຶนວັດຖຸດິບລວມ (ລາຍເດืອນ)</h3>
+            <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
             <p style="color: var(--text-muted); margin: 0; font-size: 14px;">ລວມລາຍຈ່າຍທັງໝົດໃນຮ້ານຕາມການນໍາໃຊ້ຈິງມື້ນີ້</p>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
-            <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ</p>
+            <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ / ມື້ນີ້</p>
         </div>
     </div>
 
@@ -327,7 +340,7 @@
                     <th style="text-align: center;">ຕື່ມລະຫວ່າງວັນ (+)</th>
                     <th style="text-align: center;">ທີ່ໃຊ້ໄປແລ້ວ (-)</th>
                     <th style="text-align: center;">ຄົງເຫຼືອຈິງ</th>
-                    <th style="text-align: right;">ລວมເປັນເງິນ</th>
+                    <th style="text-align: right;">ລວມເປັນເງິນ</th>
                     <th>ຈັດການ</th>
                 </tr>
             </thead>
@@ -336,8 +349,17 @@
     </div>
 
     <div class="history-section">
-        <h3>📅 ສະຫຼຸບຍອດລາຄາລວມໃນແຕ່ລະວັນທີ່ຜ່ານມາ (ປະຈຳສັບດາ)</h3>
-        <div id="historyContainer"></div>
+        <h3>📅 ສະຫຼຸບຍອດລາຄາລວມຍ້ອນຫຼັງ</h3>
+        
+        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກລາຍວັນໃນສັບດານີ້</div>
+        <div id="dailyLogsContainer">
+            <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີ...</div >
+        </div>
+
+        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເດືອນ (ແຍກຕາມປີ)</div>
+        <div id="monthlyHistoryContainer">
+            <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
+        </div>
     </div>
 </div>
 
@@ -358,8 +380,10 @@
 
     let coffeeStock = [];
     let currentCategory = "ALL";
-    let currentDayStr = ""; // รูปแบบ "DD-MM-YYYY"
+    let currentDayStr = ""; 
+    let currentMonthYearStr = ""; 
     let currentHour = 0;
+    let fullMonthlyDataRaw = {}; // เก็บข้อมูลดิบรายเดือนเพื่อใช้สั่งลบรายปี
 
     async function syncInternetTime() {
         try {
@@ -369,6 +393,7 @@
             
             const pad = (n) => n < 10 ? '0' + n : n;
             currentDayStr = pad(internetDate.getDate()) + "-" + pad(internetDate.getMonth() + 1) + "-" + internetDate.getFullYear();
+            currentMonthYearStr = pad(internetDate.getMonth() + 1) + "-" + internetDate.getFullYear();
             currentHour = internetDate.getHours();
             
             document.getElementById("timeSyncStatus").innerHTML = `🟢 ເຊື່ອມຕໍ່ເວລາສຳເລັດ (${currentDayStr} ເວລາ ${pad(currentHour)}:00)`;
@@ -376,12 +401,14 @@
             const localDate = new Date();
             const pad = (n) => n < 10 ? '0' + n : n;
             currentDayStr = pad(localDate.getDate()) + "-" + pad(localDate.getMonth() + 1) + "-" + localDate.getFullYear();
+            currentMonthYearStr = pad(localDate.getMonth() + 1) + "-" + localDate.getFullYear();
             currentHour = localDate.getHours();
-            document.getElementById("timeSyncStatus").innerHTML = `🟡 ໃຊ້ເວລາຈາກເຄື່ອງ (${currentDayStr})`;
+            document.getElementById("timeSyncStatus").innerHTML = `🟡 ໃຊ້ເວລາจากเครื่อง (${currentDayStr})`;
         }
         
         listenToStockData();
-        loadDailyHistory();
+        loadDailyLogs();
+        loadMonthlyHistory();
     }
 
     function listenToStockData() {
@@ -395,7 +422,6 @@
                     let item = data[key];
                     if (item.category) categories.add(item.category.trim());
                     
-                    // 🌟 ระบบตัดยอด Auto-Reset คำนวณสต็อกเข้าคลังหลังเวลา 08:00 น. ในวันถัดไป
                     if (item.lastLogDate && item.lastLogDate !== currentDayStr && currentHour >= 8) {
                         let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
                         if (remaining < 0) remaining = 0;
@@ -417,9 +443,7 @@
                 });
             }
 
-            // จัดเรียงลำดับอิงตามค่าตัวแปร indexOrder จากน้อยไปมาก
             coffeeStock.sort((a, b) => (a.indexOrder || 0) - (b.indexOrder || 0));
-            
             renderFilterTabs(categories);
             renderTable();
             renderAnalyticsAndCosts(); 
@@ -533,63 +557,128 @@
 
         grandMonthlyCostEl.innerText = grandTodayCostTotal.toLocaleString('lo-LA');
         
-        // ส่งยอดผลรวมประจำวันไปเก็บในกลุ่มประวัติสัปดาห์
-        if(currentDayStr && grandTodayCostTotal > 0) {
-            db.ref('bornToBDailyLogs/' + currentDayStr).set(grandTodayCostTotal);
+        if(grandTodayCostTotal > 0) {
+            if(currentDayStr) db.ref('bornToBDailyLogs/' + currentDayStr).set(grandTodayCostTotal);
+            if(currentMonthYearStr) db.ref('bornToBHistory/' + currentMonthYearStr).set(grandTodayCostTotal);
         }
     }
 
-    // 🌟 ฟังก์ชันสลับตำแหน่งลำดับวัตถุดิบ ขึ้น-ลง
     function moveOrder(fbKey, direction) {
         let currentIdx = coffeeStock.findIndex(item => item.fbKey === fbKey);
         if (currentIdx === -1) return;
         
         let targetIdx = currentIdx + direction;
-        if (targetIdx < 0 || targetIdx >= coffeeStock.length) return; // หลุดขอบบน-ล่าง
+        if (targetIdx < 0 || targetIdx >= coffeeStock.length) return;
 
-        // สลับค่า indexOrder ของชิ้นปัจจุบันกับชิ้นเป้าหมาย
         let currentItem = coffeeStock[currentIdx];
         let targetItem = coffeeStock[targetIdx];
-
         let tempOrder = currentItem.indexOrder || 0;
         
-        // ทำการอัปเดตตำแหน่งแลกเปลี่ยนบนคลาวด์ Firebase
         db.ref('bornToBStock/' + currentItem.fbKey).update({ indexOrder: targetItem.indexOrder || 0 });
         db.ref('bornToBStock/' + targetItem.fbKey).update({ indexOrder: tempOrder });
     }
 
-    function loadDailyHistory() {
-        const container = document.getElementById("historyContainer");
+    // 📋 โซนที่ 1: โหลดข้อมูลประวัติรายวันประจำสัปดาห์ (ปุ่มลบอยู่ข้างหัวข้อปี)
+    function loadDailyLogs() {
+        const container = document.getElementById("dailyLogsContainer");
         db.ref('bornToBDailyLogs').on('value', (snapshot) => {
             const data = snapshot.val();
             if(data) {
                 container.innerHTML = `
-                    <div class="year-group">
+                    <div class="year-group" style="border-color:#e4e1dc;">
                         <div class="year-title">
-                            <span>📋 ປະຫວັດບັນທຶກລາຍວັນໃນສັບດານີ້</span>
-                            <button class="btn-clear-log" onclick="clearAllLogs()">ລຶບປະຫວັດທັງໝົດ</button>
+                            <span style="font-weight:700; color:var(--text-main);">📋 ລາຍວັນຫຼ້າສຸດໃນສັບດານີ້</span>
+                            <button class="btn-clear-log" onclick="clearAllDailyLogs()">ລຶບປະຫວັດລາຍວັນ</button>
                         </div>
-                        <div class="history-grid" id="logGrid"></div>
+                        <div class="history-grid" id="dailyLogGrid"></div>
                     </div>`;
                 
-                const logGrid = document.getElementById("logGrid");
-                // เรียงวันที่บันทึกจากล่าสุดย้อนหลังไป
+                const dailyLogGrid = document.getElementById("dailyLogGrid");
                 Object.keys(data).sort().reverse().forEach(dateKey => {
-                    logGrid.innerHTML += `
-                        <div class="history-box">
-                            <span style="font-weight:700; color:var(--accent);">📆 ວັນທີ ${dateKey}</span>
+                    dailyLogGrid.innerHTML += `
+                        <div class="history-box" style="background:#fff7f2;">
+                            <span style="font-weight:700; color:var(--accent);">📆 ວันທີ ${dateKey}</span>
                             <span style="font-weight:700; color:var(--text-main);">${data[dateKey].toLocaleString('lo-LA')} ₭</span>
                         </div>`;
                 });
             } else {
-                container.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກວັນທີຜ່ານມາ</div>`;
+                container.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີข้อมูลบันทึกวันทีผ่านๆ มา</div>`;
             }
         });
     }
 
-    function clearAllLogs() {
-        if (confirm("ທ່ານแน່ໃຈບໍ່ว่าຕ້ອງການລຶບຂໍ້ຄວາມປະຫວັດລາຍວັນທັງໝົດອອກ?")) {
+    function clearAllDailyLogs() {
+        if (confirm("ທ່ານແน່ໃຈບໍ່ວ່າต้องการລຶບຂໍ້ຄວາມປະຫວັດລາຍວັນທັງໝົດອອກ?")) {
             db.ref('bornToBDailyLogs').remove();
+        }
+    }
+
+    // 📂 โซนที่ 2: โหลดข้อมูลประวัติรายเดือน (เพิ่มปุ่มลบแยกตามปี ข้างหัวข้อเลขปี)
+    function loadMonthlyHistory() {
+        const container = document.getElementById("monthlyHistoryContainer");
+        db.ref('bornToBHistory').on('value', (snapshot) => {
+            const data = snapshot.val();
+            fullMonthlyDataRaw = data || {}; 
+            
+            if(data) {
+                container.innerHTML = "";
+                let groupedByYear = {};
+
+                Object.keys(data).forEach(monthKey => {
+                    let parts = monthKey.split('-');
+                    if(parts.length === 2) {
+                        let month = parts[0];
+                        let year = parts[1];
+                        if(!groupedByYear[year]) groupedByYear[year] = [];
+                        
+                        groupedByYear[year].push({
+                            monthStr: month,
+                            fullKey: monthKey,
+                            amount: data[monthKey]
+                        });
+                    }
+                });
+
+                let sortedYears = Object.keys(groupedByYear).sort((a, b) => b - a);
+
+                sortedYears.forEach(year => {
+                    let yearHtml = `
+                        <div class="year-group">
+                            <div class="year-title">
+                                <span style="font-weight:700; color:var(--accent)">📂 ປີ ${year}</span>
+                                <button class="btn-clear-log" onclick="clearMonthlyLogByYear('${year}')">ລຶບປະຫວັດປີ ${year}</button>
+                            </div>
+                            <div class="history-grid">`;
+                    
+                    groupedByYear[year].sort((a, b) => b.monthStr - a.monthStr);
+
+                    groupedByYear[year].forEach(item => {
+                        yearHtml += `
+                            <div class="history-box">
+                                <span style="font-weight:700; color:var(--text-muted);">ເດືອນ ${item.monthStr}</span>
+                                <span style="font-weight:700; color:var(--text-main);">${item.amount.toLocaleString('lo-LA')} ₭</span>
+                            </div>`;
+                    });
+
+                    yearHtml += `</div></div>`;
+                    container.innerHTML += yearHtml;
+                });
+            } else {
+                container.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>`;
+            }
+        });
+    }
+
+    // ฟังก์ชันสั่งลบประวัติรายเดือนเฉพาะปีที่เลือก
+    function clearMonthlyLogByYear(yearTarget) {
+        if (confirm(`ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບປະຫວັດລາຍເດືອນທັງໝົດຂອງ "ປີ ${yearTarget}" ອອກຈາກລະບົບ? (ຂໍ້ມູນປີອື່ນຈະຍັງຄົງຢູ່)`)) {
+            // วนลูปหา key เดือนที่ตรงกับปีเป้าหมายแล้วทะยอยสั่งลบออกทีละตัว
+            Object.keys(fullMonthlyDataRaw).forEach(monthKey => {
+                let parts = monthKey.split('-');
+                if (parts.length === 2 && parts[1] === yearTarget) {
+                    db.ref('bornToBHistory/' + monthKey).remove();
+                }
+            });
         }
     }
 
@@ -609,11 +698,10 @@
         const costInput = document.getElementById("itemCost");
 
         if (!nameInput.value) {
-            alert("ກະລຸນາປ້ອນຊື່ວັດຖຸດິບກ່ອນ");
+            alert("ກະລຸນาປ້ອນຊື່ວັດຖຸດິບກ່ອນ");
             return;
         }
 
-        // ตั้งค่าลำดับ indexOrder ต่อท้ายสุดของแถวที่มีอยู่
         let nextOrder = coffeeStock.length > 0 ? (coffeeStock[coffeeStock.length - 1].indexOrder || 0) + 1 : 0;
 
         let newItem = {
