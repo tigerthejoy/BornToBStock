@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.2</title>
     
-    <!-- ดึงฟอนต์ Phetsarath จาก Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath&display=swap" rel="stylesheet">
 
-    <!-- ดึงฐานข้อมูล Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
@@ -251,9 +249,9 @@
         }
         .log-details-mini.active { display: block; }
 
-        /* Accordion รายเดือนเก่า */
+        /* Accordion รายเดือนแบบมินิมอลสลิม */
         .accordion-item { border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); overflow: hidden; margin-bottom: 4px; }
-        .accordion-header { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; transition: background 0.2s; font-size: 14px; }
+        .accordion-header { padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; transition: background 0.2s; font-size: 14px; }
         .accordion-header:hover { background: var(--accent-light); }
         .accordion-content { padding: 0 14px; max-height: 0; overflow: hidden; transition: padding 0.15s ease-out, max-height 0.15s ease-out; background: #fdfdfd; border-top: 0 solid var(--border); font-size: 13px; color: #5c524d; }
         .accordion-item.active .accordion-content { padding: 10px 14px; max-height: 500px; border-top: 1px dashed var(--border); }
@@ -268,11 +266,10 @@
 <div class="container">
     <header>
         <h1>Born To B Cafe & Garden</h1>
-        <p>🌿 ລະບົບຄວບຄຸມສະຕັອກ ແລະ ຄຳນວນຕົ້ນທຶນວັດຖຸດິບລາຍເດືອນ 🌿</p>
+        <p>🌿 ລະບົບຄວບຄຸມສະຕັອກ ແລະ ຄຳນວນຕົ້ນທຶนວັດຖຸດິບລາຍເດືອນ 🌿</p>
         <div class="time-sync-badge" id="timeSyncStatus">🔄 กำลังเชื่อมต่อเวลาสากล Internet...</div>
     </header>
 
-    <!-- ฟอร์มเพิ่มวัตถุดิบ -->
     <div class="form-card">
         <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
         <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (เช่น: ກາແຟ, ນົມ, ແກ້ວ)">
@@ -281,16 +278,14 @@
         <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
     </div>
 
-    <!-- ปุ่มตัวกรองหมวดหมู่สินค้า -->
     <div class="filter-container" id="categoryFilters">
         <button class="filter-btn active" onclick="filterCategory('ALL')">ທັງໝົດ</button>
         <button class="filter-btn" id="btnLowStockFilter" onclick="filterCategory('LOW_STOCK')" style="color: var(--danger); border-color: var(--danger);">⚠️ ໃກ້ຈະໝົດ</button>
     </div>
 
-    <!-- โซนแดชบอร์ดซ้ายขวา -->
     <div class="dashboard-grid">
         <div class="dashboard-card">
-            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ้ວ (ແຍກຕາມລາຍການ)</h3>
+            <h3>📊 ລວມລາຄາວັດຖຸດິบທີ່ใช้ໄປແລ້ວ (ແຍກຕາມລາຍການ)</h3>
             <div class="analytics-scroll-box" id="analyticsList"></div>
         </div>
         
@@ -301,7 +296,6 @@
         </div>
     </div>
 
-    <!-- ตารางหลัก -->
     <div class="table-container">
         <table>
             <thead>
@@ -312,7 +306,7 @@
                     <th style="text-align: center; width: 8%;">ຕື່ມ (+)</th>
                     <th style="text-align: center; width: 8%;">ໃຊ້ໄປ (-)</th>
                     <th style="text-align: center; width: 9%;">ເຫຼືອຈິງ</th>
-                    <th style="text-align: right; width: 13%;">ລວມເປັນເງິນ</th>
+                    <th style="text-align: right; width: 13%;">ລວມเป็นເງິນ</th>
                     <th style="text-align: center; width: 3%;">ຈັດການ</th>
                 </tr>
             </thead>
@@ -320,18 +314,14 @@
         </table>
     </div>
 
-    <!-- โซนรวมประวัติย้อนหลังทั้งหมด -->
     <div class="history-section">
-        <!-- เปลี่ยนชื่อหัวข้อหลักตามเงื่อนไข -->
         <h3>📅 ສະຫຼຸບການເຄື່ອນໄຫວປະຈຳເດືອນ</h3>
         
-        <!-- โซนที่ 1: ประวัติรายสัปดาห์ประจำเดือนปัจจุบัน (มินิมอลแบบกดดูรายละเอียดได้) -->
-        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກແຍກຕາມສັບດາໃນເດືອນນີ້ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
+        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກແຍກຕາມສັບດາໃນເດືອນນີ້ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽด)</div>
         <div id="dailyLogsContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກສັບດານີ້</div>
         </div>
 
-        <!-- โซนที่ 2: ประวัติรายเดือนรวบตามปี + สรุปยอดรวมรายปี -->
         <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເດືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
         <div id="monthlyHistoryContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
@@ -472,7 +462,7 @@
         }
 
         if(filteredItems.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບໃນໝວດນີ້</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">¼ÒÁÕ¢éÍÁÙÅÇÑµ¶Ø´Ôºã¹ËÁÇ´¹Õé</td></tr>`;
             return;
         }
 
@@ -579,7 +569,7 @@
         });
 
         if (analyticsList.innerHTML === "") {
-            analyticsList.innerHTML = `<div style="color:var(--text-muted); font-size:14px;">ຍັງບໍ່ມີການນຳໃຊ້ວັດຖຸດິບໃນມື້ນີ້</div>`;
+            analyticsList.innerHTML = `<div style="color:var(--text-muted); font-size:14px;">ຍັງບໍ່ມີການນຳໃຊ້ວັດຖุดິບในມື້ນີ້</div>`;
         }
         
         if (currentDayStr && grandTodayCostTotal > 0) {
@@ -606,7 +596,6 @@
         db.ref('bornToBStock/' + targetItem.fbKey).update({ indexOrder: tempOrder });
     }
 
-    /* ฟังก์ชันหาคีย์วันจันทร์เพื่อจัดกลุ่มสัปดาห์เฉพาะวันที่มีข้อมูลจริง */
     function getMondayOfDate(dateStr) {
         let parts = dateStr.split('-');
         let d = new Date(parts[2], parts[1]-1, parts[0]);
@@ -622,7 +611,6 @@
         return `<span style="font-size:12px; font-weight:normal; color:var(--text-muted); margin-left:4px;">${days[dObj.getDay()]}</span>`;
     }
 
-    /* 🌟 [ปรับปรุงใหม่] โหลดเฉพาะวันที่มีอยู่จริงในระบบ ทยอยเพิ่มขึ้นแบบมินิมอลไม่ยาวพรืด */
     function loadDailyLogs() {
         const container = document.getElementById("dailyLogsContainer");
         
@@ -651,19 +639,10 @@
             
             const weeksContainer = document.getElementById("weeklyLogWeeksContainer");
             
-            let bDay = businessDateGlobal.getDate();
             let bMonth = businessDateGlobal.getMonth() + 1;
             let bYear = businessDateGlobal.getFullYear();
-            
-            let activeMonths = new Set();
             const pad = (n) => n < 10 ? '0' + n : n;
-            activeMonths.add(pad(bMonth) + "-" + bYear);
-            if (bDay === 1) {
-                let prevMonth = bMonth - 1;
-                let prevYear = bYear;
-                if (prevMonth === 0) { prevMonth = 12; prevYear--; }
-                activeMonths.add(pad(prevMonth) + "-" + prevYear);
-            }
+            let currentMonthFilter = pad(bMonth) + "-" + bYear;
 
             let weekGroups = {};
 
@@ -671,7 +650,7 @@
                 let parts = dateKey.split('-');
                 if (parts.length === 3) {
                     let myKey = parts[1] + "-" + parts[2];
-                    if (activeMonths.has(myKey)) {
+                    if (myKey === currentMonthFilter) {
                         let mondayStr = getMondayOfDate(dateKey);
                         if (!weekGroups[mondayStr]) {
                             weekGroups[mondayStr] = { dates: [], month: parseInt(parts[1]), year: parseInt(parts[2]) };
@@ -693,7 +672,7 @@
 
             sortedMondays.forEach(mondayStr => {
                 let group = weekGroups[mondayStr];
-                let monthNames = ["", "ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມິຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"];
+                let monthNames = ["", "ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມิຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"];
                 
                 let weekHtml = `
                     <div style="margin-bottom:12px; border:1px solid var(--border); border-radius:8px; padding:10px; background:#fafaf9;">
@@ -737,59 +716,48 @@
         }
     }
 
-    /* 🌟 [ปรับปรุงใหม่] แสดงสรุปยอดรวมรายปีเด่นชัด คืนชีพหน้าต่างสรุปรายปีตามบรีฟเก่า */
+    /* 🌟 [แก้ไขแก้จุดบกพร่อง] ดึงข้อมูลมาแจกแจงสรุปแยกตามรายเดือนครบถ้วน มินิมอล */
     function loadMonthlyHistory() {
         const container = document.getElementById("monthlyHistoryContainer");
+        
         db.ref('bornToBDailyLogs').on('value', (snapshot) => {
             const data = snapshot.val();
-            if(data && businessDateGlobal) {
+            if(data) {
                 container.innerHTML = "";
                 let groupedByMonthYear = {};
 
-                let bDay = businessDateGlobal.getDate();
-                let bMonth = businessDateGlobal.getMonth() + 1;
-                let bYear = businessDateGlobal.getFullYear();
-                
-                let activeMonthsKeys = new Set();
-                const pad = (n) => n < 10 ? '0' + n : n;
-                activeMonthsKeys.add(pad(bMonth) + "-" + bYear);
-                
-                if (bDay === 1) {
-                    let prevMonth = bMonth - 1;
-                    let prevYear = bYear;
-                    if (prevMonth === 0) { prevMonth = 12; prevYear--; }
-                    activeMonthsKeys.add(pad(prevMonth) + "-" + prevYear);
-                }
-
+                // วิ่งคำนวณสรุปผลยอดทุกวันแจกแจงเข้ากล่องเดือน 1-12 อัตโนมัติ
                 Object.keys(data).forEach(dateKey => {
                     let parts = dateKey.split('-'); 
                     if(parts.length === 3) {
-                        let month = parts[1];
-                        let year = parts[2];
-                        let myKey = month + "-" + year;
+                        let month = parts[1]; // "01", "02"
+                        let year = parts[2];  // "2026"
                         
-                        if (!activeMonthsKeys.has(myKey)) {
-                            let record = data[dateKey];
-                            let amount = typeof record === 'object' ? (record.total || 0) : record;
-                            let textDetails = typeof record === 'object' && record.details ? record.details : "";
+                        let record = data[dateKey];
+                        let amount = typeof record === 'object' ? (record.total || 0) : record;
+                        let textDetails = typeof record === 'object' && record.details ? record.details : "";
 
-                            if (!groupedByMonthYear[year]) groupedByMonthYear[year] = { months: {}, yearTotal: 0 };
-                            if (!groupedByMonthYear[year].months[month]) {
-                                groupedByMonthYear[year].months[month] = { total: 0, detailsSet: new Set() };
-                            }
-                            
-                            groupedByMonthYear[year].months[month].total += amount;
-                            groupedByMonthYear[year].yearTotal += amount;
-                            if (textDetails && textDetails !== "ບໍ່ມີຂໍ້ມູນວັດຖຸດິບແນບໄວ້") {
-                                textDetails.split(', ').forEach(item => groupedByMonthYear[year].months[month].detailsSet.add(item));
-                            }
+                        if (!groupedByMonthYear[year]) {
+                            groupedByMonthYear[year] = { months: {}, yearTotal: 0 };
+                        }
+                        if (!groupedByMonthYear[year].months[month]) {
+                            groupedByMonthYear[year].months[month] = { total: 0, detailsSet: new Set() };
+                        }
+                        
+                        groupedByMonthYear[year].months[month].total += amount;
+                        groupedByMonthYear[year].yearTotal += amount;
+                        
+                        if (textDetails) {
+                            textDetails.split(', ').forEach(item => {
+                                if(item) groupedByMonthYear[year].months[month].detailsSet.add(item.split(' ')[0]);
+                            });
                         }
                     }
                 });
 
                 let sortedYears = Object.keys(groupedByMonthYear).sort((a, b) => b - a);
                 if (sortedYears.length === 0) {
-                    container.innerHTML = `<div style="color:var(--text-muted); font-size:14px; text-align:center; padding:10px 0;">📥 ບໍ່ມີຂໍ້ມູນເດືອນເກົ່າ (ຍ້າຍລົງມາອັດຕະໂນມັດຫຼັງກາຍວັນທີ 2 ເວລາ 8 ໂມງເຊົ້າ)</div>`;
+                    container.innerHTML = `<div style="color:var(--text-muted); font-size:14px; text-align:center; padding:10px 0;">📥 ບໍ່ມີຂໍ້ມູນປະຫວັດເດືອນຍ້ອນຫຼັງ</div>`;
                     return;
                 }
 
@@ -803,7 +771,9 @@
                             </div>
                             <div class="history-grid">`;
                     
+                    // เรียงลำดับจากเดือนล่าสุดลงไปเดือนแรก (12 ยัน 01)
                     let sortedMonths = Object.keys(yearData.months).sort((a, b) => b - a);
+                    
                     sortedMonths.forEach(month => {
                         let monthData = yearData.months[month];
                         let detailsArray = Array.from(monthData.detailsSet);
@@ -814,11 +784,11 @@
                         yearHtml += `
                             <div class="accordion-item">
                                 <div class="accordion-header" onclick="toggleAccordion(this)">
-                                    <span style="font-weight:700; color:var(--text-muted);">ເດືອນ ${month}</span>
+                                    <span style="font-weight:700; color:var(--text-muted);">▼ ເດືອນ ${month}</span>
                                     <span style="font-weight:700; color:var(--text-main);">${monthData.total.toLocaleString('lo-LA')} ₭</span>
                                 </div>
                                 <div class="accordion-content">
-                                    <div style="font-weight:700; margin-bottom:4px; font-size:12px; color:var(--text-muted);">ສະຫຼຸບວັດຖຸດິບປະຈຳເດືອນ:</div>
+                                    <div style="font-weight:700; margin-bottom:6px; font-size:12px; color:var(--text-muted);">ວັດຖຸດິບທີ່ມີການເຄື່ອນໄຫວໃນເດືອນນີ້:</div>
                                     <div>${tagsHtml}</div>
                                 </div>
                             </div>`;
