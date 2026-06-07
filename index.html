@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.5</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.7</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -274,7 +274,7 @@
 
     <div class="form-card">
         <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
-        <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (ເຊັ່ນ: ກາແຟ, ນົມ, ແກ້ວ)">
+        <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (ເຊັ່ນ: ກาແຟ, ນົມ, ແກ້ວ)">
         <input type="number" id="itemQty" placeholder="ສະຕັອກໃນຄັງ">
         <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)">
         <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
@@ -292,7 +292,7 @@
         </div>
         
         <div class="dashboard-card highlight">
-            <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
+            <h3>📅 ສະຫຼຸບຕົ້ນທຶนວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
             <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ</p>
         </div>
@@ -303,7 +303,7 @@
             <thead>
                 <tr>
                     <th style="width: 38%;">ຊື່ວັດຖຸດິບ</th>
-                    <th style="text-align: center; width: 12%;">ລາຄา/ໜ່ວຍ</th>
+                    <th style="text-align: center; width: 12%;">ລາຄາ/ໜ່ວຍ</th>
                     <th style="text-align: center; width: 9%;">ໃນຄັງ</th>
                     <th style="text-align: center; width: 8%;">ຕື່ມ (+)</th>
                     <th style="text-align: center; width: 8%;">ໃຊ້ໄປ (-)</th>
@@ -319,12 +319,12 @@
     <div class="history-section">
         <h3>📅 ສະຫຼຸບການເຄື່ອນໄຫວປະຈຳເດືອນ</h3>
         
-        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກແຍກຕາມສັບດາໃນເດືອນນີ້ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
+        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກແຍກຕາມສັບດາໃນເດືອນນີ້ (ກົດເພື່ອເບິ່ງລາຍລະອຽດ)</div>
         <div id="dailyLogsContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກສັບດານີ້</div>
         </div>
 
-        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເດືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
+        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄาລວມລາຍເດືອນ (ກົດເພື່ອເບິ່ງລາຍລະອຽດ)</div>
         <div id="monthlyHistoryContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
         </div>
@@ -386,7 +386,6 @@
         await fillMissingDaysInLog();
     }
 
-    // [Bug Fix v11.5] เปลี่ยนมาใช้ระบบสแกนตรวจสอบทุกวันตั้งแต่อดีตถึงเมื่อวาน ป้องกันช่องว่างวันที่หลุดหาย
     async function fillMissingDaysInLog() {
         if (!businessDateGlobal) return;
         const snapshot = await db.ref('bornToBDailyLogs').once('value');
@@ -400,11 +399,9 @@
         
         let pointerDate;
         if (activeKeys.length > 0) {
-            // เริ่มต้นสแกนจากวันที่เก่าที่สุดที่มีข้อมูลในระบบเพื่อหาจุดตกหล่นทั้งหมด
             let firstParts = activeKeys[0].split('-');
             pointerDate = new Date(firstParts[2], firstParts[1]-1, firstParts[0]);
         } else {
-            // หากระบบว่างเปล่า ให้เริ่มสแกนตั้งแต่วันแรกของเดือนปัจจุบัน
             pointerDate = new Date(businessDateGlobal);
             pointerDate.setDate(1);
         }
@@ -416,7 +413,6 @@
         let updates = {};
         let needsUpdate = false;
 
-        // วนลูปเช็กวันต่อวันจนถึงเมื่อวานนี้ (จะไม่ยุ่งกับวันนี้เพื่อไม่ให้ข้อมูลทับซ้อน)
         while (pointerDate < targetToday) {
             let fillKey = pad(pointerDate.getDate()) + "-" + pad(pointerDate.getMonth() + 1) + "-" + pointerDate.getFullYear();
             if (!data[fillKey]) {
@@ -429,7 +425,6 @@
             pointerDate.setDate(pointerDate.getDate() + 1);
         }
 
-        // บันทึกวันที่ขาดหายไปทั้งหมดลงฐานข้อมูลในคำสั่งเดียว
         if (needsUpdate) {
             await db.ref('bornToBDailyLogs').update(updates);
         }
@@ -662,21 +657,12 @@
         db.ref('bornToBStock').update(updates);
     }
 
-    function getMondayOfDate(dateStr) {
-        let parts = dateStr.split('-');
-        let d = new Date(parts[2], parts[1]-1, parts[0]);
-        let day = d.getDay();
-        let diff = d.getDate() - day + (day == 0 ? -6 : 1);
-        let monday = new Date(d.setDate(diff));
-        const pad = (n) => n < 10 ? '0' + n : n;
-        return pad(monday.getDate()) + "-" + pad(monday.getMonth() + 1) + "-" + monday.getFullYear();
-    }
-
     function getLaoDayName(dObj) {
         const days = ["(ອາທິດ)", "(ຈັນ)", "(ອັງຄານ)", "(ພຸດ)", "(ພະຫັດ)", "(ສຸກ)", "(ເສົາ)"];
         return `<span style="font-size:12px; font-weight:normal; color:var(--text-muted); margin-left:4px;">${days[dObj.getDay()]}</span>`;
     }
 
+    // [New Code Fix v11.7] ปรับระบบแยกสัปดาห์ตามโครงสร้างปฏิทินจริง (เริ่มสัปดาห์ใหม่ทุกวันจันทร์)
     function loadDailyLogs() {
         const container = document.getElementById("dailyLogsContainer");
         
@@ -717,35 +703,61 @@
                 if (parts.length === 3) {
                     let myKey = parts[1] + "-" + parts[2];
                     if (myKey === currentMonthFilter) {
-                        let mondayStr = getMondayOfDate(dateKey);
-                        if (!weekGroups[mondayStr]) {
-                            weekGroups[mondayStr] = { dates: [], month: parseInt(parts[1]), year: parseInt(parts[2]) };
+                        let day = parseInt(parts[0]);
+                        let month = parseInt(parts[1]);
+                        let year = parseInt(parts[2]);
+
+                        // คำนวณหา True Calendar Week ของเดือนนั้น ๆ (ให้วันจันทร์เป็นวันตัดรอบสัปดาห์ใหม่)
+                        let firstDay = new Date(year, month - 1, 1);
+                        let firstDayOfWeek = firstDay.getDay(); // 0=อาทิตย์, 1=จันทร์...
+                        let adjFirstDay = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1; // ปรับให้จันทร์=0, อาทิตย์=6
+                        
+                        let weekNum = Math.ceil((day + adjFirstDay) / 7);
+                        let weekKey = `WEEK_${weekNum}`;
+
+                        if (!weekGroups[weekKey]) {
+                            weekGroups[weekKey] = { 
+                                dates: [], 
+                                weekNum: weekNum, 
+                                month: month, 
+                                year: year, 
+                                adjFirstDay: adjFirstDay 
+                            };
                         }
-                        weekGroups[mondayStr].dates.push(dateKey);
+                        weekGroups[weekKey].dates.push(dateKey);
                     }
                 }
             });
 
-            let sortedMondays = Object.keys(weekGroups).sort((a, b) => {
-                let pA = a.split('-'), pB = b.split('-');
-                return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]);
+            // เรียงลำดับจากสัปดาห์ล่าสุดลงไป (เก่าอยู่ล่าง ใหม่เนื้อ ๆ อยู่บน)
+            let sortedWeekKeys = Object.keys(weekGroups).sort((a, b) => {
+                return weekGroups[b].weekNum - weekGroups[a].weekNum;
             });
 
-            if (sortedMondays.length === 0) {
+            if (sortedWeekKeys.length === 0) {
                 weeksContainer.innerHTML = `<div style="color: var(--text-muted); font-size: 14px; padding: 5px 0;">ບໍ່ມີຂໍ້ມູນການເຄື່ອນໄຫວໃນສັບດານີ້</div>`;
                 return;
             }
 
-            sortedMondays.forEach(mondayStr => {
-                let group = weekGroups[mondayStr];
-                let monthNames = ["", "ມັງກອນ", "ກຸມພา", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມິຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"];
+            sortedWeekKeys.forEach(weekKey => {
+                let group = weekGroups[weekKey];
+                let monthNames = ["", "ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມິຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍา", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"];
                 
+                // คำนวณหาจุดเริ่มต้น-สิ้นสุดของสัปดาห์ปฏิทินจริงเพื่อไปแสดงที่ Header
+                let startDay = ((group.weekNum - 1) * 7) + 1 - group.adjFirstDay;
+                if (startDay < 1) startDay = 1; // บังคับไม่ให้ต่ำกว่าวันที่ 1 ของเดือน
+                
+                let daysInMonth = new Date(group.year, group.month, 0).getDate();
+                let endDay = (group.weekNum * 7) - group.adjFirstDay;
+                if (endDay > daysInMonth) endDay = daysInMonth; // บังคับไม่ให้เกินวันสิ้นเดือนจริง
+
                 let weekHtml = `
                     <div style="margin-bottom:12px; border:1px solid var(--border); border-radius:8px; padding:10px; background:#fafaf9;">
                         <div style="font-weight:700; color:var(--accent); margin-bottom:8px; font-size:13px; letter-spacing:0.3px;">
-                            📅 ສັບດາຂອງ ເດືອນ${monthNames[group.month]} ${group.year}
+                            📅 ສັບດາທີ ${group.weekNum} (ວັນທີ ${startDay} - ${endDay}) ເດືອນ${monthNames[group.month]} ${group.year}
                         </div>`;
                 
+                // เรียงวันที่ภายในสัปดาห์จากวันใหม่ไปเก่า
                 group.dates.sort((a, b) => {
                     let pA = a.split('-'), pB = b.split('-');
                     return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]);
