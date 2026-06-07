@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.4</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.5</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -303,7 +303,7 @@
             <thead>
                 <tr>
                     <th style="width: 38%;">ຊື່ວັດຖຸດິບ</th>
-                    <th style="text-align: center; width: 12%;">ລາຄາ/ໜ່ວຍ</th>
+                    <th style="text-align: center; width: 12%;">ລາຄา/ໜ່ວຍ</th>
                     <th style="text-align: center; width: 9%;">ໃນຄັງ</th>
                     <th style="text-align: center; width: 8%;">ຕື່ມ (+)</th>
                     <th style="text-align: center; width: 8%;">ໃຊ້ໄປ (-)</th>
@@ -386,6 +386,7 @@
         await fillMissingDaysInLog();
     }
 
+    // [Bug Fix v11.5] เปลี่ยนมาใช้ระบบสแกนตรวจสอบทุกวันตั้งแต่อดีตถึงเมื่อวาน ป้องกันช่องว่างวันที่หลุดหาย
     async function fillMissingDaysInLog() {
         if (!businessDateGlobal) return;
         const snapshot = await db.ref('bornToBDailyLogs').once('value');
@@ -397,26 +398,40 @@
             return new Date(pA[2], pA[1]-1, pA[0]) - new Date(pB[2], pB[1]-1, pB[0]);
         });
         
-        if (activeKeys.length === 0) return;
-        
-        let lastLoggedDateStr = activeKeys[activeKeys.length - 1];
-        let p = lastLoggedDateStr.split('-');
-        let pointerDate = new Date(p[2], p[1]-1, p[0]);
+        let pointerDate;
+        if (activeKeys.length > 0) {
+            // เริ่มต้นสแกนจากวันที่เก่าที่สุดที่มีข้อมูลในระบบเพื่อหาจุดตกหล่นทั้งหมด
+            let firstParts = activeKeys[0].split('-');
+            pointerDate = new Date(firstParts[2], firstParts[1]-1, firstParts[0]);
+        } else {
+            // หากระบบว่างเปล่า ให้เริ่มสแกนตั้งแต่วันแรกของเดือนปัจจุบัน
+            pointerDate = new Date(businessDateGlobal);
+            pointerDate.setDate(1);
+        }
+        pointerDate.setHours(0,0,0,0);
         
         let targetToday = new Date(businessDateGlobal);
         targetToday.setHours(0,0,0,0);
-        pointerDate.setHours(0,0,0,0);
 
-        pointerDate.setDate(pointerDate.getDate() + 1);
+        let updates = {};
+        let needsUpdate = false;
+
+        // วนลูปเช็กวันต่อวันจนถึงเมื่อวานนี้ (จะไม่ยุ่งกับวันนี้เพื่อไม่ให้ข้อมูลทับซ้อน)
         while (pointerDate < targetToday) {
             let fillKey = pad(pointerDate.getDate()) + "-" + pad(pointerDate.getMonth() + 1) + "-" + pointerDate.getFullYear();
             if (!data[fillKey]) {
-                await db.ref('bornToBDailyLogs/' + fillKey).set({
+                updates[fillKey] = {
                     total: 0,
                     details: "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິບ (ບໍ່ໄດ້ເຂົ້າສູ່ລະບົບ)"
-                });
+                };
+                needsUpdate = true;
             }
             pointerDate.setDate(pointerDate.getDate() + 1);
+        }
+
+        // บันทึกวันที่ขาดหายไปทั้งหมดลงฐานข้อมูลในคำสั่งเดียว
+        if (needsUpdate) {
+            await db.ref('bornToBDailyLogs').update(updates);
         }
     }
 
@@ -433,7 +448,6 @@
                     let item = data[key];
                     if (item.category) categories.add(item.category.trim());
                     
-                    // [Performance Fix] มัดรวมคำสั่งรีเซ็ตข้ามวัน เพื่อไม่ให้ฐานข้อมูลทำงานหนัก
                     if (item.lastLogDate && item.lastLogDate !== currentDayStr) {
                         let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
                         if (remaining < 0) remaining = 0;
@@ -621,7 +635,6 @@
                 details: itemsDetailsArray.length > 0 ? itemsDetailsArray.join(', ') : "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິບ (ພັກຜ່ອນ/ບໍ່ມີອໍເດີ)"
             };
             
-            // [Performance Fix] เช็กก่อนว่ามีอะไรเปลี่ยนไหม ค่อยเขียนลง DB ลดภาระวงจรลูปซ้ำซ้อน
             db.ref('bornToBDailyLogs/' + currentDayStr).once('value').then(snapshot => {
                 const currentData = snapshot.val();
                 if (!currentData || currentData.total !== logPayload.total || currentData.details !== logPayload.details) {
@@ -631,7 +644,6 @@
         }
     }
 
-    // [Sorting Fix] รื้อระบบสลับตำแหน่งใหม่ สลับแบบ Array แท้ๆ แก้บั๊กกดขึ้นลงไม่ได้
     function moveOrder(fbKey, direction) {
         let currentIdx = coffeeStock.findIndex(item => item.fbKey === fbKey);
         if (currentIdx === -1) return;
@@ -639,12 +651,10 @@
         let targetIdx = currentIdx + direction;
         if (targetIdx < 0 || targetIdx >= coffeeStock.length) return;
 
-        // สลับใน Array ทันที
         let temp = coffeeStock[currentIdx];
         coffeeStock[currentIdx] = coffeeStock[targetIdx];
         coffeeStock[targetIdx] = temp;
 
-        // ดันเลข Index ใหม่แบบ Batch ให้สมบูรณ์แบบ
         let updates = {};
         coffeeStock.forEach((item, idx) => {
             updates[`${item.fbKey}/indexOrder`] = idx;
@@ -728,7 +738,7 @@
 
             sortedMondays.forEach(mondayStr => {
                 let group = weekGroups[mondayStr];
-                let monthNames = ["", "ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມິຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"];
+                let monthNames = ["", "ມັງກອນ", "ກຸມພา", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມິຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"];
                 
                 let weekHtml = `
                     <div style="margin-bottom:12px; border:1px solid var(--border); border-radius:8px; padding:10px; background:#fafaf9;">
@@ -923,7 +933,6 @@
             return;
         }
 
-        // [Sorting Fix] ดึงค่าสูงสุดมาบวก 1 รับรองไม่ซ้ำ
         let maxOrder = -1;
         coffeeStock.forEach(item => { if((item.indexOrder||0) > maxOrder) maxOrder = item.indexOrder; });
         let nextOrder = maxOrder + 1;
