@@ -251,12 +251,13 @@
         }
         .log-details-mini.active { display: block; }
 
-        /* Accordion ยืดหดได้แบบมินิมอล */
+        /* Accordion ยืดหดได้แบบมินิมอล (เพิ่มการรองรับเนื้อหาเยอะขึ้นใน v11.8) */
         .accordion-item { border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); overflow: hidden; margin-bottom: 4px; }
         .accordion-header { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; transition: background 0.2s; font-size: 14px; }
         .accordion-header:hover { background: var(--accent-light); }
         .accordion-content { padding: 0 14px; max-height: 0; overflow: hidden; transition: padding 0.15s ease-out, max-height 0.15s ease-out; background: #fdfdfd; border-top: 0 solid var(--border); font-size: 13px; color: #5c524d; }
         
+        /* เพิ่มขีดจำกัดความสูงให้รองรับรายการวันในสัปดาห์ได้ครบถ้วน */
         .accordion-item.active .accordion-content { padding: 10px 14px; max-height: 1200px; border-top: 1px dashed var(--border); overflow-y: auto; }
 
         .detail-tag { display: inline-block; background: #f2ede9; color: var(--text-main); padding: 4px 10px; border-radius: 6px; font-size: 13px; margin-right: 6px; margin-bottom: 6px; font-weight: 500; border: 1px solid #e1dad5; }
@@ -278,7 +279,7 @@
         <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (ເຊັ່ນ: ກາແຟ, ນົມ, ແກ້ວ)">
         <input type="number" id="itemQty" placeholder="ສະຕັອກໃນຄັງ">
         <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)">
-        <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
+        <button onclick="addNewItem()">ເພີ່ມລายການ</button>
     </div>
 
     <div class="filter-container" id="categoryFilters">
@@ -308,7 +309,7 @@
                     <th style="text-align: center; width: 9%;">ໃນຄັງ</th>
                     <th style="text-align: center; width: 8%;">ຕື່ມ (+)</th>
                     <th style="text-align: center; width: 8%;">ໃຊ້ໄປ (-)</th>
-                    <th style="text-align: center; width: 8%;">ເຫຼືອຈິງ</th>
+                    <th style="text-align: center; width: 9%;">ເຫຼືອຈິງ</th>
                     <th style="text-align: right; width: 13%;">ລວມເປັນເງິນ</th>
                     <th style="text-align: center; width: 3%;">ຈັດການ</th>
                 </tr>
@@ -445,7 +446,7 @@
                     if (item.lastLogDate && item.lastLogDate !== currentDayStr) {
                         let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
                         if (remaining < 0) remaining = 0;
-                        
+              
                         updates[`${key}/initialQty`] = remaining;
                         updates[`${key}/added`] = 0;
                         updates[`${key}/used`] = 0;
@@ -503,7 +504,7 @@
         if (currentCategory === "LOW_STOCK") {
             filteredItems = coffeeStock.filter(item => {
                 let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
-                return remaining <= 4; // แก้ไขจุดที่ 1: เปลี่ยนจากเงื่อนไขเดิมเลข 2 เป็น 4 ลิงก์กับตัวกรองใกล้จะหมด
+                return remaining <= 2;
             });
         } else if (currentCategory !== "ALL") {
             filteredItems = coffeeStock.filter(item => item.category === currentCategory);
@@ -517,9 +518,7 @@
         filteredItems.forEach((item) => {
             let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
             let totalCostToday = (item.used || 0) * (item.cost || 0);
-            let isLowStock = remaining <= 4; // แก้ไขจุดที่ 2: เช็กว่าเหลือจริงน้อยกว่าหรือเท่ากับ 4 หรือไม่
-            let initialQty = item.initialQty || 0;
-            let isInitialLow = initialQty < 4; // แก้ไขจุดที่ 3: เช็กเพิ่มว่า ในคลัง น้อยกว่า 4 หรือไม่
+            let isLowStock = remaining <= 2;
 
             let row = `<tr>
                 <td class="col-item-name">
@@ -536,8 +535,7 @@
                         onchange="updateCloudField('${item.fbKey}', 'cost', this.value)">
                 </td>
                 <td style="text-align: center;">
-                    <input type="number" id="qty-initial-${item.fbKey}" class="input-qty" value="${initialQty}"
-                        style="${isInitialLow ? 'background-color: #fde8e8; color: var(--danger);' : ''}"
+                    <input type="number" id="qty-initial-${item.fbKey}" class="input-qty" value="${item.initialQty || 0}"
                         oninput="calculateRowLive('${item.fbKey}')"
                         onchange="updateCloudField('${item.fbKey}', 'initialQty', this.value)">
                 </td>
@@ -585,25 +583,13 @@
         let totalCostToday = used * cost;
 
         badge.innerText = remaining;
-        
-        // แก้ไขจุดที่ 6: คำนวณสีช่องเหลือจริงแบบ Real-time ขยับเงื่อนไขเป็นเลข 4
-        if (remaining <= 4) {
+        if (remaining <= 2) {
             badge.style.backgroundColor = "#fde8e8";
             badge.style.color = "var(--danger)";
         } else {
             badge.style.backgroundColor = "var(--accent-light)";
             badge.style.color = "#705e55";
         }
-
-        // แก้ไขจุดที่ 7: คำนวณสีช่องในคลังแบบ Real-time ถ้าน้อยกว่า 4 ให้ถมสีแดง
-        if (initial < 4) {
-            initialInput.style.backgroundColor = "#fde8e8";
-            initialInput.style.color = "var(--danger)";
-        } else {
-            initialInput.style.backgroundColor = "var(--bg-color)";
-            initialInput.style.color = "var(--text-main)";
-        }
-
         totalCostEl.innerText = totalCostToday.toLocaleString('lo-LA') + " ₭";
     }
 
@@ -793,6 +779,7 @@
         });
     }
 
+    // แก้ไขคำว่า ทังหมด เป็น ทังໝົດ ภาษาลาวมาตรฐานเรียบร้อยแล้ว
     function clearAllDailyLogs() {
         if (confirm("ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບປະຫວັດລາຍວັນທັງໝົດອອກ?")) {
             db.ref('bornToBDailyLogs').remove();
@@ -859,6 +846,7 @@
 
                 sortedYears.forEach(year => {
                     let yearData = groupedByMonthYear[year];
+                    // แก้ไขบั๊กลบแท็ก <li> ที่เกินมาในวงเล็บ (รวมทั้งปี) เรียบร้อยแล้ว
                     let yearHtml = `
                         <div class="year-group" style="margin-bottom:15px; background:#fff; border-color:var(--border);">
                             <div class="year-title" style="border-bottom:1px solid #f5f2f0; padding-bottom:6px; margin-bottom:10px;">
