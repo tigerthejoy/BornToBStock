@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.7</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.8</title>
     
+    <!-- ดึงฟอนต์ Phetsarath จาก Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath&display=swap" rel="stylesheet">
 
+    <!-- ดึงฐานข้อมูล Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
@@ -223,7 +225,7 @@
         .year-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 0; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .history-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
         
-        /* สไตล์กล่องประวัติมินิมอลแบบใหม่ */
+        /* สไตล์กล่องประวัติมินิมอล */
         .log-card-mini {
             background: #ffffff;
             border: 1px solid var(--border);
@@ -251,12 +253,14 @@
         }
         .log-details-mini.active { display: block; }
 
-        /* Accordion รายเดือนแบบมินิมอลสลิม */
+        /* Accordion ยืดหดได้แบบมินิมอล (เพิ่มการรองรับเนื้อหาเยอะขึ้นใน v11.8) */
         .accordion-item { border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); overflow: hidden; margin-bottom: 4px; }
-        .accordion-header { padding: 8px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; transition: background 0.2s; font-size: 14px; }
+        .accordion-header { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; transition: background 0.2s; font-size: 14px; }
         .accordion-header:hover { background: var(--accent-light); }
         .accordion-content { padding: 0 14px; max-height: 0; overflow: hidden; transition: padding 0.15s ease-out, max-height 0.15s ease-out; background: #fdfdfd; border-top: 0 solid var(--border); font-size: 13px; color: #5c524d; }
-        .accordion-item.active .accordion-content { padding: 10px 14px; max-height: 500px; border-top: 1px dashed var(--border); overflow-y: auto; }
+        
+        /* เพิ่มขีดจำกัดความสูงให้รองรับรายการวันในสัปดาห์ได้ครบถ้วน */
+        .accordion-item.active .accordion-content { padding: 10px 14px; max-height: 1200px; border-top: 1px dashed var(--border); overflow-y: auto; }
 
         .detail-tag { display: inline-block; background: #f2ede9; color: var(--text-main); padding: 4px 10px; border-radius: 6px; font-size: 13px; margin-right: 6px; margin-bottom: 6px; font-weight: 500; border: 1px solid #e1dad5; }
         .btn-clear-log { background-color: var(--danger); font-size: 12px; padding: 4px 10px; border-radius: 4px; color: white; border: none; cursor: pointer; font-family: 'Phetsarath', sans-serif; }
@@ -269,22 +273,25 @@
     <header>
         <h1>Born To B Cafe & Garden</h1>
         <p>🌿 ລະບົບຄວບຄຸມສະຕັອກ ແລະ ຄຳນວນຕົ້ນທຶນວັດຖຸດິບລາຍເດືອນ 🌿</p>
-        <div class="time-sync-badge" id="timeSyncStatus">🔄 ກຳລັງເຊື່ອມຕໍ່ເວລາສາກົນ...</div>
+        <div class="time-sync-badge" id="timeSyncStatus">🔄 ກຳລັງເຊື່ອມຕໍ່ເວລາ...</div>
     </header>
 
+    <!-- ฟอร์มเพิ่มวัตถุดิบ -->
     <div class="form-card">
         <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
-        <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (ເຊັ່ນ: ກาແຟ, ນົມ, ແກ້ວ)">
+        <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (ເຊັ່ນ: ກາແຟ, ນົມ, ແກ້ວ)">
         <input type="number" id="itemQty" placeholder="ສະຕັອກໃນຄັງ">
-        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)">
+        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວย (ກີບ)">
         <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
     </div>
 
+    <!-- ปุ่มตัวกรองหมวดหมู่สินค้า -->
     <div class="filter-container" id="categoryFilters">
         <button class="filter-btn active" onclick="filterCategory('ALL')">ທັງໝົດ</button>
         <button class="filter-btn" id="btnLowStockFilter" onclick="filterCategory('LOW_STOCK')" style="color: var(--danger); border-color: var(--danger);">⚠️ ໃກ້ຈະໝົດ</button>
     </div>
 
+    <!-- โซนแดชบอร์ดซ้ายขวา -->
     <div class="dashboard-grid">
         <div class="dashboard-card">
             <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ວ (ແຍກຕາມລາຍການ)</h3>
@@ -292,12 +299,13 @@
         </div>
         
         <div class="dashboard-card highlight">
-            <h3>📅 ສະຫຼຸບຕົ້ນທຶนວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
+            <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
             <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ</p>
         </div>
     </div>
 
+    <!-- ตารางหลัก -->
     <div class="table-container">
         <table>
             <thead>
@@ -316,15 +324,16 @@
         </table>
     </div>
 
+    <!-- โซนรวมประวัติย้อนหลังทั้งหมด -->
     <div class="history-section">
         <h3>📅 ສະຫຼຸບການເຄື່ອນໄຫວປະຈຳເດືອນ</h3>
         
-        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກແຍກຕາມສັບດາໃນເດືອນນີ້ (ກົດເພື່ອເບິ່ງລາຍລະອຽດ)</div>
+        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກແຍກຕາມສັບດາໃນເດືອນນີ້ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽด)</div>
         <div id="dailyLogsContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກສັບດານີ້</div>
         </div>
 
-        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄาລວມລາຍເດືອນ (ກົດເພື່ອເບິ່ງລາຍລະອຽດ)</div>
+        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄาລວມລາຍເດືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
         <div id="monthlyHistoryContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
         </div>
@@ -662,7 +671,7 @@
         return `<span style="font-size:12px; font-weight:normal; color:var(--text-muted); margin-left:4px;">${days[dObj.getDay()]}</span>`;
     }
 
-    // [New Code Fix v11.7] ปรับระบบแยกสัปดาห์ตามโครงสร้างปฏิทินจริง (เริ่มสัปดาห์ใหม่ทุกวันจันทร์)
+    // [New Fix Update v11.8] เปลี่ยนสัปดาห์ให้เป็น Accordion พับ-กางได้ ไม่รกหน้าจอ
     function loadDailyLogs() {
         const container = document.getElementById("dailyLogsContainer");
         
@@ -707,10 +716,9 @@
                         let month = parseInt(parts[1]);
                         let year = parseInt(parts[2]);
 
-                        // คำนวณหา True Calendar Week ของเดือนนั้น ๆ (ให้วันจันทร์เป็นวันตัดรอบสัปดาห์ใหม่)
                         let firstDay = new Date(year, month - 1, 1);
-                        let firstDayOfWeek = firstDay.getDay(); // 0=อาทิตย์, 1=จันทร์...
-                        let adjFirstDay = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1; // ปรับให้จันทร์=0, อาทิตย์=6
+                        let firstDayOfWeek = firstDay.getDay(); 
+                        let adjFirstDay = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1; 
                         
                         let weekNum = Math.ceil((day + adjFirstDay) / 7);
                         let weekKey = `WEEK_${weekNum}`;
@@ -729,35 +737,43 @@
                 }
             });
 
-            // เรียงลำดับจากสัปดาห์ล่าสุดลงไป (เก่าอยู่ล่าง ใหม่เนื้อ ๆ อยู่บน)
             let sortedWeekKeys = Object.keys(weekGroups).sort((a, b) => {
                 return weekGroups[b].weekNum - weekGroups[a].weekNum;
             });
 
             if (sortedWeekKeys.length === 0) {
-                weeksContainer.innerHTML = `<div style="color: var(--text-muted); font-size: 14px; padding: 5px 0;">ບໍ່ມີຂໍ້ມູນການເຄື່ອນໄຫວໃນສັບດານີ້</div>`;
+                weeksContainer.innerHTML = `<div style="color: var(--text-muted); font-size: 14px; padding: 5px 0;">ບໍ່ມີຂໍ້ມູນເຄື່ອນໄຫວ</div>`;
                 return;
             }
 
             sortedWeekKeys.forEach(weekKey => {
                 let group = weekGroups[weekKey];
-                let monthNames = ["", "ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມິຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍา", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"];
+                let monthNames = ["", "ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມິຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"];
                 
-                // คำนวณหาจุดเริ่มต้น-สิ้นสุดของสัปดาห์ปฏิทินจริงเพื่อไปแสดงที่ Header
                 let startDay = ((group.weekNum - 1) * 7) + 1 - group.adjFirstDay;
-                if (startDay < 1) startDay = 1; // บังคับไม่ให้ต่ำกว่าวันที่ 1 ของเดือน
+                if (startDay < 1) startDay = 1; 
                 
                 let daysInMonth = new Date(group.year, group.month, 0).getDate();
                 let endDay = (group.weekNum * 7) - group.adjFirstDay;
-                if (endDay > daysInMonth) endDay = daysInMonth; // บังคับไม่ให้เกินวันสิ้นเดือนจริง
+                if (endDay > daysInMonth) endDay = daysInMonth;
 
+                // คำนวณยอดเงินรวมของทั้งสัปดาห์นี้เพื่อเอาไปโชว์ตรงหัวข้อ Accordion
+                let weekTotal = 0;
+                group.dates.forEach(dKey => {
+                    let rec = data[dKey];
+                    let amt = typeof rec === 'object' ? (rec.total || 0) : rec;
+                    weekTotal += amt;
+                });
+
+                // สร้างโครงสร้างแบบ Accordion ไอเทม ย่อ-ขยายได้ เหมือนประวัติรายเดือน
                 let weekHtml = `
-                    <div style="margin-bottom:12px; border:1px solid var(--border); border-radius:8px; padding:10px; background:#fafaf9;">
-                        <div style="font-weight:700; color:var(--accent); margin-bottom:8px; font-size:13px; letter-spacing:0.3px;">
-                            📅 ສັບດາທີ ${group.weekNum} (ວັນທີ ${startDay} - ${endDay}) ເດືອນ${monthNames[group.month]} ${group.year}
-                        </div>`;
+                    <div class="accordion-item" style="margin-bottom: 6px;">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span style="font-weight:700; color:var(--accent);">📅 ສັບດາທີ ${group.weekNum} (ວັນທີ ${startDay} - ${endDay}) ເດືອນ${monthNames[group.month]} ${group.year}</span>
+                            <span style="font-weight:700; color:var(--text-main); font-size:14px;">${weekTotal.toLocaleString('lo-LA')} ₭</span>
+                        </div>
+                        <div class="accordion-content" style="background:#fafaf9;">`;
                 
-                // เรียงวันที่ภายในสัปดาห์จากวันใหม่ไปเก่า
                 group.dates.sort((a, b) => {
                     let pA = a.split('-'), pB = b.split('-');
                     return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]);
@@ -772,24 +788,25 @@
                     let dObj = new Date(parts[2], parts[1]-1, parts[0]);
                     let laoDay = getLaoDayName(dObj);
 
+                    // ใช้ event.stopPropagation() ป้องกันการกดยุบสัปดาห์เมื่อคลิกดูรายละเอียดของวันด้านใน
                     weekHtml += `
-                        <div class="log-card-mini" onclick="this.nextElementSibling.classList.toggle('active')">
+                        <div class="log-card-mini" onclick="event.stopPropagation(); this.nextElementSibling.classList.toggle('active')" style="margin-top: 5px; margin-bottom: 4px;">
                             <span><strong>${dateKey}</strong> ${laoDay}</span>
                             <span style="font-weight:700; color:${amount > 0 ? 'var(--danger)' : 'var(--text-muted)'}">${amount.toLocaleString('lo-LA')} ₭</span>
                         </div>
-                        <div class="log-details-mini">
+                        <div class="log-details-mini" onclick="event.stopPropagation();">
                             🌿 ${textDetails}
                         </div>`;
                 });
 
-                weekHtml += `</div>`;
+                weekHtml += `</div></div>`;
                 weeksContainer.innerHTML += weekHtml;
             });
         });
     }
 
     function clearAllDailyLogs() {
-        if (confirm("ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບປະຫວັດລາຍວັນທັງໝົດອອກ?")) {
+        if (confirm("ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບປະຫວັດລາຍວັນທังໝົດອອກ?")) {
             db.ref('bornToBDailyLogs').remove();
         }
     }
@@ -859,7 +876,7 @@
                     let yearHtml = `
                         <div class="year-group" style="margin-bottom:15px; background:#fff; border-color:var(--border);">
                             <div class="year-title" style="border-bottom:1px solid #f5f2f0; padding-bottom:6px; margin-bottom:10px;">
-                                <span style="font-weight:700; color:var(--accent); font-size:15px;">📂 ປີ ${year} <span style="font-size:12px; color:var(--gold); font-weight:normal; margin-left:8px;">(ລວມທັງປີ: ${yearData.yearTotal.toLocaleString('lo-LA')} ₭)</span></span>
+                                <span style="font-weight:700; color:var(--accent); font-size:15px;">📂 ປີ ${year} <span style="font-size:12px; color:var(--gold); font-weight:normal; margin-left:8px;">(<li>ລວມທັງປີ: ${yearData.yearTotal.toLocaleString('lo-LA')} ₭)</span></span>
                                 <button class="btn-clear-log" onclick="clearMonthlyLogByYear('${year}')">ລຶບປີ ${year}</button>
                             </div>
                             <div class="history-grid">`;
