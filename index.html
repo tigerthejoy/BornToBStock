@@ -3,14 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.9</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V12.0</title>
     
-    <!-- ดึงฟอนต์ Phetsarath จาก Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Phetsarath&display=swap" rel="stylesheet">
 
-    <!-- ดึงฐานข้อมูล Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
@@ -110,6 +108,7 @@
             font-size: 14px;
             font-family: 'Phetsarath', sans-serif;
             transition: all 0.2s;
+            user-select: none;
         }
         .filter-btn.active, .filter-btn:hover {
             background: var(--accent);
@@ -215,7 +214,7 @@
         .arrow-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 11px; padding: 1px 3px; line-height: 1; }
         .arrow-btn:hover { color: var(--accent); }
 
-        .badge-cat { display: inline-block; font-size: 11px; background: #f0ede9; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; margin-top: 4px; font-weight: normal; }
+        .badge-cat { display: inline-block; font-size: 11px; background: #f0ede9; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; margin-top: 4px; font-weight: normal; user-select: none; }
 
         /* โซนรวมประวัติ */
         .history-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-top: 20px; }
@@ -275,22 +274,19 @@
         <div class="time-sync-badge" id="timeSyncStatus">🔄 ກຳລังເຊື່ອມຕໍ່ເວລາ...</div>
     </header>
 
-    <!-- ฟอร์มเพิ่มวัตถุดิบ -->
     <div class="form-card">
         <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
         <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (ເຊັ່ນ: ກາແຟ, ນົມ, ແກ້ວ)">
         <input type="number" id="itemQty" placeholder="ສະຕັອກໃນຄັງ">
-        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)">
+        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວย (ກີບ)">
         <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
     </div>
 
-    <!-- ปุ่มตัวกรองหมวดหมู่สินค้า -->
     <div class="filter-container" id="categoryFilters">
         <button class="filter-btn active" onclick="filterCategory('ALL')">ທັງໝົດ</button>
         <button class="filter-btn" id="btnLowStockFilter" onclick="filterCategory('LOW_STOCK')" style="color: var(--danger); border-color: var(--danger);">⚠️ ໃກ້ຈະໝົດ</button>
     </div>
 
-    <!-- โซนแดชบอร์ดซ้ายขวา -->
     <div class="dashboard-grid">
         <div class="dashboard-card">
             <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ้ວ (ແຍກຕາມລາຍການ)</h3>
@@ -304,7 +300,6 @@
         </div>
     </div>
 
-    <!-- ตารางหลัก -->
     <div class="table-container">
         <table>
             <thead>
@@ -316,18 +311,17 @@
                     <th style="text-align: center; width: 8%;">ໃຊ້ໄປ (-)</th>
                     <th style="text-align: center; width: 9%;">ເຫຼືອຈິງ</th>
                     <th style="text-align: right; width: 13%;">ລວມເປັນເງິນ</th>
-                    <th style="text-align: center; width: 3%;">ຈັດกาນ</th>
+                    <th style="text-align: center; width: 3%;">ຈັດການ</th>
                 </tr>
             </thead>
             <tbody id="stockTableBody"></tbody>
         </table>
     </div>
 
-    <!-- โซนรวมประวัติย้อนหลังทั้งหมด -->
     <div class="history-section">
         <h3>📅 ສະຫຼຸບການເຄື່ອນໄຫວປະຈຳເດືອນ</h3>
         
-        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກແຍກຕາມສັບດາໃນເດືອນນີ້ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
+        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກແຍກຕາມສັບດາໃນເດືອນນີ້ (ຄລิกເພື່ອເບິ່ງລາຍລະອຽด)</div>
         <div id="dailyLogsContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກສັບດານີ້</div>
         </div>
@@ -478,12 +472,20 @@
         });
     }
 
+    // เรนเดอร์ปุ่มตัวกรองด้านบนพร้อมระบบดักจับการ ดับเบิ้ลคลิกเพื่อแก้ไขชื่อกลุ่ม
     function renderFilterTabs(categories) {
         const container = document.getElementById("categoryFilters");
         let html = `<button class="filter-btn ${currentCategory === 'ALL' ? 'active' : ''}" onclick="filterCategory('ALL')">ທັງໝົດ</button>`;
-        html += `<button class="filter-btn ${currentCategory === 'LOW_STOCK' ? 'low-stock-active' : ''}" onclick="filterCategory('LOW_STOCK')" style="color: var(--danger); border-color: var(--danger);">⚠️ ໃກ້ຈະໝົດ</button>`;
+        html += `<button class="filter-btn ${currentCategory === 'LOW_STOCK' ? 'low-stock-active' : ''}" id="btnLowStockFilter" onclick="filterCategory('LOW_STOCK')" style="color: var(--danger); border-color: var(--danger);">⚠️ ໃກ້ຈະໝົດ</button>`;
+        
         categories.forEach(cat => {
-            html += `<button class="filter-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterCategory('${cat}')">${cat}</button>`;
+            let escapedCat = cat.replace(/"/g, '&quot;');
+            html += `<button class="filter-btn ${currentCategory === cat ? 'active' : ''}" 
+                        data-cat="${escapedCat}" 
+                        onclick="filterCategory(this.getAttribute('data-cat'))" 
+                        ondblclick="editCategoryGlobally(this.getAttribute('data-cat'))" 
+                        title="ດັບເບິ້ລຄລິກເພື່ອແກ້ໄຂຊື່ໝວດໝູ່ນີ້ທັງໝົດ"
+                        style="cursor: pointer;">${cat}</button>`;
         });
         container.innerHTML = html;
     }
@@ -495,9 +497,11 @@
         buttons.forEach(btn => btn.classList.remove('active', 'low-stock-active'));
         
         buttons.forEach(btn => {
-            if (cat === 'LOW_STOCK' && btn.innerText.includes('ໃກ້ຈະໝົດ')) {
+            if (cat === 'LOW_STOCK' && btn.id === 'btnLowStockFilter') {
                 btn.classList.add('low-stock-active');
-            } else if (btn.getAttribute('onclick') === `filterCategory('${cat}')`) {
+            } else if (cat === 'ALL' && btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("'ALL'")) {
+                btn.classList.add('active');
+            } else if (btn.getAttribute('data-cat') === cat) {
                 btn.classList.add('active');
             }
         });
@@ -526,6 +530,7 @@
             let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
             let totalCostToday = (item.used || 0) * (item.cost || 0);
             let isLowStock = remaining <= 2;
+            let escapedCat = item.category ? item.category.replace(/"/g, '&quot;') : '';
 
             let row = `<tr>
                 <td class="col-item-name">
@@ -534,7 +539,11 @@
                         <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', 1)">▼</button>
                     </div>
                     <strong style="cursor: pointer;" ondblclick="editItemName('${item.fbKey}', this)" title="ດັບເບິ້ລຄລິກເພື່ອແກ້ໄຂຊື່">${item.name}</strong><br>
-                    ${item.category ? `<span class="badge-cat" style="cursor: pointer;" ondblclick="editItemCategory('${item.fbKey}', this)" title="ດັບເບິ້ລຄລิกເພື່ອແກ้ໄຂໝວດໝູ່">${item.category}</span>` : ''}
+                    ${item.category ? `<span class="badge-cat" style="cursor: pointer;" 
+                                        data-key="${item.fbKey}" 
+                                        data-cat="${escapedCat}" 
+                                        ondblclick="editItemCategorySingle(this.getAttribute('data-key'), this.getAttribute('data-cat'))" 
+                                        title="ດັບເບິ້ລຄລິກເພື່ອຍ້າຍໝວດໝູ່ສະເພາະລາຍການນີ້">${item.category}</span>` : ''}
                 </td>
                 <td style="text-align: center;">
                     <input type="number" id="qty-cost-${item.fbKey}" class="input-cost" value="${item.cost || 0}" min="0"
@@ -628,7 +637,7 @@
         if (currentDayStr && grandTodayCostTotal >= 0) {
             let logPayload = {
                 total: grandTodayCostTotal,
-                details: itemsDetailsArray.length > 0 ? itemsDetailsArray.join(', ') : "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິบ (ພັກຜ່ອນ/ບໍ່ມີອໍເດີ)"
+                details: itemsDetailsArray.length > 0 ? itemsDetailsArray.join(', ') : "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິບ (ພັກຜ່ອນ/ບໍ່ມີອໍເດີ)"
             };
             db.ref('bornToBDailyLogs/' + currentDayStr).once('value').then(snapshot => {
                 const currentData = snapshot.val();
@@ -685,10 +694,31 @@
         }
     }
 
-    // ฟังก์ชันดับเบิ้ลคลิกแก้ไขหมวดหมู่สินค้า
-    function editItemCategory(fbKey, element) {
-        let currentCat = element.innerText;
-        let newCat = prompt("ແກ້ໄຂໝວດໝູ່ (แก้ไขหมวดหมู่):", currentCat);
+    // กด 2 ทีที่ "ปุ่มตัวกรองด้านบน" เพื่อเปลี่ยนชื่อหมวดหมู่ทั้งระบบ (ทุกชิ้นที่เป็นหมวดหมู่นี้จะถูกเปลี่ยนตาม)
+    function editCategoryGlobally(oldCat) {
+        if (!oldCat) return;
+        let newCat = prompt(`ແກ້ໄຂຊື່ໝວດໝູ່ "${oldCat}" ທັງໝົດເປັນ:\n(แก้ไขชื่อหมวดหมู่ทั้งหมดนี้เป็น):`, oldCat);
+        if (newCat !== null && newCat.trim() !== "" && newCat.trim() !== oldCat.trim()) {
+            newCat = newCat.trim();
+            let updates = {};
+            coffeeStock.forEach(item => {
+                if (item.category && item.category.trim() === oldCat.trim()) {
+                    updates[`${item.fbKey}/category`] = newCat;
+                }
+            });
+            if (Object.keys(updates).length > 0) {
+                db.ref('bornToBStock').update(updates, (error) => {
+                    if(!error && currentCategory === oldCat) {
+                        currentCategory = newCat; // ย้ายหน้าตัวกรองไปตามชื่อใหม่
+                    }
+                });
+            }
+        }
+    }
+
+    // กด 2 ทีที่ "ป้ายสติกเกอร์สีเทาในตาราง" เพื่อเปลี่ยนหมวดหมู่เฉพาะสินค้าชิ้นนี้ชิ้นเดียว
+    function editItemCategorySingle(fbKey, currentCat) {
+        let newCat = prompt("ແກ້ໄຂໝວດໝູ່ສະເພາະລາຍການນີ້:\n(แก้ไขหมวดหมู่เฉพาะวัตถุดิบรายการนี้):", currentCat);
         if (newCat !== null && newCat.trim() !== "") {
             db.ref('bornToBStock/' + fbKey).update({
                 category: newCat.trim()
