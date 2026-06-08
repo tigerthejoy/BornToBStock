@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.8</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V12</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     
     <style>
-        /* --- Minimalist CSS Style --- */
         :root {
             --bg-color: #fcfbfa;
             --card-bg: #ffffff;
@@ -91,7 +90,6 @@
         }
         button:hover { opacity: 0.9; }
 
-        /* ปุ่ม Filter หมวดหมู่ */
         .filter-container {
             display: flex;
             gap: 8px;
@@ -120,7 +118,6 @@
             border-color: var(--danger);
         }
 
-        /* โซนแดชบอร์ดคู่กันซ้ายขวา */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -180,7 +177,6 @@
         }
         .avg-item:last-child { border-bottom: none; }
 
-        /* ตารางหลัก */
         .table-container {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -203,10 +199,42 @@
         td { padding: 14px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
 
         .col-item-name { min-width: 250px; word-break: break-word; }
-        .input-qty { width: 38px; text-align: center; padding: 6px 2px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; }
-        .input-cost { width: 85px; text-align: right; padding: 6px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; }
-        
-        .badge-total { background: var(--accent-light); color: #705e55; padding: 6px 8px; border-radius: 6px; font-weight: 700; display: inline-block; min-width: 25px; text-align: center; transition: all 0.15s ease; }
+
+        .input-qty {
+            width: 38px;
+            text-align: center;
+            padding: 6px 2px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: 'Phetsarath', sans-serif;
+        }
+
+        .input-cost {
+            width: 105px;
+            text-align: right;
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: 'Phetsarath', sans-serif;
+        }
+
+        .badge-total {
+            background: var(--accent-light);
+            color: #705e55;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            display: inline-block;
+            min-width: 25px;
+            text-align: center;
+            transition: all 0.15s ease;
+        }
+
+        .badge-total.low-initial {
+            background-color: #fde8e8 !important;
+            color: var(--danger) !important;
+        }
+
         .btn-delete { background: none; color: var(--danger); border: none; cursor: pointer; font-size: 14px; font-family: 'Phetsarath', sans-serif; }
         
         .order-arrows { display: inline-flex; flex-direction: column; margin-right: 8px; vertical-align: middle; }
@@ -215,7 +243,6 @@
 
         .badge-cat { display: inline-block; font-size: 11px; background: #f0ede9; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; margin-top: 4px; font-weight: normal; }
 
-        /* โซนรวมประวัติ */
         .history-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-top: 20px; }
         .history-section h3 { margin-top: 0; font-size: 18px; color: #4a3e3d; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
         
@@ -223,7 +250,6 @@
         .year-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 0; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
         .history-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
         
-        /* สไตล์กล่องประวัติมินิมอล */
         .log-card-mini {
             background: #ffffff;
             border: 1px solid var(--border);
@@ -251,7 +277,6 @@
         }
         .log-details-mini.active { display: block; }
 
-        /* Accordion ยืดหดได้แบบมินิมอล */
         .accordion-item { border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); overflow: hidden; margin-bottom: 4px; }
         .accordion-header { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; transition: background 0.2s; font-size: 14px; }
         .accordion-header:hover { background: var(--accent-light); }
@@ -352,6 +377,11 @@
     let currentDayStr = ""; 
     let currentMonthYearStr = ""; 
     let businessDateGlobal = null;
+
+    function formatNumber(num) {
+        if (!num && num !== 0) return "0";
+        return parseInt(num).toLocaleString('en-US');
+    }
 
     async function syncInternetTime() {
         try {
@@ -509,19 +539,26 @@
             filteredItems = coffeeStock.filter(item => item.category === currentCategory);
         }
 
-        if(filteredItems.length === 0) {
+        if (filteredItems.length === 0) {
             tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບໃນໝວດນີ້</td></tr>`;
             return;
         }
 
         filteredItems.forEach((item) => {
-            let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
+            let initialQty = item.initialQty || 0;
+            let remaining = initialQty + (item.added || 0) - (item.used || 0);
             let totalCostToday = (item.used || 0) * (item.cost || 0);
-            let isLowStock = remaining <= 2;
+            let isLowRemaining = remaining <= 2;
+            let isLowInitial = initialQty <= 4;
 
-            // ป้องกันการตัด String และบั๊กเครื่องหมายคำพูดในชื่อ
             let escapedName = (item.name || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
             let escapedCat = (item.category || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+            let remainingBgColor = isLowRemaining ? '#fde8e8' : 'var(--accent-light)';
+            let remainingTextColor = isLowRemaining ? 'var(--danger)' : '#705e55';
+
+            let initialBgColor = isLowInitial ? '#fde8e8' : 'var(--accent-light)';
+            let initialTextColor = isLowInitial ? 'var(--danger)' : '#705e55';
 
             let row = `<tr>
                 <td class="col-item-name">
@@ -538,9 +575,12 @@
                         onchange="updateCloudField('${item.fbKey}', 'cost', this.value)">
                 </td>
                 <td style="text-align: center;">
-                    <input type="number" id="qty-initial-${item.fbKey}" class="input-qty" value="${item.initialQty || 0}"
-                        oninput="calculateRowLive('${item.fbKey}')"
-                        onchange="updateCloudField('${item.fbKey}', 'initialQty', this.value)">
+                    <span id="badge-initial-${item.fbKey}" class="badge-total"
+                        style="background-color:${initialBgColor}; color:${initialTextColor}; cursor:pointer;"
+                        title="ຄລິກເພື່ອແກ້ໄຂ"
+                        onclick="editInitialQty('${item.fbKey}', ${initialQty})">
+                        ${formatNumber(initialQty)}
+                    </span>
                 </td>
                 <td style="text-align: center;">
                     <input type="number" id="qty-added-${item.fbKey}" class="input-qty" value="${item.added || 0}" style="color: var(--success);"
@@ -553,7 +593,8 @@
                         onchange="updateCloudField('${item.fbKey}', 'used', this.value)">
                 </td>
                 <td style="text-align: center;">
-                    <span id="badge-remaining-${item.fbKey}" class="badge-total" style="${isLowStock ? 'background-color: #fde8e8; color: var(--danger);' : 'background-color: var(--accent-light); color: #705e55;'}">
+                    <span id="badge-remaining-${item.fbKey}" class="badge-total"
+                        style="background-color:${remainingBgColor}; color:${remainingTextColor};">
                         ${remaining}
                     </span>
                 </td>
@@ -568,30 +609,39 @@
         });
     }
 
+    function editInitialQty(fbKey, currentVal) {
+        const newVal = prompt("ແກ້ໄຂຈຳນວນໃນຄັງ:", currentVal);
+        if (newVal !== null && newVal.trim() !== "") {
+            let intVal = parseInt(newVal) || 0;
+            if (intVal < 0) intVal = 0;
+            db.ref('bornToBStock/' + fbKey).update({ initialQty: intVal, lastLogDate: currentDayStr });
+        }
+    }
+
     function calculateRowLive(fbKey) {
         const costInput = document.getElementById(`qty-cost-${fbKey}`);
-        const initialInput = document.getElementById(`qty-initial-${fbKey}`);
         const addedInput = document.getElementById(`qty-added-${fbKey}`);
         const usedInput = document.getElementById(`qty-used-${fbKey}`);
-        const badge = document.getElementById(`badge-remaining-${fbKey}`);
+        const badgeInitial = document.getElementById(`badge-initial-${fbKey}`);
+        const badgeRemaining = document.getElementById(`badge-remaining-${fbKey}`);
         const totalCostEl = document.getElementById(`total-cost-${fbKey}`);
 
-        if (!badge || !totalCostEl) return;
+        if (!badgeRemaining || !totalCostEl) return;
 
         let cost = parseInt(costInput.value) || 0;
-        let initial = parseInt(initialInput.value) || 0;
+        let initial = badgeInitial ? parseInt((badgeInitial.innerText || "0").replace(/,/g, "")) || 0 : 0;
         let added = parseInt(addedInput.value) || 0;
         let used = parseInt(usedInput.value) || 0;
         let remaining = initial + added - used;
         let totalCostToday = used * cost;
 
-        badge.innerText = remaining;
+        badgeRemaining.innerText = remaining;
         if (remaining <= 2) {
-            badge.style.backgroundColor = "#fde8e8";
-            badge.style.color = "var(--danger)";
+            badgeRemaining.style.backgroundColor = "#fde8e8";
+            badgeRemaining.style.color = "var(--danger)";
         } else {
-            badge.style.backgroundColor = "var(--accent-light)";
-            badge.style.color = "#705e55";
+            badgeRemaining.style.backgroundColor = "var(--accent-light)";
+            badgeRemaining.style.color = "#705e55";
         }
         totalCostEl.innerText = totalCostToday.toLocaleString('lo-LA') + " ₭";
     }
@@ -793,13 +843,13 @@
         
         db.ref('bornToBDailyLogs').on('value', (snapshot) => {
             const data = snapshot.val();
-            if(data) {
+            if (data) {
                 container.innerHTML = "";
                 let groupedByMonthYear = {};
 
                 Object.keys(data).forEach(dateKey => {
                     let parts = dateKey.split('-');
-                    if(parts.length === 3) {
+                    if (parts.length === 3) {
                         let month = parts[1];
                         let year = parts[2];  
                         
@@ -818,19 +868,19 @@
                         
                         if (textDetails && textDetails !== "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິບ (ບໍ່ໄດ້ເຂົ້າສູ່ລະບົບ)" && textDetails !== "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິບ (ພັກຜ່ອນ/ບໍ່ມີອໍເດີ)") {
                             textDetails.split(', ').forEach(itemStr => {
-                                if(itemStr) {
+                                if (itemStr) {
                                     let match = itemStr.match(/^(.+?)\s*\((\d+)\)$/);
-                                    if(match) {
+                                    if (match) {
                                         let name = match[1].trim();
                                         let qty = parseInt(match[2]) || 0;
-                                        if(!groupedByMonthYear[year].months[month].itemsSummary[name]) {
+                                        if (!groupedByMonthYear[year].months[month].itemsSummary[name]) {
                                             groupedByMonthYear[year].months[month].itemsSummary[name] = 0;
                                         }
                                         groupedByMonthYear[year].months[month].itemsSummary[name] += qty;
                                     } else {
                                         let nameClean = itemStr.replace(/\(.*?\)/g, "").trim();
-                                        if(nameClean && nameClean !== "ບໍ່ມີລາຍລະອຽດວັດຖຸດິບ") {
-                                            if(!groupedByMonthYear[year].months[month].itemsSummary[nameClean]) {
+                                        if (nameClean && nameClean !== "ບໍ່ມີລາຍລະອຽດວັດຖຸດິບ") {
+                                            if (!groupedByMonthYear[year].months[month].itemsSummary[nameClean]) {
                                                 groupedByMonthYear[year].months[month].itemsSummary[nameClean] = 0;
                                             }
                                         }
@@ -840,6 +890,7 @@
                         }
                     }
                 });
+
                 let sortedYears = Object.keys(groupedByMonthYear).sort((a, b) => b - a);
                 if (sortedYears.length === 0) {
                     container.innerHTML = `<div style="color:var(--text-muted); font-size:14px; text-align:center; padding:10px 0;">📥 ບໍ່ມີຂໍ້ມູນປະຫວັດເດືອນຍ້ອນຫຼັງ</div>`;
@@ -862,7 +913,7 @@
                         let itemKeys = Object.keys(monthData.itemsSummary);
                         let tagsHtml = "";
                         
-                        if(itemKeys.length > 0) {
+                        if (itemKeys.length > 0) {
                             tagsHtml = itemKeys.map(name => {
                                 let totalQty = monthData.itemsSummary[name];
                                 return `<span class="detail-tag">🌿 ${name} ${totalQty > 0 ? `(${totalQty})` : ''}</span>`;
@@ -925,7 +976,6 @@
         });
     }
 
-    // ฟังก์ชัน Double Click เพื่อแก้ไขชื่อวัตถุดิบ
     function editItemName(fbKey, oldName) {
         const newName = prompt("ແກ້ໄຂຊື່ວັດຖຸດິບ:", oldName);
         if (newName !== null && newName.trim() !== "") {
@@ -933,7 +983,6 @@
         }
     }
 
-    // ฟังก์ชัน Double Click เพื่อแก้ไขหมวดหมู่
     function editItemCategory(fbKey, oldCat) {
         const newCat = prompt("ແກ້ໄຂໝວດໝູ່:", oldCat);
         if (newCat !== null) {
@@ -952,7 +1001,7 @@
         }
 
         let maxOrder = -1;
-        coffeeStock.forEach(item => { if((item.indexOrder||0) > maxOrder) maxOrder = item.indexOrder; });
+        coffeeStock.forEach(item => { if ((item.indexOrder || 0) > maxOrder) maxOrder = item.indexOrder; });
         let nextOrder = maxOrder + 1;
         let newItem = {
             name: nameInput.value,
@@ -972,7 +1021,7 @@
     }
 
     function deleteFromCloud(fbKey) {
-        if(confirm("ເຈົ້າຕ້ອງການລຶບລາຍການນີ້ອອກຈາກລະບົບແທ້ບໍ່?")) {
+        if (confirm("ເຈົ້າຕ້ອງການລຶບລາຍການນີ້ອອກຈາກລະບົບແທ້ບໍ່?")) {
             db.ref('bornToBStock/' + fbKey).remove();
         }
     }
