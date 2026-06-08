@@ -27,396 +27,982 @@
         }
 
         body {
-            font-family: 'Phetsarath', sans-serif;
+            font-family: 'Phetsarath', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
         }
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
+        .container { width: 100%; max-width: 1200px; }
+        header { margin-bottom: 32px; text-align: center; }
+        header h1 { font-size: 30px; font-weight: 700; margin-bottom: 8px; color: #4a3e3d; }
+        header p { color: var(--text-muted); font-size: 16px; margin: 0; }
+
+        .time-sync-badge {
+            display: inline-block;
+            background: #eef7ed;
+            color: var(--success);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-top: 10px;
+            border: 1px solid #d0ebd0;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            color: var(--accent);
-            margin-bottom: 5px;
-        }
-
-        .card {
+        .form-card {
             background: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 24px;
-            box-shadow: 0 4px 16px rgba(139, 115, 101, 0.05);
-            margin-bottom: 24px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        input, select {
+            background: var(--bg-color);
             border: 1px solid var(--border);
-        }
-
-        .form-group {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        input, select, button {
-            font-family: 'Phetsarath', sans-serif;
+            border-radius: 6px;
             padding: 10px 14px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            font-size: 14px;
+            font-size: 15px;
+            font-family: 'Phetsarath', sans-serif;
+            color: var(--text-main);
             outline: none;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--accent);
+            flex: 1;
+            min-width: 150px;
         }
 
         button {
             background-color: var(--accent);
             color: white;
             border: none;
+            border-radius: 6px;
+            padding: 10px 18px;
+            font-size: 15px;
+            font-family: 'Phetsarath', sans-serif;
             cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
+            transition: opacity 0.2s;
         }
+        button:hover { opacity: 0.9; }
 
-        button:hover {
-            background-color: #766155;
+        .filter-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
         }
-
-        button.btn-danger {
-            background-color: var(--danger);
-        }
-
-        button.btn-danger:hover {
-            background-color: #c26363;
-        }
-
-        button.btn-move {
-            background-color: var(--accent-light);
-            color: var(--text-main);
-            padding: 4px 8px;
-            font-size: 12px;
-        }
-
-        button.btn-move:hover {
-            background-color: var(--border);
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
+        .filter-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
             font-size: 14px;
+            font-family: 'Phetsarath', sans-serif;
+            transition: all 0.2s;
+        }
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        .filter-btn.low-stock-active {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
         }
 
-        th, td {
-            padding: 12px 14px;
-            border-bottom: 1px solid var(--border);
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
         }
 
-        th {
-            background-color: var(--accent-light);
-            color: var(--accent);
-            font-weight: bold;
+        .dashboard-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
         }
 
-        tr:hover {
-            background-color: #faf9f8;
+        .analytics-scroll-box {
+            max-height: 180px;
+            overflow-y: auto;
+            padding-right: 5px;
         }
 
-        .text-right {
-            text-align: right;
-        }
-
-        .text-center {
+        .dashboard-card.highlight {
+            background: #faf7f4;
+            border-color: var(--gold);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             text-align: center;
         }
 
-        .badge {
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
-            background-color: var(--accent-light);
+        .dashboard-card h3 {
+            margin-top: 0;
+            margin-bottom: 14px;
+            font-size: 18px;
+            font-weight: 700;
             color: var(--accent);
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 8px;
+            width: 100%;
         }
 
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+        .grand-total-price {
+            font-size: 34px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 10px 0;
         }
 
-        .summary-box {
+        .avg-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            padding: 8px 0;
+            border-bottom: 1px solid #fbfaf9;
+        }
+        .avg-item:last-child { border-bottom: none; }
+
+        .table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            margin-bottom: 30px;
+        }
+
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 15px; table-layout: auto; }
+        thead th { 
+            background-color: #faf8f5;
+            color: var(--text-muted); 
+            font-weight: 700; 
+            padding: 16px 12px; 
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        
+        td { padding: 14px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+
+        .col-item-name { min-width: 250px; word-break: break-word; }
+
+        .input-qty {
+            width: 38px;
+            text-align: center;
+            padding: 6px 2px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: 'Phetsarath', sans-serif;
+        }
+
+        .input-cost {
+            width: 105px;
+            text-align: right;
+            padding: 6px 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-family: 'Phetsarath', sans-serif;
+        }
+
+        .badge-total {
             background: var(--accent-light);
-            padding: 16px;
-            border-radius: 10px;
-            border-left: 4px solid var(--accent);
+            color: #705e55;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            display: inline-block;
+            min-width: 25px;
+            text-align: center;
+            transition: all 0.15s ease;
         }
 
-        .summary-title {
+        .badge-total.low-initial {
+            background-color: #fde8e8 !important;
+            color: var(--danger) !important;
+        }
+
+        .btn-delete { background: none; color: var(--danger); border: none; cursor: pointer; font-size: 14px; font-family: 'Phetsarath', sans-serif; }
+        
+        .order-arrows { display: inline-flex; flex-direction: column; margin-right: 8px; vertical-align: middle; }
+        .arrow-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 11px; padding: 1px 3px; line-height: 1; }
+        .arrow-btn:hover { color: var(--accent); }
+
+        .badge-cat { display: inline-block; font-size: 11px; background: #f0ede9; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; margin-top: 4px; font-weight: normal; }
+
+        .history-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-top: 20px; }
+        .history-section h3 { margin-top: 0; font-size: 18px; color: #4a3e3d; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
+        
+        .year-group { margin-bottom: 20px; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fbfbfb; }
+        .year-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 0; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .history-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
+        
+        .log-card-mini {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 8px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .log-card-mini:hover { background: var(--accent-light); }
+        
+        .log-details-mini {
+            padding: 6px 14px 10px 14px;
             font-size: 13px;
             color: var(--text-muted);
-            margin-bottom: 6px;
+            display: none;
+            border-bottom: 1px dashed var(--border);
+            background: #fafafa;
+            border-radius: 0 0 6px 6px;
+            margin-top: -4px;
+            margin-bottom: 4px;
         }
+        .log-details-mini.active { display: block; }
 
-        .summary-value {
-            font-size: 22px;
-            font-weight: bold;
-            color: var(--accent);
-        }
+        .accordion-item { border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); overflow: hidden; margin-bottom: 4px; }
+        .accordion-header { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; transition: background 0.2s; font-size: 14px; }
+        .accordion-header:hover { background: var(--accent-light); }
+        .accordion-content { padding: 0 14px; max-height: 0; overflow: hidden; transition: padding 0.15s ease-out, max-height 0.15s ease-out; background: #fdfdfd; border-top: 0 solid var(--border); font-size: 13px; color: #5c524d; }
+        
+        .accordion-item.active .accordion-content { padding: 10px 14px; max-height: 1200px; border-top: 1px dashed var(--border); overflow-y: auto; }
 
-        .flex-actions {
-            display: flex;
-            gap: 5px;
-            justify-content: center;
-        }
+        .detail-tag { display: inline-block; background: #f2ede9; color: var(--text-main); padding: 4px 10px; border-radius: 6px; font-size: 13px; margin-right: 6px; margin-bottom: 6px; font-weight: 500; border: 1px solid #e1dad5; }
+        .btn-clear-log { background-color: var(--danger); font-size: 12px; padding: 4px 10px; border-radius: 4px; color: white; border: none; cursor: pointer; font-family: 'Phetsarath', sans-serif; }
+        .sub-history-title { font-size: 15px; font-weight: 700; color: var(--accent); margin-top: 25px; margin-bottom: 10px; padding-left: 5px; border-left: 3px solid var(--accent); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
+    <header>
         <h1>Born To B Cafe & Garden</h1>
-        <p style="color: var(--text-muted); margin: 0;">Cost & Stock Super Pro V12</p>
+        <p>🌿 ລະບົບຄວບຄຸມສະຕັອກ ແລະ ຄຳນວນຕົ້ນທຶນວັດຖຸດິບລາຍເດືອນ 🌿</p>
+        <div class="time-sync-badge" id="timeSyncStatus">🔄 ກຳລັງເຊື່ອມຕໍ່ເວລາ...</div>
+    </header>
+
+    <div class="form-card">
+        <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
+        <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (ເຊັ່ນ: ກາແຟ, ນົມ, ແກ້ວ)">
+        <input type="number" id="itemQty" placeholder="ສະຕັອກໃນຄັງ">
+        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)">
+        <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
     </div>
 
-    <div class="card">
-        <h3 style="margin-top: 0; color: var(--accent);">ເພີ່ມວັດຖຸດິບໃໝ່</h3>
-        <div class="form-group">
-            <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບ">
-            <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (ປ່ຽນແປງໄດ້)">
-            <input type="number" id="itemQty" placeholder="ຈຳນວນເລີ່ມຕົ້ນ">
-            <input type="number" id="itemCost" placeholder="ລາຄາຕໍ່ໜ່ວຍ">
-            <button onclick="addNewItem()">+ ເພີ່ມລາຍການ</button>
+    <div class="filter-container" id="categoryFilters">
+        <button class="filter-btn active" onclick="filterCategory('ALL')">ທັງໝົດ</button>
+        <button class="filter-btn" id="btnLowStockFilter" onclick="filterCategory('LOW_STOCK')" style="color: var(--danger); border-color: var(--danger);">⚠️ ໃກ້ຈະໝົດ</button>
+    </div>
+
+    <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ວ (ແຍກຕາມລາຍການ)</h3>
+            <div class="analytics-scroll-box" id="analyticsList"></div>
+        </div>
+        
+        <div class="dashboard-card highlight">
+            <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
+            <div class="grand-total-price" id="grandMonthlyCost">0</div>
+            <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ</p>
         </div>
     </div>
 
-    <div class="card">
-        <h3 style="margin-top: 0; color: var(--accent);">ຕາຕະລາງວັດຖຸດິບ</h3>
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th class="text-center" width="50">ລຳດັບ</th>
-                        <th>ຊື່ວັດຖຸດິບ</th>
-                        <th>ໝວດໝູ່</th>
-                        <th class="text-right">ຍົກມາ</th>
-                        <th class="text-right">ເພີ່ມ</th>
-                        <th class="text-right">ໃຊ້ໄປ</th>
-                        <th class="text-right">ຄົງເຫຼືອ</th>
-                        <th class="text-right">ລາຄາ/ໜ່ວຍ</th>
-                        <th class="text-right">ລວມມູນຄ່າຄົງເຫຼືອ</th>
-                        <th class="text-center" width="160">ຈັດການລຳດັບ</th>
-                        <th class="text-center" width="100">ລຶບ</th>
-                    </tr>
-                </thead>
-                <tbody id="stockTableBody">
-                    </tbody>
-            </table>
-        </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 38%;">ຊື່ວັດຖຸດິບ</th>
+                    <th style="text-align: center; width: 12%;">ລາຄາ/ໜ່ວຍ</th>
+                    <th style="text-align: center; width: 9%;">ໃນຄັງ</th>
+                    <th style="text-align: center; width: 8%;">ຕື່ມ (+)</th>
+                    <th style="text-align: center; width: 8%;">ໃຊ້ໄປ (-)</th>
+                    <th style="text-align: center; width: 9%;">ເຫຼືອຈິງ</th>
+                    <th style="text-align: right; width: 13%;">ລວມເປັນເງິນ</th>
+                    <th style="text-align: center; width: 3%;">ຈັດການ</th>
+                </tr>
+            </thead>
+            <tbody id="stockTableBody"></tbody>
+        </table>
     </div>
 
-    <div class="card">
-        <h3 style="margin-top: 0; color: var(--accent);">ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ວ (ແຍກຕາມລາຍການ)</h3>
-        <p style="font-size: 12px; color: var(--text-muted); margin-top: -10px; margin-bottom: 15px;">* ລະບົບຈະຈັດລຽງລາຍການທີ່ມີມູນຄ່າການໃຊ້ຈ່າຍສູງສຸດໄວ້ທາງເທິງສຸດໂດຍອັດຕະໂນມັດ</p>
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th width="80" class="text-center">ອັນດັບມູນຄ່າ</th>
-                        <th>ຊື່ວັດຖຸດິບ</th>
-                        <th class="text-right">ຈຳນວນທີ່ໃຊ້</th>
-                        <th class="text-right">ລາຄາ/ໜ່ວຍ</th>
-                        <th class="text-right" style="color: var(--danger);">ລວມລາຄາທີ່ໃຊ້ໄປ</th>
-                    </tr>
-                </thead>
-                <tbody id="usageSummaryBody">
-                    </tbody>
-            </table>
+    <div class="history-section">
+        <h3>📅 ສະຫຼຸບການເຄື່ອນໄຫວປະຈຳເດືອນ</h3>
+        
+        <div class="sub-history-title">📋 ປະຫວັດບັນທຶກແຍກຕາມສັບດາໃນເດືອນນີ້ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
+        <div id="dailyLogsContainer">
+            <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກສັບດານີ້</div>
         </div>
 
-        <div class="summary-grid">
-            <div class="summary-box">
-                <div class="summary-title">ມູນຄ່າຄົງເຫຼືອທັງໝົດໃນສາງ</div>
-                <div class="summary-value" id="totalStockValue">0 ລີບ</div>
-            </div>
-            <div class="summary-box" style="border-left-color: var(--danger);">
-                <div class="summary-title">ຕົ້ນທຶນວັດຖຸດິບທີ່ໃຊ້ໄປທັງໝົດ</div>
-                <div class="summary-value" id="totalUsedValue" style="color: var(--danger);">0 ກີບ</div>
-            </div>
+        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເດືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
+        <div id="monthlyHistoryContainer">
+            <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
         </div>
     </div>
 </div>
 
 <script>
-    // ตั้งค่า Firebase (กรุณาใช้ Config ของคุณเองที่นี่แทนอันเดิมได้เลยครับ)
     const firebaseConfig = {
-        databaseURL: "https://borntobcafe-default-rtdb.firebaseio.com/" 
+        apiKey: "AIzaSyBA69yzHf-BlMhYKySCDlP68zFFkysgpcA",
+        authDomain: "borntobstock.firebaseapp.com",
+        databaseURL: "https://borntobstock-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "borntobstock",
+        storageBucket: "borntobstock.firebasestorage.app",
+        messagingSenderId: "430313262770",
+        appId: "1:430313262770:web:e7f89dff073ce5cb82c3ab",
+        measurementId: "G-75YH6THEDQ"
     };
     
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     let coffeeStock = [];
-    let currentDayStr = new Date().toISOString().slice(0, 10);
+    let currentCategory = "ALL";
+    let currentDayStr = ""; 
+    let currentMonthYearStr = ""; 
+    let businessDateGlobal = null;
 
-    // ดึงข้อมูลหลักจาก Firebase
-    db.ref('bornToBStock').on('value', (snapshot) => {
-        const data = snapshot.val();
-        coffeeStock = [];
-        if (data) {
-            for (let key in data) {
-                coffeeStock.push({ fbKey: key, ...data[key] });
-            }
-            // จัดเรียงตามลำดับ indexOrder ของตารางหลัก
-            coffeeStock.sort((a, b) => (a.indexOrder || 0) - (b.indexOrder || 0));
+    function formatNumber(num) {
+        if (!num && num !== 0) return "0";
+        return parseInt(num).toLocaleString('en-US');
+    }
+
+    async function syncInternetTime() {
+        try {
+            const response = await fetch('https://worldtimeapi.org/api/timezone/Asia/Vientiane');
+            const data = await response.json();
+            const internetDate = new Date(data.datetime);
+            await calculateBusinessDate(internetDate, "🌐 ເຊື່ອມຕໍ່ເວລາສຳເລັດ");
+        } catch (error) {
+            const localDate = new Date();
+            await calculateBusinessDate(localDate, "🟡 ໃຊ້ເວລາຈາກເຄື່ອງ");
         }
-        renderAllData();
-    });
-
-    // ฟังก์ชันจัดฟอร์แมตตัวเลขหลักพัน
-    function formatNum(num) {
-        return Number(num || 0).toLocaleString();
-    }
-
-    // ฟังก์ชันหลักในการสั่งเรนเดอร์เนื้อหาทั้งหมด
-    function renderAllData() {
-        renderMainTable();
-        renderUsageSummaryTable();
-        calculateTotals();
-    }
-
-    // 1. เรนเดอร์ตารางวัตถุดิบหลัก
-    function renderMainTable() {
-        const tbody = document.getElementById("stockTableBody");
-        tbody.innerHTML = "";
-
-        coffeeStock.forEach((item, index) => {
-            const remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
-            const totalVal = remaining * (item.cost || 0);
-
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td class="text-center">${index + 1}</td>
-                <td><b style="color: var(--accent);">${item.name}</b></td>
-                <td><span class="badge" onclick="editCategory('${item.fbKey}', '${item.category}')" style="cursor:pointer;">${item.category || 'ທົ່ວໄປ'}</span></td>
-                <td class="text-right"><input type="number" value="${item.initialQty || 0}" style="width:70px; text-align:right;" onchange="updateField('${item.fbKey}', 'initialQty', this.value)"></td>
-                <td class="text-right"><input type="number" value="${item.added || 0}" style="width:70px; text-align:right;" onchange="updateField('${item.fbKey}', 'added', this.value)"></td>
-                <td class="text-right"><input type="number" value="${item.used || 0}" style="width:70px; text-align:right; border-color: var(--danger);" onchange="updateField('${item.fbKey}', 'used', this.value)"></td>
-                <td class="text-right"><b>${formatNum(remaining)}</b></td>
-                <td class="text-right"><input type="number" value="${item.cost || 0}" style="width:90px; text-align:right; font-weight:bold; color:var(--gold);" onchange="updateField('${item.fbKey}', 'cost', this.value)"></td>
-                <td class="text-right" style="color: var(--accent); font-weight:bold;">${formatNum(totalVal)}</td>
-                <td class="text-center">
-                    <div class="flex-actions">
-                        <button class="btn-move" onclick="moveItem(${index}, -1)">▲ ຂຶ້ນ</button>
-                        <button class="btn-move" onclick="moveItem(${index}, 1)">▼ ລົງ</button>
-                    </div>
-                </td>
-                <td class="text-center">
-                    <button class="btn-danger" style="padding: 4px 10px; font-size:12px;" onclick="deleteItem('${item.fbKey}')">ລຶບ</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-    }
-
-    // 2. เรนเดอร์ตารางสรุปมูนค่าใช้งาน โดยแยกเป็นอิสระและเรียงลำดับจากมากไปน้อยอัตโนมัติ
-    function renderUsageSummaryTable() {
-        const summaryBody = document.getElementById("usageSummaryBody");
-        summaryBody.innerHTML = "";
-
-        // ทำการคัดลอก Array ออกมาเพื่อทำการ Sort เรียงตามราคาใช้ไปรวม (มากสุด -> น้อยสุด) 
-        // โดยไม่ส่งผลกระทบต่อตำแหน่งแถวและการจัดเรียงในตารางหลัก
-        const sortedStock = [...coffeeStock].sort((a, b) => {
-            const costA = (a.used || 0) * (a.cost || 0);
-            const costB = (b.used || 0) * (b.cost || 0);
-            return costB - costA; // เรียงจากมากไปหาน้อย
-        });
-
-        sortedStock.forEach((item, index) => {
-            const usedCost = (item.used || 0) * (item.cost || 0);
-            
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-                <td class="text-center" style="font-weight:bold; color: var(--gold);">#${index + 1}</td>
-                <td><b>${item.name}</b> <span style="font-size:11px; color:var(--text-muted);">(${item.category || 'ທົ່ວໄປ'})</span></td>
-                <td class="text-right">${formatNum(item.used)}</td>
-                <td class="text-right">${formatNum(item.cost)}</td>
-                <td class="text-right" style="font-weight:bold; color:var(--danger);">${formatNum(usedCost)}</td>
-            `;
-            summaryBody.appendChild(tr);
-        });
-    }
-
-    // 3. คำนวณผลรวมแถบด้านล่างสุด
-    function calculateTotals() {
-        let totalStock = 0;
-        let totalUsed = 0;
-
-        coffeeStock.forEach(item => {
-            const remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
-            totalStock += remaining * (item.cost || 0);
-            totalUsed += (item.used || 0) * (item.cost || 0);
-        });
-
-        document.getElementById("totalStockValue").innerText = formatNum(totalStock) + " ກີບ";
-        document.getElementById("totalUsedValue").innerText = formatNum(totalUsed) + " ກີບ";
-    }
-
-    // อัปเดตข้อมูลรายช่องแบบ Realtime ลง Firebase
-    function updateField(fbKey, field, val) {
-        let numericVal = parseInt(val);
-        if (isNaN(numericVal)) numericVal = 0;
         
-        const updateData = {};
-        updateData[field] = numericVal;
-        updateData['lastLogDate'] = currentDayStr;
-
-        db.ref('bornToBStock/' + fbKey).update(updateData);
+        listenToStockData();
+        loadDailyLogs();
+        loadMonthlyHistory();
     }
 
-    // แก้ไขหมวดหมู่
-    function editCategory(fbKey, oldCat) {
-        const newCat = prompt("ປ່ຽນແປງໝວດໝູ່:", oldCat);
+    async function calculateBusinessDate(dateObj, statusText) {
+        const pad = (n) => n < 10 ? '0' + n : n;
+        let hour = dateObj.getHours();
+        
+        let bDate = new Date(dateObj);
+        if (hour < 8) {
+            bDate.setDate(bDate.getDate() - 1);
+        }
+        businessDateGlobal = bDate;
+        currentDayStr = pad(bDate.getDate()) + "-" + pad(bDate.getMonth() + 1) + "-" + bDate.getFullYear();
+        currentMonthYearStr = pad(bDate.getMonth() + 1) + "-" + bDate.getFullYear(); 
+        
+        document.getElementById("timeSyncStatus").innerHTML = `${statusText} (${currentDayStr} ເວລາ ${pad(hour)}:00)`;
+        
+        await fillMissingDaysInLog();
+    }
+
+    async function fillMissingDaysInLog() {
+        if (!businessDateGlobal) return;
+        const snapshot = await db.ref('bornToBDailyLogs').once('value');
+        const data = snapshot.val() || {};
+        
+        const pad = (n) => n < 10 ? '0' + n : n;
+        let activeKeys = Object.keys(data).sort((a,b) => {
+            let pA = a.split('-'), pB = b.split('-');
+            return new Date(pA[2], pA[1]-1, pA[0]) - new Date(pB[2], pB[1]-1, pB[0]);
+        });
+        let pointerDate;
+        if (activeKeys.length > 0) {
+            let firstParts = activeKeys[0].split('-');
+            pointerDate = new Date(firstParts[2], firstParts[1]-1, firstParts[0]);
+        } else {
+            pointerDate = new Date(businessDateGlobal);
+            pointerDate.setDate(1);
+        }
+        pointerDate.setHours(0,0,0,0);
+        
+        let targetToday = new Date(businessDateGlobal);
+        targetToday.setHours(0,0,0,0);
+
+        let updates = {};
+        let needsUpdate = false;
+
+        while (pointerDate < targetToday) {
+            let fillKey = pad(pointerDate.getDate()) + "-" + pad(pointerDate.getMonth() + 1) + "-" + pointerDate.getFullYear();
+            if (!data[fillKey]) {
+                updates[fillKey] = {
+                    total: 0,
+                    details: "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິບ (ບໍ່ໄດ້ເຂົ້າສູ່ລະບົບ)"
+                };
+                needsUpdate = true;
+            }
+            pointerDate.setDate(pointerDate.getDate() + 1);
+        }
+
+        if (needsUpdate) {
+            await db.ref('bornToBDailyLogs').update(updates);
+        }
+    }
+
+    function listenToStockData() {
+        db.ref('bornToBStock').on('value', (snapshot) => {
+            const data = snapshot.val();
+            coffeeStock = [];
+            let categories = new Set();
+            let updates = {};
+            let needsUpdate = false;
+
+            if (data) {
+                Object.keys(data).forEach(key => {
+                    let item = data[key];
+                    if (item.category) categories.add(item.category.trim());
+                    
+                    if (item.lastLogDate && item.lastLogDate !== currentDayStr) {
+                        let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
+                        if (remaining < 0) remaining = 0;
+                        
+                        updates[`${key}/initialQty`] = remaining;
+                        updates[`${key}/added`] = 0;
+                        updates[`${key}/used`] = 0;
+                        updates[`${key}/lastLogDate`] = currentDayStr;
+                        item.initialQty = remaining;
+                        item.added = 0;
+                        item.used = 0;
+                        item.lastLogDate = currentDayStr;
+                    }
+                    coffeeStock.push({ fbKey: key, ...item });
+                });
+            }
+
+            if (needsUpdate) {
+                db.ref('bornToBStock').update(updates);
+            }
+
+            coffeeStock.sort((a, b) => (a.indexOrder || 0) - (b.indexOrder || 0));
+            renderFilterTabs(categories);
+            renderTable();
+            renderAnalyticsAndCosts(); 
+        });
+    }
+
+    function renderFilterTabs(categories) {
+        const container = document.getElementById("categoryFilters");
+        let html = `<button class="filter-btn ${currentCategory === 'ALL' ? 'active' : ''}" onclick="filterCategory('ALL')">ທັງໝົດ</button>`;
+        html += `<button class="filter-btn ${currentCategory === 'LOW_STOCK' ? 'low-stock-active' : ''}" onclick="filterCategory('LOW_STOCK')" style="color: var(--danger); border-color: var(--danger);">⚠️ ໃກ້ຈະໝົດ</button>`;
+        categories.forEach(cat => {
+            html += `<button class="filter-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterCategory('${cat}')">${cat}</button>`;
+        });
+        container.innerHTML = html;
+    }
+
+    function filterCategory(cat) {
+        currentCategory = cat;
+        renderTable();
+        const buttons = document.querySelectorAll('.filter-btn');
+        buttons.forEach(btn => btn.classList.remove('active', 'low-stock-active'));
+        
+        buttons.forEach(btn => {
+            if (cat === 'LOW_STOCK' && btn.innerText.includes('ໃກ້ຈະໝົດ')) {
+                btn.classList.add('low-stock-active');
+            } else if (btn.getAttribute('onclick') === `filterCategory('${cat}')`) {
+                btn.classList.add('active');
+            }
+        });
+    }
+
+    function renderTable() {
+        const tableBody = document.getElementById("stockTableBody");
+        tableBody.innerHTML = "";
+        let filteredItems = coffeeStock;
+        
+        if (currentCategory === "LOW_STOCK") {
+            filteredItems = coffeeStock.filter(item => {
+                let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
+                return remaining <= 2;
+            });
+        } else if (currentCategory !== "ALL") {
+            filteredItems = coffeeStock.filter(item => item.category === currentCategory);
+        }
+
+        if (filteredItems.length === 0) {
+            tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບໃນໝວດນີ້</td></tr>`;
+            return;
+        }
+
+        filteredItems.forEach((item) => {
+            let initialQty = item.initialQty || 0;
+            let remaining = initialQty + (item.added || 0) - (item.used || 0);
+            let totalCostToday = (item.used || 0) * (item.cost || 0);
+            let isLowRemaining = remaining <= 2;
+            let isLowInitial = initialQty <= 4;
+
+            let escapedName = (item.name || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+            let escapedCat = (item.category || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
+            let remainingBgColor = isLowRemaining ? '#fde8e8' : 'var(--accent-light)';
+            let remainingTextColor = isLowRemaining ? 'var(--danger)' : '#705e55';
+
+            let initialBgColor = isLowInitial ? '#fde8e8' : 'var(--accent-light)';
+            let initialTextColor = isLowInitial ? 'var(--danger)' : '#705e55';
+
+            let row = `<tr>
+                <td class="col-item-name">
+                    <div class="order-arrows">
+                        <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', -1)">▲</button>
+                        <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', 1)">▼</button>
+                    </div>
+                    <strong ondblclick="editItemName('${item.fbKey}', '${escapedName}')" style="cursor: pointer;" title="ດັບເບິ້ລຄລິກເພື່ອແກ້ໄຂ">${item.name}</strong><br>
+                    <span class="badge-cat" ondblclick="editItemCategory('${item.fbKey}', '${escapedCat}')" style="cursor: pointer;" title="DoubleClickເພື່ອແກ້ໄຂ">${item.category || 'ທົ່ວໄປ'}</span>
+                </td>
+                <td style="text-align: center;">
+                    <input type="number" id="qty-cost-${item.fbKey}" class="input-cost" value="${item.cost || 0}" min="0"
+                        oninput="calculateRowLive('${item.fbKey}')"
+                        onchange="updateCloudField('${item.fbKey}', 'cost', this.value)">
+                </td>
+                <td style="text-align: center;">
+                    <span id="badge-initial-${item.fbKey}" class="badge-total"
+                        style="background-color:${initialBgColor}; color:${initialTextColor}; cursor:pointer;"
+                        title="ຄລິກເພື່ອແກ້ໄຂ"
+                        onclick="editInitialQty('${item.fbKey}', ${initialQty})">
+                        ${formatNumber(initialQty)}
+                    </span>
+                </td>
+                <td style="text-align: center;">
+                    <input type="number" id="qty-added-${item.fbKey}" class="input-qty" value="${item.added || 0}" style="color: var(--success);"
+                        oninput="calculateRowLive('${item.fbKey}')"
+                        onchange="updateCloudField('${item.fbKey}', 'added', this.value)">
+                </td>
+                <td style="text-align: center;">
+                    <input type="number" id="qty-used-${item.fbKey}" class="input-qty" value="${item.used || 0}" style="color: var(--danger);"
+                        oninput="calculateRowLive('${item.fbKey}')"
+                        onchange="updateCloudField('${item.fbKey}', 'used', this.value)">
+                </td>
+                <td style="text-align: center;">
+                    <span id="badge-remaining-${item.fbKey}" class="badge-total"
+                        style="background-color:${remainingBgColor}; color:${remainingTextColor};">
+                        ${remaining}
+                    </span>
+                </td>
+                <td id="total-cost-${item.fbKey}" style="text-align: right; font-weight: 700; white-space: nowrap;">
+                    ${totalCostToday.toLocaleString('lo-LA')} ₭
+                </td>
+                <td style="text-align: center;">
+                    <button class="btn-delete" onclick="deleteFromCloud('${item.fbKey}')">ລຶບ</button>
+                </td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    function editInitialQty(fbKey, currentVal) {
+        const newVal = prompt("ແກ້ໄຂຈຳນວນໃນຄັງ:", currentVal);
+        if (newVal !== null && newVal.trim() !== "") {
+            let intVal = parseInt(newVal) || 0;
+            if (intVal < 0) intVal = 0;
+            db.ref('bornToBStock/' + fbKey).update({ initialQty: intVal, lastLogDate: currentDayStr });
+        }
+    }
+
+    function calculateRowLive(fbKey) {
+        const costInput = document.getElementById(`qty-cost-${fbKey}`);
+        const addedInput = document.getElementById(`qty-added-${fbKey}`);
+        const usedInput = document.getElementById(`qty-used-${fbKey}`);
+        const badgeInitial = document.getElementById(`badge-initial-${fbKey}`);
+        const badgeRemaining = document.getElementById(`badge-remaining-${fbKey}`);
+        const totalCostEl = document.getElementById(`total-cost-${fbKey}`);
+
+        if (!badgeRemaining || !totalCostEl) return;
+
+        let cost = parseInt(costInput.value) || 0;
+        let initial = badgeInitial ? parseInt((badgeInitial.innerText || "0").replace(/,/g, "")) || 0 : 0;
+        let added = parseInt(addedInput.value) || 0;
+        let used = parseInt(usedInput.value) || 0;
+        let remaining = initial + added - used;
+        let totalCostToday = used * cost;
+
+        badgeRemaining.innerText = remaining;
+        if (remaining <= 2) {
+            badgeRemaining.style.backgroundColor = "#fde8e8";
+            badgeRemaining.style.color = "var(--danger)";
+        } else {
+            badgeRemaining.style.backgroundColor = "var(--accent-light)";
+            badgeRemaining.style.color = "#705e55";
+        }
+        totalCostEl.innerText = totalCostToday.toLocaleString('lo-LA') + " ₭";
+    }
+
+    function renderAnalyticsAndCosts() {
+        const analyticsList = document.getElementById("analyticsList");
+        analyticsList.innerHTML = "";
+        
+        let grandTodayCostTotal = 0; 
+        let itemsDetailsArray = [];
+        coffeeStock.forEach(item => {
+            let usedToday = item.used || 0;
+            let itemCost = item.cost || 0;
+            let totalTodayCost = usedToday * itemCost; 
+            grandTodayCostTotal += totalTodayCost;
+
+            if (usedToday > 0) {
+                itemsDetailsArray.push(`${item.name} (${usedToday})`);
+                analyticsList.innerHTML += `
+                    <div class="avg-item">
+                        <span>☕ <strong>${item.name}</strong> <span style="font-size: 13px; color: var(--text-muted); margin-left: 5px;">(ໃຊ້: ${usedToday})</span></span>
+                        <span>ລວມ: <strong style="color:var(--danger);">${totalTodayCost.toLocaleString('lo-LA')} ₭</strong></span>
+                    </div>`;
+            }
+        });
+        if (analyticsList.innerHTML === "") {
+            analyticsList.innerHTML = `<div style="color:var(--text-muted); font-size:14px;">ຍັງບໍ່ມີການນຳໃຊ້ວັດຖຸດິບໃນມື້ນີ້</div>`;
+        }
+        
+        if (currentDayStr && grandTodayCostTotal >= 0) {
+            let logPayload = {
+                total: grandTodayCostTotal,
+                details: itemsDetailsArray.length > 0 ? itemsDetailsArray.join(', ') : "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິບ (ພັກຜ່ອນ/ບໍ່ມີອໍເດີ)"
+            };
+            db.ref('bornToBDailyLogs/' + currentDayStr).once('value').then(snapshot => {
+                const currentData = snapshot.val();
+                if (!currentData || currentData.total !== logPayload.total || currentData.details !== logPayload.details) {
+                    db.ref('bornToBDailyLogs/' + currentDayStr).set(logPayload);
+                }
+            });
+        }
+    }
+
+    function moveOrder(fbKey, direction) {
+        let currentIdx = coffeeStock.findIndex(item => item.fbKey === fbKey);
+        if (currentIdx === -1) return;
+        
+        let targetIdx = currentIdx + direction;
+        if (targetIdx < 0 || targetIdx >= coffeeStock.length) return;
+        let temp = coffeeStock[currentIdx];
+        coffeeStock[currentIdx] = coffeeStock[targetIdx];
+        coffeeStock[targetIdx] = temp;
+
+        let updates = {};
+        coffeeStock.forEach((item, idx) => {
+            updates[`${item.fbKey}/indexOrder`] = idx;
+        });
+        db.ref('bornToBStock').update(updates);
+    }
+
+    function getLaoDayName(dObj) {
+        const days = ["(ອາທິດ)", "(ຈັນ)", "(ອັງຄານ)", "(ພຸດ)", "(ພະຫັດ)", "(ສຸກ)", "(ເສົາ)"];
+        return `<span style="font-size:12px; font-weight:normal; color:var(--text-muted); margin-left:4px;">${days[dObj.getDay()]}</span>`;
+    }
+
+    function loadDailyLogs() {
+        const container = document.getElementById("dailyLogsContainer");
+        db.ref('bornToBDailyLogs').on('value', (snapshot) => {
+            const data = snapshot.val() || {};
+            if (!businessDateGlobal) return;
+            
+            let currentMonthTotalCost = 0;
+            Object.keys(data).forEach(dateKey => {
+                if (dateKey.endsWith("-" + currentMonthYearStr)) {
+                    let record = data[dateKey];
+                    let amount = typeof record === 'object' ? (record.total || 0) : record;
+                    currentMonthTotalCost += amount;
+                }
+            });
+            document.getElementById("grandMonthlyCost").innerText = currentMonthTotalCost.toLocaleString('lo-LA');
+
+            container.innerHTML = `
+                <div class="year-group" style="border:none; background:none; padding:0; margin-bottom:10px;">
+                    <div class="year-title" style="margin-bottom:10px;">
+                        <span style="font-weight:700; color:var(--text-main); font-size:14px;">📋 ລາຍການບັນທຶກປະຈຳສັບດາ</span>
+                        <button class="btn-clear-log" onclick="clearAllDailyLogs()">ລຶບປະຫວັດລາຍວັນ</button>
+                    </div>
+                    <div id="weeklyLogWeeksContainer"></div>
+                </div>`;
+            const weeksContainer = document.getElementById("weeklyLogWeeksContainer");
+            
+            let bMonth = businessDateGlobal.getMonth() + 1;
+            let bYear = businessDateGlobal.getFullYear();
+            const pad = (n) => n < 10 ? '0' + n : n;
+            let currentMonthFilter = pad(bMonth) + "-" + bYear;
+
+            let weekGroups = {};
+            Object.keys(data).forEach(dateKey => {
+                let parts = dateKey.split('-');
+                if (parts.length === 3) {
+                    let myKey = parts[1] + "-" + parts[2];
+                    if (myKey === currentMonthFilter) {
+                        let day = parseInt(parts[0]);
+                        let month = parseInt(parts[1]);
+                        let year = parseInt(parts[2]);
+
+                        let firstDay = new Date(year, month - 1, 1);
+                        let firstDayOfWeek = firstDay.getDay(); 
+                        let adjFirstDay = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1; 
+                        
+                        let weekNum = Math.ceil((day + adjFirstDay) / 7);
+                        let weekKey = `WEEK_${weekNum}`;
+
+                        if (!weekGroups[weekKey]) {
+                            weekGroups[weekKey] = { 
+                                dates: [], 
+                                weekNum: weekNum, 
+                                month: month, 
+                                year: year, 
+                                adjFirstDay: adjFirstDay 
+                            };
+                        }
+                        weekGroups[weekKey].dates.push(dateKey);
+                    }
+                }
+            });
+            let sortedWeekKeys = Object.keys(weekGroups).sort((a, b) => {
+                return weekGroups[b].weekNum - weekGroups[a].weekNum;
+            });
+            if (sortedWeekKeys.length === 0) {
+                weeksContainer.innerHTML = `<div style="color: var(--text-muted); font-size: 14px; padding: 5px 0;">ບໍ່ມີຂໍ້ມູນເຄື່ອນໄຫວ</div>`;
+                return;
+            }
+
+            sortedWeekKeys.forEach(weekKey => {
+                let group = weekGroups[weekKey];
+                let monthNames = ["", "ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມิຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"];
+                
+                let startDay = ((group.weekNum - 1) * 7) + 1 - group.adjFirstDay;
+                if (startDay < 1) startDay = 1; 
+                
+                let daysInMonth = new Date(group.year, group.month, 0).getDate();
+                let endDay = (group.weekNum * 7) - group.adjFirstDay;
+                if (endDay > daysInMonth) endDay = daysInMonth;
+
+                let weekTotal = 0;
+                group.dates.forEach(dKey => {
+                    let rec = data[dKey];
+                    let amt = typeof rec === 'object' ? (rec.total || 0) : rec;
+                    weekTotal += amt;
+                });
+
+                let weekHtml = `
+                    <div class="accordion-item" style="margin-bottom: 6px;">
+                        <div class="accordion-header" onclick="toggleAccordion(this)">
+                            <span style="font-weight:700; color:var(--accent);">📅 ສັບດາທີ ${group.weekNum} (ວັນທີ ${startDay} - ${endDay}) ເດືອນ${monthNames[group.month]} ${group.year}</span>
+                            <span style="font-weight:700; color:var(--text-main); font-size:14px;">${weekTotal.toLocaleString('lo-LA')} ₭</span>
+                        </div>
+                        <div class="accordion-content" style="background:#fafaf9;">`;
+                
+                group.dates.sort((a, b) => {
+                    let pA = a.split('-'), pB = b.split('-');
+                    return new Date(pB[2], pB[1]-1, pB[0]) - new Date(pA[2], pA[1]-1, pA[0]);
+                });
+
+                group.dates.forEach(dateKey => {
+                    let record = data[dateKey];
+                    let amount = typeof record === 'object' ? (record.total || 0) : record;
+                    let textDetails = typeof record === 'object' && record.details ? record.details : "ບໍ່ມີລາຍລະອຽດວັດຖຸດິບ";
+                    
+                    let parts = dateKey.split('-');
+                    let dObj = new Date(parts[2], parts[1]-1, parts[0]);
+                    let laoDay = getLaoDayName(dObj);
+
+                    weekHtml += `
+                        <div class="log-card-mini" onclick="event.stopPropagation(); this.nextElementSibling.classList.toggle('active')" style="margin-top: 5px; margin-bottom: 4px;">
+                            <span><strong>${dateKey}</strong> ${laoDay}</span>
+                            <span style="font-weight:700; color:${amount > 0 ? 'var(--danger)' : 'var(--text-muted)'}">${amount.toLocaleString('lo-LA')} ₭</span>
+                        </div>
+                        <div class="log-details-mini" onclick="event.stopPropagation();">
+                            🌿 ${textDetails}
+                        </div>`;
+                });
+
+                weekHtml += `</div></div>`;
+                weeksContainer.innerHTML += weekHtml;
+            });
+        });
+    }
+
+    function clearAllDailyLogs() {
+        if (confirm("ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບປະຫວັດລາຍວັນທັງໝົດອອກ?")) {
+            db.ref('bornToBDailyLogs').remove();
+        }
+    }
+
+    function loadMonthlyHistory() {
+        const container = document.getElementById("monthlyHistoryContainer");
+        
+        db.ref('bornToBDailyLogs').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                container.innerHTML = "";
+                let groupedByMonthYear = {};
+
+                Object.keys(data).forEach(dateKey => {
+                    let parts = dateKey.split('-');
+                    if (parts.length === 3) {
+                        let month = parts[1];
+                        let year = parts[2];  
+                        
+                        let record = data[dateKey];
+                        let amount = typeof record === 'object' ? (record.total || 0) : record;
+                        let textDetails = typeof record === 'object' && record.details ? record.details : "";
+                        if (!groupedByMonthYear[year]) {
+                            groupedByMonthYear[year] = { months: {}, yearTotal: 0 };
+                        }
+                        if (!groupedByMonthYear[year].months[month]) {
+                            groupedByMonthYear[year].months[month] = { total: 0, itemsSummary: {} };
+                        }
+                        
+                        groupedByMonthYear[year].months[month].total += amount;
+                        groupedByMonthYear[year].yearTotal += amount;
+                        
+                        if (textDetails && textDetails !== "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິບ (ບໍ່ໄດ້ເຂົ້າສູ່ລະບົບ)" && textDetails !== "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິບ (ພັກຜ່ອນ/ບໍ່ມີອໍເດີ)") {
+                            textDetails.split(', ').forEach(itemStr => {
+                                if (itemStr) {
+                                    let match = itemStr.match(/^(.+?)\s*\((\d+)\)$/);
+                                    if (match) {
+                                        let name = match[1].trim();
+                                        let qty = parseInt(match[2]) || 0;
+                                        if (!groupedByMonthYear[year].months[month].itemsSummary[name]) {
+                                            groupedByMonthYear[year].months[month].itemsSummary[name] = 0;
+                                        }
+                                        groupedByMonthYear[year].months[month].itemsSummary[name] += qty;
+                                    } else {
+                                        let nameClean = itemStr.replace(/\(.*?\)/g, "").trim();
+                                        if (nameClean && nameClean !== "ບໍ່ມີລາຍລະອຽດວັດຖຸດິບ") {
+                                            if (!groupedByMonthYear[year].months[month].itemsSummary[nameClean]) {
+                                                groupedByMonthYear[year].months[month].itemsSummary[nameClean] = 0;
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
+                let sortedYears = Object.keys(groupedByMonthYear).sort((a, b) => b - a);
+                if (sortedYears.length === 0) {
+                    container.innerHTML = `<div style="color:var(--text-muted); font-size:14px; text-align:center; padding:10px 0;">📥 ບໍ່ມີຂໍ້ມູນປະຫວັດເດືອນຍ້ອນຫຼັງ</div>`;
+                    return;
+                }
+
+                sortedYears.forEach(year => {
+                    let yearData = groupedByMonthYear[year];
+                    let yearHtml = `
+                        <div class="year-group" style="margin-bottom:15px; background:#fff; border-color:var(--border);">
+                            <div class="year-title" style="border-bottom:1px solid #f5f2f0; padding-bottom:6px; margin-bottom:10px;">
+                                <span style="font-weight:700; color:var(--accent); font-size:15px;">📂 ປີ ${year} <span style="font-size:12px; color:var(--gold); font-weight:normal; margin-left:8px;">(ລວມທັງປີ: ${yearData.yearTotal.toLocaleString('lo-LA')} ₭)</span></span>
+                                <button class="btn-clear-log" onclick="clearMonthlyLogByYear('${year}')">ລຶບປີ ${year}</button>
+                            </div>
+                            <div class="history-grid">`;
+                    
+                    let sortedMonths = Object.keys(yearData.months).sort((a, b) => b - a);
+                    sortedMonths.forEach(month => {
+                        let monthData = yearData.months[month];
+                        let itemKeys = Object.keys(monthData.itemsSummary);
+                        let tagsHtml = "";
+                        
+                        if (itemKeys.length > 0) {
+                            tagsHtml = itemKeys.map(name => {
+                                let totalQty = monthData.itemsSummary[name];
+                                return `<span class="detail-tag">🌿 ${name} ${totalQty > 0 ? `(${totalQty})` : ''}</span>`;
+                            }).join('');
+                        } else {
+                            tagsHtml = `<span style="color:var(--text-muted); font-size:13px;">ບໍ່ມີການເຄື່ອນໄຫວວັດຖຸດິບໃນເດືອນນີ້</span>`;
+                        }
+                        
+                        yearHtml += `
+                            <div class="accordion-item">
+                                <div class="accordion-header" onclick="toggleAccordion(this)">
+                                    <span style="font-weight:700; color:var(--text-muted);">▼ ເດືອນ ${month}</span>
+                                    <span style="font-weight:700; color:var(--text-main);">${monthData.total.toLocaleString('lo-LA')} ₭</span>
+                                </div>
+                                <div class="accordion-content">
+                                    <div style="font-weight:700; margin-bottom:6px; font-size:12px; color:var(--text-muted);">ຍອດລວມວັດຖຸດິບທີ່ໃຊ້ໄປໃນເດືອນນີ້:</div>
+                                    <div>${tagsHtml}</div>
+                                </div>
+                            </div>`;
+                    });
+
+                    yearHtml += `</div></div>`;
+                    container.innerHTML += yearHtml;
+                });
+            } else {
+                container.innerHTML = `<div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>`;
+            }
+        });
+    }
+
+    function toggleAccordion(element) {
+        const item = element.parentElement;
+        item.classList.toggle('active');
+    }
+
+    function clearMonthlyLogByYear(yearTarget) {
+        if (confirm(`ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລຶບປະຫວັດທັງໝົດຂອງ "ປີ ${yearTarget}" ອອກຈາກລະບົບ?`)) {
+            db.ref('bornToBDailyLogs').once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    let updates = {};
+                    Object.keys(data).forEach(dateKey => {
+                        let parts = dateKey.split('-');
+                        if (parts.length === 3 && parts[2] === yearTarget) {
+                            updates[dateKey] = null;
+                        }
+                    });
+                    db.ref('bornToBDailyLogs').update(updates);
+                }
+            });
+        }
+    }
+
+    function updateCloudField(fbKey, field, value) {
+        let intValue = parseInt(value) || 0;
+        if (intValue < 0) intValue = 0;
+        db.ref('bornToBStock/' + fbKey).update({ 
+            [field]: intValue,
+            lastLogDate: currentDayStr
+        });
+    }
+
+    function editItemName(fbKey, oldName) {
+        const newName = prompt("ແກ້ໄຂຊື່ວັດຖຸດິບ:", oldName);
+        if (newName !== null && newName.trim() !== "") {
+            db.ref('bornToBStock/' + fbKey).update({ name: newName.trim() });
+        }
+    }
+
+    function editItemCategory(fbKey, oldCat) {
+        const newCat = prompt("ແກ້ໄຂໝວດໝູ່:", oldCat);
         if (newCat !== null) {
             db.ref('bornToBStock/' + fbKey).update({ category: newCat.trim() || "ທົ່ວໄປ" });
         }
     }
 
-    // เพิ่มวัตถุดิบชิ้นใหม่
     function addNewItem() {
         const nameInput = document.getElementById("itemName");
         const catInput = document.getElementById("itemCategory");
         const qtyInput = document.getElementById("itemQty");
         const costInput = document.getElementById("itemCost");
-
         if (!nameInput.value) {
             alert("ກະລຸນາປ້ອນຊື່ວັດຖຸດິບກ່ອນ");
             return;
         }
 
         let maxOrder = -1;
-        coffeeStock.forEach(item => { 
-            if ((item.indexOrder || 0) > maxOrder) maxOrder = item.indexOrder; 
-        });
+        coffeeStock.forEach(item => { if ((item.indexOrder || 0) > maxOrder) maxOrder = item.indexOrder; });
         let nextOrder = maxOrder + 1;
-
         let newItem = {
             name: nameInput.value,
             category: catInput.value.trim() || "ທົ່ວໄປ",
@@ -427,43 +1013,20 @@
             indexOrder: nextOrder,
             lastLogDate: currentDayStr
         };
-
         db.ref('bornToBStock').push(newItem);
-        
         nameInput.value = "";
         catInput.value = "";
         qtyInput.value = "";
         costInput.value = "";
     }
 
-    // ฟังก์ชันเลื่อนตำแหน่งวัตถุดิบในตารางหลัก (ทำงานได้เร็วขึ้นแล้วเนื่องจากส่วนสรุปแยกเป็นอิสระ)
-    function moveItem(index, direction) {
-        const targetIndex = index + direction;
-        if (targetIndex < 0 || targetIndex >= coffeeStock.length) return;
-
-        const currentItem = coffeeStock[index];
-        const targetItem = coffeeStock[targetIndex];
-
-        // สลับค่า indexOrder กันในคลังข้อมูล
-        const tempOrder = currentItem.indexOrder;
-        currentItem.indexOrder = targetItem.indexOrder;
-        targetItem.indexOrder = tempOrder;
-
-        // บันทึกตำแหน่งใหม่ลงในฐานข้อมูล Firebase ทั้งคู่
-        const updates = {};
-        updates['bornToBStock/' + currentItem.fbKey + '/indexOrder'] = currentItem.indexOrder;
-        updates['bornToBStock/' + targetItem.fbKey + '/indexOrder'] = targetItem.indexOrder;
-
-        db.ref().update(updates);
-    }
-
-    // ลบรายการวัตถุดิบออก
-    function deleteItem(fbKey) {
-        if (confirm("ທ່ານຕ້ອງການລຶບລາຍການນີ້ແທ້ຫຼືບໍ່?")) {
+    function deleteFromCloud(fbKey) {
+        if (confirm("ເຈົ້າຕ້ອງການລຶບລາຍການນີ້ອອກຈາກລະບົບແທ້ບໍ່?")) {
             db.ref('bornToBStock/' + fbKey).remove();
         }
     }
-</script>
 
+    syncInternetTime();
+</script>
 </body>
 </html>
