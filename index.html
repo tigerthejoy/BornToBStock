@@ -270,15 +270,15 @@
     <header>
         <h1>Born To B Cafe & Garden</h1>
         <p>🌿 ລະບົບຄວບຄຸມສະຕັອກ ແລະ ຄຳນວນຕົ້ນທຶນວັດຖຸດິບລາຍເດືອນ 🌿</p>
-        <div class="time-sync-badge" id="timeSyncStatus">🔄 ກຳລัງເຊື່ອມຕໍ່ເວລາ...</div>
+        <div class="time-sync-badge" id="timeSyncStatus">🔄 ກຳລັງເຊື່ອມຕໍ່ເວລາ...</div>
     </header>
 
     <div class="form-card">
         <input type="text" id="itemName" placeholder="ຊື່ວັດຖຸດິບໃໝ່">
         <input type="text" id="itemCategory" placeholder="ໝວດໝູ່ (ເຊັ່ນ: ກາແຟ, ນົມ, ແກ້ວ)">
         <input type="number" id="itemQty" placeholder="ສະຕັອກໃນຄັງ">
-        <input type="text" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)" oninput="formatCostInput(this)">
-        <button type="button" onclick="addNewItem()">ເພີ່ມລາຍການ</button>
+        <input type="number" id="itemCost" placeholder="ຕົ້ນທຶນຕໍ່ໜ່ວຍ (ກີບ)">
+        <button onclick="addNewItem()">ເພີ່ມລາຍການ</button>
     </div>
 
     <div class="filter-container" id="categoryFilters">
@@ -288,7 +288,7 @@
 
     <div class="dashboard-grid">
         <div class="dashboard-card">
-            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ้ວ (ແຍກຕາມລາຍການ)</h3>
+            <h3>📊 ລວມລາຄາວັດຖຸດິບທີ່ໃຊ້ໄປແລ້ວ (ແຍກຕາມລາຍການ)</h3>
             <div class="analytics-scroll-box" id="analyticsList"></div>
         </div>
         
@@ -308,7 +308,7 @@
                     <th style="text-align: center; width: 9%;">ໃນຄັງ</th>
                     <th style="text-align: center; width: 8%;">ຕື່ມ (+)</th>
                     <th style="text-align: center; width: 8%;">ໃຊ້ໄປ (-)</th>
-                    <th style="text-align: center; width: 9%;">ເຫຼືອຈິງ</th>
+                    <th style="text-align: center; width: 8%;">ເຫຼືອຈິງ</th>
                     <th style="text-align: right; width: 13%;">ລວມເປັນເງິນ</th>
                     <th style="text-align: center; width: 3%;">ຈັດການ</th>
                 </tr>
@@ -352,16 +352,6 @@
     let currentDayStr = ""; 
     let currentMonthYearStr = ""; 
     let businessDateGlobal = null;
-
-    // ฟังก์ชันช่วยจัดฟอร์แมตเครื่องหมาย Comma (,) เวลาพิมพ์ตัวเลขราคา
-    function formatCostInput(input) {
-        let value = input.value.replace(/[^0-9]/g, '');
-        if (value === '') {
-            input.value = '';
-            return;
-        }
-        input.value = Number(value).toLocaleString('en-US');
-    }
 
     async function syncInternetTime() {
         try {
@@ -455,7 +445,7 @@
                     if (item.lastLogDate && item.lastLogDate !== currentDayStr) {
                         let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
                         if (remaining < 0) remaining = 0;
-              
+                        
                         updates[`${key}/initialQty`] = remaining;
                         updates[`${key}/added`] = 0;
                         updates[`${key}/used`] = 0;
@@ -513,38 +503,41 @@
         if (currentCategory === "LOW_STOCK") {
             filteredItems = coffeeStock.filter(item => {
                 let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
-                return remaining <= 2;
+                return remaining <= 4; // แก้ไขจุดที่ 1: เปลี่ยนจากเงื่อนไขเดิมเลข 2 เป็น 4 ลิงก์กับตัวกรองใกล้จะหมด
             });
         } else if (currentCategory !== "ALL") {
             filteredItems = coffeeStock.filter(item => item.category === currentCategory);
         }
 
         if(filteredItems.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບใນໝວດນີ້</td></tr>`;
+            tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບໃນໝວດນີ້</td></tr>`;
             return;
         }
 
         filteredItems.forEach((item) => {
             let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
             let totalCostToday = (item.used || 0) * (item.cost || 0);
-            let isLowStock = remaining <= 2;
+            let isLowStock = remaining <= 4; // แก้ไขจุดที่ 2: เช็กว่าเหลือจริงน้อยกว่าหรือเท่ากับ 4 หรือไม่
+            let initialQty = item.initialQty || 0;
+            let isInitialLow = initialQty < 4; // แก้ไขจุดที่ 3: เช็กเพิ่มว่า ในคลัง น้อยกว่า 4 หรือไม่
 
             let row = `<tr>
                 <td class="col-item-name">
                     <div class="order-arrows">
-                        <button type="button" class="arrow-btn" onclick="moveOrder('${item.fbKey}', -1)">▲</button>
-                        <button type="button" class="arrow-btn" onclick="moveOrder('${item.fbKey}', 1)">▼</button>
+                        <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', -1)">▲</button>
+                        <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', 1)">▼</button>
                     </div>
                     <strong>${item.name}</strong><br>
                     ${item.category ? `<span class="badge-cat">${item.category}</span>` : ''}
                 </td>
                 <td style="text-align: center;">
-                    <input type="text" id="qty-cost-${item.fbKey}" class="input-cost" value="${(item.cost || 0).toLocaleString('en-US')}"
-                        oninput="formatCostInput(this); calculateRowLive('${item.fbKey}')"
+                    <input type="number" id="qty-cost-${item.fbKey}" class="input-cost" value="${item.cost || 0}" min="0"
+                        oninput="calculateRowLive('${item.fbKey}')"
                         onchange="updateCloudField('${item.fbKey}', 'cost', this.value)">
                 </td>
                 <td style="text-align: center;">
-                    <input type="number" id="qty-initial-${item.fbKey}" class="input-qty" value="${item.initialQty || 0}"
+                    <input type="number" id="qty-initial-${item.fbKey}" class="input-qty" value="${initialQty}"
+                        style="${isInitialLow ? 'background-color: #fde8e8; color: var(--danger);' : ''}"
                         oninput="calculateRowLive('${item.fbKey}')"
                         onchange="updateCloudField('${item.fbKey}', 'initialQty', this.value)">
                 </td>
@@ -567,7 +560,7 @@
                     ${totalCostToday.toLocaleString('lo-LA')} ₭
                 </td>
                 <td style="text-align: center;">
-                    <button type="button" class="btn-delete" onclick="deleteFromCloud('${item.fbKey}')">ລຶບ</button>
+                    <button class="btn-delete" onclick="deleteFromCloud('${item.fbKey}')">ລຶບ</button>
                 </td>
             </tr>`;
             tableBody.innerHTML += row;
@@ -584,7 +577,7 @@
 
         if (!badge || !totalCostEl) return;
 
-        let cost = parseInt(costInput.value.replace(/,/g, '')) || 0;
+        let cost = parseInt(costInput.value) || 0;
         let initial = parseInt(initialInput.value) || 0;
         let added = parseInt(addedInput.value) || 0;
         let used = parseInt(usedInput.value) || 0;
@@ -592,13 +585,25 @@
         let totalCostToday = used * cost;
 
         badge.innerText = remaining;
-        if (remaining <= 2) {
+        
+        // แก้ไขจุดที่ 6: คำนวณสีช่องเหลือจริงแบบ Real-time ขยับเงื่อนไขเป็นเลข 4
+        if (remaining <= 4) {
             badge.style.backgroundColor = "#fde8e8";
             badge.style.color = "var(--danger)";
         } else {
             badge.style.backgroundColor = "var(--accent-light)";
             badge.style.color = "#705e55";
         }
+
+        // แก้ไขจุดที่ 7: คำนวณสีช่องในคลังแบบ Real-time ถ้าน้อยกว่า 4 ให้ถมสีแดง
+        if (initial < 4) {
+            initialInput.style.backgroundColor = "#fde8e8";
+            initialInput.style.color = "var(--danger)";
+        } else {
+            initialInput.style.backgroundColor = "var(--bg-color)";
+            initialInput.style.color = "var(--text-main)";
+        }
+
         totalCostEl.innerText = totalCostToday.toLocaleString('lo-LA') + " ₭";
     }
 
@@ -641,41 +646,16 @@
         }
     }
 
-    // ฟังก์ชันเลื่อนลำดับขึ้นลง แก้ไขบั๊กการทำงานร่วมกับ Filter ตัวกรองแล้วเรียบร้อย
     function moveOrder(fbKey, direction) {
-        // 1. ดึงรายการตาม Filter ล่าสุดที่กำลังส่องอยู่บนหน้าจอจริง ๆ
-        let filteredItems = coffeeStock;
-        if (currentCategory === "LOW_STOCK") {
-            filteredItems = coffeeStock.filter(item => {
-                let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
-                return remaining <= 2;
-            });
-        } else if (currentCategory !== "ALL") {
-            filteredItems = coffeeStock.filter(item => item.category === currentCategory);
-        }
-
-        // 2. หาตำแหน่งในรายการที่ถูกกรองตัวนั้น
-        let currentIdx = filteredItems.findIndex(item => item.fbKey === fbKey);
+        let currentIdx = coffeeStock.findIndex(item => item.fbKey === fbKey);
         if (currentIdx === -1) return;
         
         let targetIdx = currentIdx + direction;
-        if (targetIdx < 0 || targetIdx >= filteredItems.length) return;
+        if (targetIdx < 0 || targetIdx >= coffeeStock.length) return;
+        let temp = coffeeStock[currentIdx];
+        coffeeStock[currentIdx] = coffeeStock[targetIdx];
+        coffeeStock[targetIdx] = temp;
 
-        let currentItem = filteredItems[currentIdx];
-        let targetItem = filteredItems[targetIdx];
-
-        // 3. หาตำแหน่งดัชนีจริงในอาร์เรย์หลัก (coffeeStock)
-        let mainCurrentIdx = coffeeStock.findIndex(item => item.fbKey === currentItem.fbKey);
-        let mainTargetIdx = coffeeStock.findIndex(item => item.fbKey === targetItem.fbKey);
-
-        if (mainCurrentIdx === -1 || mainTargetIdx === -1) return;
-
-        // 4. สลับที่กันในอาร์เรย์หลักเพื่อเปลี่ยนลำดับสัมพัทธ์
-        let temp = coffeeStock[mainCurrentIdx];
-        coffeeStock[mainCurrentIdx] = coffeeStock[mainTargetIdx];
-        coffeeStock[mainTargetIdx] = temp;
-
-        // 5. เขียนเลข indexOrder ไล่ใหม่ทั้งหมดเพื่อป้องกันตำแหน่งกระโดดข้าม แล้วอัปเดต Firebase ลวดเดียว
         let updates = {};
         coffeeStock.forEach((item, idx) => {
             updates[`${item.fbKey}/indexOrder`] = idx;
@@ -708,7 +688,7 @@
                 <div class="year-group" style="border:none; background:none; padding:0; margin-bottom:10px;">
                     <div class="year-title" style="margin-bottom:10px;">
                         <span style="font-weight:700; color:var(--text-main); font-size:14px;">📋 ລາຍການບັນທຶກປະຈຳສັບດາ</span>
-                        <button type="button" class="btn-clear-log" onclick="clearAllDailyLogs()">ລຶບປະຫວັດລາຍວັນ</button>
+                        <button class="btn-clear-log" onclick="clearAllDailyLogs()">ລຶບປະຫວັດລາຍວັນ</button>
                     </div>
                     <div id="weeklyLogWeeksContainer"></div>
                 </div>`;
@@ -759,7 +739,7 @@
 
             sortedWeekKeys.forEach(weekKey => {
                 let group = weekGroups[weekKey];
-                let monthNames = ["", "ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມິຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"];
+                let monthNames = ["", "ມັງກອນ", "ກຸມພາ", "ມີນາ", "ເມສາ", "ພຶດສະພາ", "ມิຖຸນາ", "ກໍລະກົດ", "ສິງຫາ", "ກັນຍາ", "ຕຸລາ", "ພະຈິກ", "ທັນວາ"];
                 
                 let startDay = ((group.weekNum - 1) * 7) + 1 - group.adjFirstDay;
                 if (startDay < 1) startDay = 1; 
@@ -883,7 +863,7 @@
                         <div class="year-group" style="margin-bottom:15px; background:#fff; border-color:var(--border);">
                             <div class="year-title" style="border-bottom:1px solid #f5f2f0; padding-bottom:6px; margin-bottom:10px;">
                                 <span style="font-weight:700; color:var(--accent); font-size:15px;">📂 ປີ ${year} <span style="font-size:12px; color:var(--gold); font-weight:normal; margin-left:8px;">(ລວມທັງປີ: ${yearData.yearTotal.toLocaleString('lo-LA')} ₭)</span></span>
-                                <button type="button" class="btn-clear-log" onclick="clearMonthlyLogByYear('${year}')">ລຶບປີ ${year}</button>
+                                <button class="btn-clear-log" onclick="clearMonthlyLogByYear('${year}')">ລຶບປີ ${year}</button>
                             </div>
                             <div class="history-grid">`;
                     
@@ -948,8 +928,7 @@
     }
 
     function updateCloudField(fbKey, field, value) {
-        let cleanValue = String(value).replace(/,/g, '');
-        let intValue = parseInt(cleanValue) || 0;
+        let intValue = parseInt(value) || 0;
         if (intValue < 0) intValue = 0;
         db.ref('bornToBStock/' + fbKey).update({ 
             [field]: intValue,
@@ -974,7 +953,7 @@
             name: nameInput.value,
             category: catInput.value.trim() || "ທົ່ວໄປ",
             initialQty: parseInt(qtyInput.value) || 0,
-            cost: parseInt(costInput.value.replace(/,/g, '')) || 0,
+            cost: parseInt(costInput.value) || 0,
             added: 0,
             used: 0,
             indexOrder: nextOrder,
