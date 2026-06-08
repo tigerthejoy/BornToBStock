@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.8 (Fixed)</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.8</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -203,7 +203,7 @@
         td { padding: 14px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
 
         .col-item-name { min-width: 250px; word-break: break-word; }
-        .input-qty { width: 38px; text-align: center; padding: 6px 2px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; transition: all 0.2s; }
+        .input-qty { width: 38px; text-align: center; padding: 6px 2px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; }
         .input-cost { width: 85px; text-align: right; padding: 6px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; }
         
         .badge-total { background: var(--accent-light); color: #705e55; padding: 6px 8px; border-radius: 6px; font-weight: 700; display: inline-block; min-width: 25px; text-align: center; transition: all 0.15s ease; }
@@ -270,7 +270,7 @@
     <header>
         <h1>Born To B Cafe & Garden</h1>
         <p>🌿 ລະບົບຄວບຄຸມສະຕັອກ ແລະ ຄຳນວນຕົ້ນທຶນວັດຖຸດິບລາຍເດືອນ 🌿</p>
-        <div class="time-sync-badge" id="timeSyncStatus">🔄 ກຳລัງເຊື່ອມຕໍ່ເວລາ...</div>
+        <div class="time-sync-badge" id="timeSyncStatus">🔄 ກຳລັງເຊື່ອມຕໍ່ເວລາ...</div>
     </header>
 
     <div class="form-card">
@@ -293,7 +293,7 @@
         </div>
         
         <div class="dashboard-card highlight">
-            <h3>📅 ສະຫຼຸບຕົ້ນທຶนວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
+            <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
             <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ</p>
         </div>
@@ -325,7 +325,7 @@
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກສັບດານີ້</div>
         </div>
 
-        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເดືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
+        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເດືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
         <div id="monthlyHistoryContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
         </div>
@@ -445,7 +445,7 @@
                     if (item.lastLogDate && item.lastLogDate !== currentDayStr) {
                         let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
                         if (remaining < 0) remaining = 0;
-              
+                        
                         updates[`${key}/initialQty`] = remaining;
                         updates[`${key}/added`] = 0;
                         updates[`${key}/used`] = 0;
@@ -503,7 +503,7 @@
         if (currentCategory === "LOW_STOCK") {
             filteredItems = coffeeStock.filter(item => {
                 let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
-                return remaining <= 4; // FIXED: เปลี่ยนเงื่อนไขกรองเหลือน้อยเป็น <= 4
+                return remaining <= 2;
             });
         } else if (currentCategory !== "ALL") {
             filteredItems = coffeeStock.filter(item => item.category === currentCategory);
@@ -517,7 +517,11 @@
         filteredItems.forEach((item) => {
             let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
             let totalCostToday = (item.used || 0) * (item.cost || 0);
-            let isLowStock = remaining <= 4; // FIXED: เปลี่ยนเงื่อนไขเช็คสินค้าใกล้หมดเป็น <= 4
+            let isLowStock = remaining <= 2;
+
+            // ป้องกันการตัด String และบั๊กเครื่องหมายคำพูดในชื่อ
+            let escapedName = (item.name || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
+            let escapedCat = (item.category || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
 
             let row = `<tr>
                 <td class="col-item-name">
@@ -525,8 +529,8 @@
                         <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', -1)">▲</button>
                         <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', 1)">▼</button>
                     </div>
-                    <strong>${item.name}</strong><br>
-                    ${item.category ? `<span class="badge-cat">${item.category}</span>` : ''}
+                    <strong ondblclick="editItemName('${item.fbKey}', '${escapedName}')" style="cursor: pointer;" title="ດັບເບິ້ລຄລິກເພື່ອແກ້ໄຂ">${item.name}</strong><br>
+                    <span class="badge-cat" ondblclick="editItemCategory('${item.fbKey}', '${escapedCat}')" style="cursor: pointer;" title="DoubleClickເພື່ອແກ້ໄຂ">${item.category || 'ທົ່ວໄປ'}</span>
                 </td>
                 <td style="text-align: center;">
                     <input type="number" id="qty-cost-${item.fbKey}" class="input-cost" value="${item.cost || 0}" min="0"
@@ -535,7 +539,6 @@
                 </td>
                 <td style="text-align: center;">
                     <input type="number" id="qty-initial-${item.fbKey}" class="input-qty" value="${item.initialQty || 0}"
-                        style="${isLowStock ? 'background-color: #fde8e8; color: var(--danger);' : ''}"
                         oninput="calculateRowLive('${item.fbKey}')"
                         onchange="updateCloudField('${item.fbKey}', 'initialQty', this.value)">
                 </td>
@@ -583,22 +586,12 @@
         let totalCostToday = used * cost;
 
         badge.innerText = remaining;
-        
-        // FIXED: เปลี่ยนเงื่อนไขการถมสีแดงแบบ Real-time เป็น <= 4 ทั้งช่อง 'ในคัง' และช่อง 'เหลือจริง'
-        if (remaining <= 4) {
+        if (remaining <= 2) {
             badge.style.backgroundColor = "#fde8e8";
             badge.style.color = "var(--danger)";
-            if (initialInput) {
-                initialInput.style.backgroundColor = "#fde8e8";
-                initialInput.style.color = "var(--danger)";
-            }
         } else {
             badge.style.backgroundColor = "var(--accent-light)";
             badge.style.color = "#705e55";
-            if (initialInput) {
-                initialInput.style.backgroundColor = "";
-                initialInput.style.color = "";
-            }
         }
         totalCostEl.innerText = totalCostToday.toLocaleString('lo-LA') + " ₭";
     }
@@ -930,6 +923,22 @@
             [field]: intValue,
             lastLogDate: currentDayStr
         });
+    }
+
+    // ฟังก์ชัน Double Click เพื่อแก้ไขชื่อวัตถุดิบ
+    function editItemName(fbKey, oldName) {
+        const newName = prompt("ແກ້ໄຂຊື່ວັດຖຸດິບ:", oldName);
+        if (newName !== null && newName.trim() !== "") {
+            db.ref('bornToBStock/' + fbKey).update({ name: newName.trim() });
+        }
+    }
+
+    // ฟังก์ชัน Double Click เพื่อแก้ไขหมวดหมู่
+    function editItemCategory(fbKey, oldCat) {
+        const newCat = prompt("ແກ້ໄຂໝວດໝູ່:", oldCat);
+        if (newCat !== null) {
+            db.ref('bornToBStock/' + fbKey).update({ category: newCat.trim() || "ທົ່ວໄປ" });
+        }
     }
 
     function addNewItem() {
