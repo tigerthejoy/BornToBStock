@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.8</title>
+    <title>Born To B Cafe & Garden - Cost & Stock Super Pro V11.8 (Fixed)</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,28 +37,10 @@
             justify-content: center;
         }
 
-        .container { 
-            width: 100%; 
-            max-width: 1200px;
-        }
-        
-        header { 
-            margin-bottom: 32px; 
-            text-align: center;
-        }
-        
-        header h1 { 
-            font-size: 30px; 
-            font-weight: 700; 
-            margin-bottom: 8px; 
-            color: #4a3e3d;
-        }
-        
-        header p { 
-            color: var(--text-muted); 
-            font-size: 16px; 
-            margin: 0;
-        }
+        .container { width: 100%; max-width: 1200px; }
+        header { margin-bottom: 32px; text-align: center; }
+        header h1 { font-size: 30px; font-weight: 700; margin-bottom: 8px; color: #4a3e3d; }
+        header p { color: var(--text-muted); font-size: 16px; margin: 0; }
 
         .time-sync-badge {
             display: inline-block;
@@ -107,10 +89,7 @@
             cursor: pointer;
             transition: opacity 0.2s;
         }
-        
-        button:hover { 
-            opacity: 0.9;
-        }
+        button:hover { opacity: 0.9; }
 
         /* ปุ่ม Filter หมวดหมู่ */
         .filter-container {
@@ -119,7 +98,6 @@
             margin-bottom: 15px;
             flex-wrap: wrap;
         }
-        
         .filter-btn {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -131,13 +109,11 @@
             font-family: 'Phetsarath', sans-serif;
             transition: all 0.2s;
         }
-        
         .filter-btn.active, .filter-btn:hover {
             background: var(--accent);
             color: white;
             border-color: var(--accent);
         }
-        
         .filter-btn.low-stock-active {
             background: var(--danger);
             color: white;
@@ -202,10 +178,7 @@
             padding: 8px 0;
             border-bottom: 1px solid #fbfaf9;
         }
-        
-        .avg-item:last-child { 
-            border-bottom: none;
-        }
+        .avg-item:last-child { border-bottom: none; }
 
         /* ตารางหลัก */
         .table-container {
@@ -217,14 +190,7 @@
             margin-bottom: 30px;
         }
 
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            text-align: left; 
-            font-size: 15px; 
-            table-layout: auto;
-        }
-        
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 15px; table-layout: auto; }
         thead th { 
             background-color: #faf8f5;
             color: var(--text-muted); 
@@ -234,130 +200,28 @@
             white-space: nowrap;
         }
         
-        td { 
-            padding: 14px 12px;
-            border-bottom: 1px solid var(--border); 
-            vertical-align: middle; 
-        }
+        td { padding: 14px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
 
-        .col-item-name { 
-            min-width: 250px; 
-            word-break: break-word;
-        }
+        .col-item-name { min-width: 250px; word-break: break-word; }
+        .input-qty { width: 38px; text-align: center; padding: 6px 2px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; transition: all 0.2s; }
+        .input-cost { width: 85px; text-align: right; padding: 6px; border: 1px solid var(--border); border-radius: 4px; font-family: 'Phetsarath', sans-serif; }
         
-        .input-qty { 
-            width: 38px; 
-            text-align: center; 
-            padding: 6px 2px;
-            border: 1px solid var(--border); 
-            border-radius: 4px; 
-            font-family: 'Phetsarath', sans-serif; 
-        }
+        .badge-total { background: var(--accent-light); color: #705e55; padding: 6px 8px; border-radius: 6px; font-weight: 700; display: inline-block; min-width: 25px; text-align: center; transition: all 0.15s ease; }
+        .btn-delete { background: none; color: var(--danger); border: none; cursor: pointer; font-size: 14px; font-family: 'Phetsarath', sans-serif; }
         
-        .input-cost { 
-            width: 85px;
-            text-align: right; 
-            padding: 6px; 
-            border: 1px solid var(--border); 
-            border-radius: 4px; 
-            font-family: 'Phetsarath', sans-serif;
-        }
-        
-        .badge-total { 
-            background: var(--accent-light);
-            color: #705e55; 
-            padding: 6px 8px; 
-            border-radius: 6px; 
-            font-weight: 700; 
-            display: inline-block; 
-            min-width: 25px; 
-            text-align: center; 
-            transition: all 0.15s ease;
-        }
-        
-        .btn-delete { 
-            background: none; 
-            color: var(--danger); 
-            border: none; 
-            cursor: pointer; 
-            font-size: 14px;
-            font-family: 'Phetsarath', sans-serif; 
-        }
-        
-        .order-arrows { 
-            display: inline-flex;
-            flex-direction: column; 
-            margin-right: 8px; 
-            vertical-align: middle; 
-        }
-        
-        .arrow-btn { 
-            background: none; 
-            border: none;
-            color: var(--text-muted); 
-            cursor: pointer; 
-            font-size: 11px; 
-            padding: 1px 3px; 
-            line-height: 1;
-        }
-        
-        .arrow-btn:hover { 
-            color: var(--accent);
-        }
+        .order-arrows { display: inline-flex; flex-direction: column; margin-right: 8px; vertical-align: middle; }
+        .arrow-btn { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 11px; padding: 1px 3px; line-height: 1; }
+        .arrow-btn:hover { color: var(--accent); }
 
-        .badge-cat { 
-            display: inline-block; 
-            font-size: 11px; 
-            background: #f0ede9; 
-            color: var(--text-muted);
-            padding: 2px 6px; 
-            border-radius: 4px; 
-            margin-top: 4px; 
-            font-weight: normal; 
-        }
+        .badge-cat { display: inline-block; font-size: 11px; background: #f0ede9; color: var(--text-muted); padding: 2px 6px; border-radius: 4px; margin-top: 4px; font-weight: normal; }
 
         /* โซนรวมประวัติ */
-        .history-section { 
-            background: var(--card-bg);
-            border: 1px solid var(--border); 
-            border-radius: 12px; 
-            padding: 24px; 
-            margin-top: 20px;
-        }
+        .history-section { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-top: 20px; }
+        .history-section h3 { margin-top: 0; font-size: 18px; color: #4a3e3d; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
         
-        .history-section h3 { 
-            margin-top: 0; 
-            font-size: 18px; 
-            color: #4a3e3d;
-            border-bottom: 1px solid var(--border); 
-            padding-bottom: 10px; 
-            margin-bottom: 15px; 
-        }
-        
-        .year-group { 
-            margin-bottom: 20px;
-            border: 1px solid var(--border); 
-            border-radius: 8px; 
-            padding: 16px; 
-            background: #fbfbfb;
-        }
-        
-        .year-title { 
-            font-size: 16px; 
-            font-weight: 700; 
-            color: var(--text-main); 
-            margin-top: 0; 
-            margin-bottom: 12px;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-        
-        .history-grid { 
-            display: grid; 
-            grid-template-columns: 1fr;
-            gap: 6px; 
-        }
+        .year-group { margin-bottom: 20px; border: 1px solid var(--border); border-radius: 8px; padding: 16px; background: #fbfbfb; }
+        .year-title { font-size: 16px; font-weight: 700; color: var(--text-main); margin-top: 0; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .history-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
         
         /* สไตล์กล่องประวัติมินิมอล */
         .log-card-mini {
@@ -372,10 +236,7 @@
             cursor: pointer;
             transition: background 0.15s;
         }
-        
-        .log-card-mini:hover { 
-            background: var(--accent-light);
-        }
+        .log-card-mini:hover { background: var(--accent-light); }
         
         .log-details-mini {
             padding: 6px 14px 10px 14px;
@@ -388,86 +249,19 @@
             margin-top: -4px;
             margin-bottom: 4px;
         }
-        
-        .log-details-mini.active { 
-            display: block;
-        }
+        .log-details-mini.active { display: block; }
 
         /* Accordion ยืดหดได้แบบมินิมอล */
-        .accordion-item { 
-            border: 1px solid var(--border);
-            border-radius: 6px; 
-            background: var(--card-bg); 
-            overflow: hidden; 
-            margin-bottom: 4px; 
-        }
+        .accordion-item { border: 1px solid var(--border); border-radius: 6px; background: var(--card-bg); overflow: hidden; margin-bottom: 4px; }
+        .accordion-header { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; transition: background 0.2s; font-size: 14px; }
+        .accordion-header:hover { background: var(--accent-light); }
+        .accordion-content { padding: 0 14px; max-height: 0; overflow: hidden; transition: padding 0.15s ease-out, max-height 0.15s ease-out; background: #fdfdfd; border-top: 0 solid var(--border); font-size: 13px; color: #5c524d; }
         
-        .accordion-header { 
-            padding: 10px 14px;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            cursor: pointer; 
-            user-select: none; 
-            transition: background 0.2s; 
-            font-size: 14px;
-        }
-        
-        .accordion-header:hover { 
-            background: var(--accent-light);
-        }
-        
-        .accordion-content { 
-            padding: 0 14px; 
-            max-height: 0; 
-            overflow: hidden;
-            transition: padding 0.15s ease-out, max-height 0.15s ease-out; 
-            background: #fdfdfd; 
-            border-top: 0 solid var(--border); 
-            font-size: 13px; 
-            color: #5c524d;
-        }
-        
-        .accordion-item.active .accordion-content { 
-            padding: 10px 14px;
-            max-height: 1200px; 
-            border-top: 1px dashed var(--border); 
-            overflow-y: auto; 
-        }
+        .accordion-item.active .accordion-content { padding: 10px 14px; max-height: 1200px; border-top: 1px dashed var(--border); overflow-y: auto; }
 
-        .detail-tag { 
-            display: inline-block;
-            background: #f2ede9; 
-            color: var(--text-main); 
-            padding: 4px 10px; 
-            border-radius: 6px; 
-            font-size: 13px; 
-            margin-right: 6px; 
-            margin-bottom: 6px; 
-            font-weight: 500;
-            border: 1px solid #e1dad5; 
-        }
-        
-        .btn-clear-log { 
-            background-color: var(--danger); 
-            font-size: 12px;
-            padding: 4px 10px; 
-            border-radius: 4px; 
-            color: white; 
-            border: none; 
-            cursor: pointer; 
-            font-family: 'Phetsarath', sans-serif;
-        }
-        
-        .sub-history-title { 
-            font-size: 15px; 
-            font-weight: 700; 
-            color: var(--accent); 
-            margin-top: 25px; 
-            margin-bottom: 10px;
-            padding-left: 5px; 
-            border-left: 3px solid var(--accent); 
-        }
+        .detail-tag { display: inline-block; background: #f2ede9; color: var(--text-main); padding: 4px 10px; border-radius: 6px; font-size: 13px; margin-right: 6px; margin-bottom: 6px; font-weight: 500; border: 1px solid #e1dad5; }
+        .btn-clear-log { background-color: var(--danger); font-size: 12px; padding: 4px 10px; border-radius: 4px; color: white; border: none; cursor: pointer; font-family: 'Phetsarath', sans-serif; }
+        .sub-history-title { font-size: 15px; font-weight: 700; color: var(--accent); margin-top: 25px; margin-bottom: 10px; padding-left: 5px; border-left: 3px solid var(--accent); }
     </style>
 </head>
 <body>
@@ -476,7 +270,7 @@
     <header>
         <h1>Born To B Cafe & Garden</h1>
         <p>🌿 ລະບົບຄວບຄຸມສະຕັອກ ແລະ ຄຳນວນຕົ້ນທຶນວັດຖຸດິບລາຍເດືອນ 🌿</p>
-        <div class="time-sync-badge" id="timeSyncStatus">🔄 ກຳລັງເຊື່ອມຕໍ່ເວລາ...</div>
+        <div class="time-sync-badge" id="timeSyncStatus">🔄 ກຳລัງເຊື່ອມຕໍ່ເວລາ...</div>
     </header>
 
     <div class="form-card">
@@ -499,7 +293,7 @@
         </div>
         
         <div class="dashboard-card highlight">
-            <h3>📅 ສະຫຼຸບຕົ້ນທຶນວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
+            <h3>📅 ສະຫຼຸບຕົ້ນທຶนວັດຖຸດິບລວມ (ລາຍເດືອນ)</h3>
             <div class="grand-total-price" id="grandMonthlyCost">0</div>
             <p style="color: var(--success); font-size: 15px; margin: 0;">ກີບ</p>
         </div>
@@ -531,7 +325,7 @@
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນບັນທຶກສັບດານີ້</div>
         </div>
 
-        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເດືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
+        <div class="sub-history-title">📂 ປະຫວັດຍອດລາຄາລວມລາຍເดືອນ (ຄລິກເພື່ອເບິ່ງລາຍລະອຽດ)</div>
         <div id="monthlyHistoryContainer">
             <div style="color: var(--text-muted); font-size: 14px;">ບໍ່ມີຂໍ້ມູນເດືອນທີ່ຜ່ານມາ</div>
         </div>
@@ -651,12 +445,11 @@
                     if (item.lastLogDate && item.lastLogDate !== currentDayStr) {
                         let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
                         if (remaining < 0) remaining = 0;
-                        
+              
                         updates[`${key}/initialQty`] = remaining;
                         updates[`${key}/added`] = 0;
                         updates[`${key}/used`] = 0;
                         updates[`${key}/lastLogDate`] = currentDayStr;
-                        
                         item.initialQty = remaining;
                         item.added = 0;
                         item.used = 0;
@@ -702,144 +495,74 @@
         });
     }
 
-    // [แก้ไขด่วน v11.8] ใช้ระบบ In-place Update ทำให้ปุ่มเลื่อนขึ้น-ลงลื่นไหลมาก ไม่กระตุก
     function renderTable() {
         const tableBody = document.getElementById("stockTableBody");
+        tableBody.innerHTML = "";
         let filteredItems = coffeeStock;
         
         if (currentCategory === "LOW_STOCK") {
             filteredItems = coffeeStock.filter(item => {
                 let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
-                return remaining <= 4; // เปลี่ยนเงื่อนไขแสดงสินค้าใกล้หมดเป็น <= 4
+                return remaining <= 4; // FIXED: เปลี่ยนเงื่อนไขกรองเหลือน้อยเป็น <= 4
             });
         } else if (currentCategory !== "ALL") {
             filteredItems = coffeeStock.filter(item => item.category === currentCategory);
         }
 
-        if (filteredItems.length === 0) {
+        if(filteredItems.length === 0) {
             tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບໃນໝວດນີ້</td></tr>`;
             return;
         }
 
-        // ล้างแถวที่เป็นข้อความแจ้งเตือนว่างออกก่อนถ้าหากมี
-        if (tableBody.querySelector('td[colspan]')) {
-            tableBody.innerHTML = "";
-        }
-
-        // สร้างแผนผังแถวตารางที่มีอยู่แล้วในระบบเพื่อทำการ Update แทนการล้างสร้างใหม่
-        const rowMap = {};
-        Array.from(tableBody.children).forEach(row => {
-            const key = row.getAttribute('data-key');
-            if (key) rowMap[key] = row;
-            else row.remove();
-        });
-
         filteredItems.forEach((item) => {
             let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
             let totalCostToday = (item.used || 0) * (item.cost || 0);
-            let isLowStock = remaining <= 4; // เปลี่ยนเงื่อนไขคลังเหลือน้อยเป็น <= 4
+            let isLowStock = remaining <= 4; // FIXED: เปลี่ยนเงื่อนไขเช็คสินค้าใกล้หมดเป็น <= 4
 
-            let existingRow = rowMap[item.fbKey];
-
-            if (existingRow) {
-                // หากมีแถวเดิมอยู่แล้วให้ Update ค่าด้านใน ป้องกันการกระตุกเมื่อกดเลื่อนขึ้นลง
-                const nameEl = existingRow.querySelector('.item-name-text');
-                if (nameEl && nameEl.innerText !== item.name) nameEl.innerText = item.name;
-                
-                const catEl = existingRow.querySelector('.badge-cat');
-                if (catEl) {
-                    if (item.category) {
-                        catEl.innerText = item.category;
-                        catEl.style.display = 'inline-block';
-                    } else {
-                        catEl.style.display = 'none';
-                    }
-                }
-
-                // อัปเดตข้อมูลกล่อง Input เมื่อผู้ใช้ไม่ได้พิมพ์ค้างอยู่
-                const costInput = existingRow.querySelector(`#qty-cost-${item.fbKey}`);
-                if (costInput && document.activeElement !== costInput) costInput.value = item.cost || 0;
-
-                const initialInput = existingRow.querySelector(`#qty-initial-${item.fbKey}`);
-                if (initialInput && document.activeElement !== initialInput) initialInput.value = item.initialQty || 0;
-
-                const addedInput = existingRow.querySelector(`#qty-added-${item.fbKey}`);
-                if (addedInput && document.activeElement !== addedInput) addedInput.value = item.added || 0;
-
-                const usedInput = existingRow.querySelector(`#qty-used-${item.fbKey}`);
-                if (usedInput && document.activeElement !== usedInput) usedInput.value = item.used || 0;
-
-                // อัปเดตตัวบอกปริมาณคงเหลือและสีถมแดง
-                const badge = existingRow.querySelector(`#badge-remaining-${item.fbKey}`);
-                if (badge) {
-                    badge.innerText = remaining;
-                    if (isLowStock) {
-                        badge.style.backgroundColor = "#fde8e8";
-                        badge.style.color = "var(--danger)";
-                    } else {
-                        badge.style.backgroundColor = "var(--accent-light)";
-                        badge.style.color = "#705e55";
-                    }
-                }
-
-                const totalCostEl = existingRow.querySelector(`#total-cost-${item.fbKey}`);
-                if (totalCostEl) {
-                    totalCostEl.innerText = totalCostToday.toLocaleString('lo-LA') + " ₭";
-                }
-
-                // สลับสับเปลี่ยนตำแหน่งแถวเดิมที่มีในระบบ
-                tableBody.appendChild(existingRow);
-                delete rowMap[item.fbKey];
-            } else {
-                // หากเป็นรายการที่พึ่งเพิ่มเข้ามาใหม่ให้วาดแถวตารางขึ้นมาใหม่
-                let rowHTML = `
-                    <tr data-key="${item.fbKey}">
-                        <td class="col-item-name">
-                            <div class="order-arrows">
-                                <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', -1)">▲</button>
-                                <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', 1)">▼</button>
-                            </div>
-                            <strong class="item-name-text">${item.name}</strong><br>
-                            <span class="badge-cat" style="${item.category ? '' : 'display:none;'}">${item.category || ''}</span>
-                        </td>
-                        <td style="text-align: center;">
-                            <input type="number" id="qty-cost-${item.fbKey}" class="input-cost" value="${item.cost || 0}" min="0"
-                                oninput="calculateRowLive('${item.fbKey}')"
-                                onchange="updateCloudField('${item.fbKey}', 'cost', this.value)">
-                        </td>
-                        <td style="text-align: center;">
-                            <input type="number" id="qty-initial-${item.fbKey}" class="input-qty" value="${item.initialQty || 0}"
-                                oninput="calculateRowLive('${item.fbKey}')"
-                                onchange="updateCloudField('${item.fbKey}', 'initialQty', this.value)">
-                        </td>
-                        <td style="text-align: center;">
-                            <input type="number" id="qty-added-${item.fbKey}" class="input-qty" value="${item.added || 0}" style="color: var(--success);"
-                                oninput="calculateRowLive('${item.fbKey}')"
-                                onchange="updateCloudField('${item.fbKey}', 'added', this.value)">
-                        </td>
-                        <td style="text-align: center;">
-                            <input type="number" id="qty-used-${item.fbKey}" class="input-qty" value="${item.used || 0}" style="color: var(--danger);"
-                                oninput="calculateRowLive('${item.fbKey}')"
-                                onchange="updateCloudField('${item.fbKey}', 'used', this.value)">
-                        </td>
-                        <td style="text-align: center;">
-                            <span id="badge-remaining-${item.fbKey}" class="badge-total" style="${isLowStock ? 'background-color: #fde8e8; color: var(--danger);' : 'background-color: var(--accent-light); color: #705e55;'}">
-                                ${remaining}
-                            </span>
-                        </td>
-                        <td id="total-cost-${item.fbKey}" style="text-align: right; font-weight: 700; white-space: nowrap;">
-                            ${totalCostToday.toLocaleString('lo-LA')} ₭
-                        </td>
-                        <td style="text-align: center;">
-                            <button class="btn-delete" onclick="deleteFromCloud('${item.fbKey}')">ລຶບ</button>
-                        </td>
-                    </tr>`;
-                tableBody.insertAdjacentHTML('beforeend', rowHTML);
-            }
+            let row = `<tr>
+                <td class="col-item-name">
+                    <div class="order-arrows">
+                        <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', -1)">▲</button>
+                        <button class="arrow-btn" onclick="moveOrder('${item.fbKey}', 1)">▼</button>
+                    </div>
+                    <strong>${item.name}</strong><br>
+                    ${item.category ? `<span class="badge-cat">${item.category}</span>` : ''}
+                </td>
+                <td style="text-align: center;">
+                    <input type="number" id="qty-cost-${item.fbKey}" class="input-cost" value="${item.cost || 0}" min="0"
+                        oninput="calculateRowLive('${item.fbKey}')"
+                        onchange="updateCloudField('${item.fbKey}', 'cost', this.value)">
+                </td>
+                <td style="text-align: center;">
+                    <input type="number" id="qty-initial-${item.fbKey}" class="input-qty" value="${item.initialQty || 0}"
+                        style="${isLowStock ? 'background-color: #fde8e8; color: var(--danger);' : ''}"
+                        oninput="calculateRowLive('${item.fbKey}')"
+                        onchange="updateCloudField('${item.fbKey}', 'initialQty', this.value)">
+                </td>
+                <td style="text-align: center;">
+                    <input type="number" id="qty-added-${item.fbKey}" class="input-qty" value="${item.added || 0}" style="color: var(--success);"
+                        oninput="calculateRowLive('${item.fbKey}')"
+                        onchange="updateCloudField('${item.fbKey}', 'added', this.value)">
+                </td>
+                <td style="text-align: center;">
+                    <input type="number" id="qty-used-${item.fbKey}" class="input-qty" value="${item.used || 0}" style="color: var(--danger);"
+                        oninput="calculateRowLive('${item.fbKey}')"
+                        onchange="updateCloudField('${item.fbKey}', 'used', this.value)">
+                </td>
+                <td style="text-align: center;">
+                    <span id="badge-remaining-${item.fbKey}" class="badge-total" style="${isLowStock ? 'background-color: #fde8e8; color: var(--danger);' : 'background-color: var(--accent-light); color: #705e55;'}">
+                        ${remaining}
+                    </span>
+                </td>
+                <td id="total-cost-${item.fbKey}" style="text-align: right; font-weight: 700; white-space: nowrap;">
+                    ${totalCostToday.toLocaleString('lo-LA')} ₭
+                </td>
+                <td style="text-align: center;">
+                    <button class="btn-delete" onclick="deleteFromCloud('${item.fbKey}')">ລຶບ</button>
+                </td>
+            </tr>`;
+            tableBody.innerHTML += row;
         });
-
-        // ลบแถวเก่าที่ไม่มีในรายการของฐานข้อมูลออก
-        Object.values(rowMap).forEach(row => row.remove());
     }
 
     function calculateRowLive(fbKey) {
@@ -860,12 +583,22 @@
         let totalCostToday = used * cost;
 
         badge.innerText = remaining;
-        if (remaining <= 4) { // เปลี่ยนเป็นเงื่อนไข <= 4 ทันทีเมื่อกรอกสดบนหน้าจอ
+        
+        // FIXED: เปลี่ยนเงื่อนไขการถมสีแดงแบบ Real-time เป็น <= 4 ทั้งช่อง 'ในคัง' และช่อง 'เหลือจริง'
+        if (remaining <= 4) {
             badge.style.backgroundColor = "#fde8e8";
             badge.style.color = "var(--danger)";
+            if (initialInput) {
+                initialInput.style.backgroundColor = "#fde8e8";
+                initialInput.style.color = "var(--danger)";
+            }
         } else {
             badge.style.backgroundColor = "var(--accent-light)";
             badge.style.color = "#705e55";
+            if (initialInput) {
+                initialInput.style.backgroundColor = "";
+                initialInput.style.color = "";
+            }
         }
         totalCostEl.innerText = totalCostToday.toLocaleString('lo-LA') + " ₭";
     }
@@ -891,7 +624,6 @@
                     </div>`;
             }
         });
-        
         if (analyticsList.innerHTML === "") {
             analyticsList.innerHTML = `<div style="color:var(--text-muted); font-size:14px;">ຍັງບໍ່ມີການນຳໃຊ້ວັດຖຸດິບໃນມື້ນີ້</div>`;
         }
@@ -916,7 +648,6 @@
         
         let targetIdx = currentIdx + direction;
         if (targetIdx < 0 || targetIdx >= coffeeStock.length) return;
-        
         let temp = coffeeStock[currentIdx];
         coffeeStock[currentIdx] = coffeeStock[targetIdx];
         coffeeStock[targetIdx] = temp;
@@ -994,11 +725,9 @@
                     }
                 }
             });
-            
             let sortedWeekKeys = Object.keys(weekGroups).sort((a, b) => {
                 return weekGroups[b].weekNum - weekGroups[a].weekNum;
             });
-            
             if (sortedWeekKeys.length === 0) {
                 weeksContainer.innerHTML = `<div style="color: var(--text-muted); font-size: 14px; padding: 5px 0;">ບໍ່ມີຂໍ້ມູນເຄື່ອນໄຫວ</div>`;
                 return;
@@ -1071,20 +800,19 @@
         
         db.ref('bornToBDailyLogs').on('value', (snapshot) => {
             const data = snapshot.val();
-            if (data) {
+            if(data) {
                 container.innerHTML = "";
                 let groupedByMonthYear = {};
 
                 Object.keys(data).forEach(dateKey => {
                     let parts = dateKey.split('-');
-                    if (parts.length === 3) {
+                    if(parts.length === 3) {
                         let month = parts[1];
                         let year = parts[2];  
                         
                         let record = data[dateKey];
                         let amount = typeof record === 'object' ? (record.total || 0) : record;
                         let textDetails = typeof record === 'object' && record.details ? record.details : "";
-                        
                         if (!groupedByMonthYear[year]) {
                             groupedByMonthYear[year] = { months: {}, yearTotal: 0 };
                         }
@@ -1097,19 +825,19 @@
                         
                         if (textDetails && textDetails !== "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິບ (ບໍ່ໄດ້ເຂົ້າສູ່ລະບົບ)" && textDetails !== "ບໍ່ມີການນຳໃຊ້ວັດຖຸດິບ (ພັກຜ່ອນ/ບໍ່ມີອໍເດີ)") {
                             textDetails.split(', ').forEach(itemStr => {
-                                if (itemStr) {
+                                if(itemStr) {
                                     let match = itemStr.match(/^(.+?)\s*\((\d+)\)$/);
-                                    if (match) {
+                                    if(match) {
                                         let name = match[1].trim();
                                         let qty = parseInt(match[2]) || 0;
-                                        if (!groupedByMonthYear[year].months[month].itemsSummary[name]) {
+                                        if(!groupedByMonthYear[year].months[month].itemsSummary[name]) {
                                             groupedByMonthYear[year].months[month].itemsSummary[name] = 0;
                                         }
                                         groupedByMonthYear[year].months[month].itemsSummary[name] += qty;
                                     } else {
                                         let nameClean = itemStr.replace(/\(.*?\)/g, "").trim();
-                                        if (nameClean && nameClean !== "ບໍ່ມີລາຍລະອຽດວັດຖຸດິບ") {
-                                            if (!groupedByMonthYear[year].months[month].itemsSummary[nameClean]) {
+                                        if(nameClean && nameClean !== "ບໍ່ມີລາຍລະອຽດວັດຖຸດິບ") {
+                                            if(!groupedByMonthYear[year].months[month].itemsSummary[nameClean]) {
                                                 groupedByMonthYear[year].months[month].itemsSummary[nameClean] = 0;
                                             }
                                         }
@@ -1119,7 +847,6 @@
                         }
                     }
                 });
-                
                 let sortedYears = Object.keys(groupedByMonthYear).sort((a, b) => b - a);
                 if (sortedYears.length === 0) {
                     container.innerHTML = `<div style="color:var(--text-muted); font-size:14px; text-align:center; padding:10px 0;">📥 ບໍ່ມີຂໍ້ມູນປະຫວັດເດືອນຍ້ອນຫຼັງ</div>`;
@@ -1142,7 +869,7 @@
                         let itemKeys = Object.keys(monthData.itemsSummary);
                         let tagsHtml = "";
                         
-                        if (itemKeys.length > 0) {
+                        if(itemKeys.length > 0) {
                             tagsHtml = itemKeys.map(name => {
                                 let totalQty = monthData.itemsSummary[name];
                                 return `<span class="detail-tag">🌿 ${name} ${totalQty > 0 ? `(${totalQty})` : ''}</span>`;
@@ -1216,7 +943,7 @@
         }
 
         let maxOrder = -1;
-        coffeeStock.forEach(item => { if ((item.indexOrder||0) > maxOrder) maxOrder = item.indexOrder; });
+        coffeeStock.forEach(item => { if((item.indexOrder||0) > maxOrder) maxOrder = item.indexOrder; });
         let nextOrder = maxOrder + 1;
         let newItem = {
             name: nameInput.value,
@@ -1236,7 +963,7 @@
     }
 
     function deleteFromCloud(fbKey) {
-        if (confirm("ເຈົ້າຕ້ອງການລຶບລາຍການນີ້ອອກຈາກລະບົບແທ້ບໍ່?")) {
+        if(confirm("ເຈົ້າຕ້ອງການລຶບລາຍການນີ້ອອກຈາກລະບົບແທ້ບໍ່?")) {
             db.ref('bornToBStock/' + fbKey).remove();
         }
     }
