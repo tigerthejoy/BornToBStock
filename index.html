@@ -200,6 +200,7 @@
 
         .col-item-name { min-width: 250px; word-break: break-word; }
 
+        /* === ช่อง qty ใช้เหมือนเดิม === */
         .input-qty {
             width: 38px;
             text-align: center;
@@ -209,8 +210,9 @@
             font-family: 'Phetsarath', sans-serif;
         }
 
+        /* === ช่อง cost รองรับ comma display === */
         .input-cost {
-            width: 105px;
+            width: 110px;
             text-align: right;
             padding: 6px 8px;
             border: 1px solid var(--border);
@@ -218,6 +220,7 @@
             font-family: 'Phetsarath', sans-serif;
         }
 
+        /* === badge สต็อกคงเหลือ (ใช้ class เดิม) === */
         .badge-total {
             background: var(--accent-light);
             color: #705e55;
@@ -230,6 +233,7 @@
             transition: all 0.15s ease;
         }
 
+        /* === badge สต็อกใน-คัง ≤ 4 → สีแดง === */
         .badge-total.low-initial {
             background-color: #fde8e8 !important;
             color: var(--danger) !important;
@@ -377,7 +381,9 @@
     let currentDayStr = ""; 
     let currentMonthYearStr = ""; 
     let businessDateGlobal = null;
+    let isMovingOrder = false; // flag ป้องกัน Firebase listener re-render ตอน moveOrder
 
+    // ===== HELPER: จัดรูปแบบตัวเลขให้มี comma =====
     function formatNumber(num) {
         if (!num && num !== 0) return "0";
         return parseInt(num).toLocaleString('en-US');
@@ -461,6 +467,10 @@
 
     function listenToStockData() {
         db.ref('bornToBStock').on('value', (snapshot) => {
+            // ถ้ากำลัง moveOrder อยู่ให้ update data แต่ไม่ re-render (เพราะ render ไปแล้ว)
+            const skipRender = isMovingOrder;
+            isMovingOrder = false;
+
             const data = snapshot.val();
             coffeeStock = [];
             let categories = new Set();
@@ -494,9 +504,12 @@
             }
 
             coffeeStock.sort((a, b) => (a.indexOrder || 0) - (b.indexOrder || 0));
-            renderFilterTabs(categories);
-            renderTable();
-            renderAnalyticsAndCosts(); 
+
+            if (!skipRender) {
+                renderFilterTabs(categories);
+                renderTable();
+                renderAnalyticsAndCosts();
+            }
         });
     }
 
@@ -549,14 +562,17 @@
             let remaining = initialQty + (item.added || 0) - (item.used || 0);
             let totalCostToday = (item.used || 0) * (item.cost || 0);
             let isLowRemaining = remaining <= 2;
+            // ===== ใน-คัง ≤ 4 → ถมแดง =====
             let isLowInitial = initialQty <= 4;
 
             let escapedName = (item.name || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
             let escapedCat = (item.category || "").replace(/\\/g, "\\\\").replace(/'/g, "\\'").replace(/"/g, "&quot;");
 
+            // ===== สีของ badge คงเหลือ =====
             let remainingBgColor = isLowRemaining ? '#fde8e8' : 'var(--accent-light)';
             let remainingTextColor = isLowRemaining ? 'var(--danger)' : '#705e55';
 
+            // ===== สีของ badge ใน-คัง =====
             let initialBgColor = isLowInitial ? '#fde8e8' : 'var(--accent-light)';
             let initialTextColor = isLowInitial ? 'var(--danger)' : '#705e55';
 
@@ -570,9 +586,12 @@
                     <span class="badge-cat" ondblclick="editItemCategory('${item.fbKey}', '${escapedCat}')" style="cursor: pointer;" title="DoubleClickເພື່ອແກ້ໄຂ">${item.category || 'ທົ່ວໄປ'}</span>
                 </td>
                 <td style="text-align: center;">
-                    <input type="number" id="qty-cost-${item.fbKey}" class="input-cost" value="${item.cost || 0}" min="0"
-                        oninput="calculateRowLive('${item.fbKey}')"
-                        onchange="updateCloudField('${item.fbKey}', 'cost', this.value)">
+                    <input type="text" id="qty-cost-${item.fbKey}" class="input-cost"
+                        value="${formatNumber(item.cost || 0)}"
+                        data-raw="${item.cost || 0}"
+                        onfocus="costFocusIn(this)"
+                        onblur="costFocusOut(this, '${item.fbKey}')"
+                        oninput="calculateRowLive('${item.fbKey}')">
                 </td>
                 <td style="text-align: center;">
                     <span id="badge-initial-${item.fbKey}" class="badge-total"
@@ -609,6 +628,22 @@
         });
     }
 
+    // ===== cost input: แสดง comma ตอนไม่ focus, ถอด comma ตอน focus =====
+    function costFocusIn(el) {
+        // แสดงตัวเลขล้วนๆ ให้แก้ไขได้สะดวก
+        let raw = parseInt((el.value || "0").replace(/,/g, "")) || 0;
+        el.value = raw === 0 ? "" : raw;
+    }
+    function costFocusOut(el, fbKey) {
+        let raw = parseInt((el.value || "0").replace(/,/g, "")) || 0;
+        if (raw < 0) raw = 0;
+        el.value = formatNumber(raw);
+        el.dataset.raw = raw;
+        updateCloudField(fbKey, 'cost', raw);
+        calculateRowLive(fbKey);
+    }
+
+    // ===== แก้ไข ໃນຄັງ ผ่าน badge click (แทน input เดิม) =====
     function editInitialQty(fbKey, currentVal) {
         const newVal = prompt("ແກ້ໄຂຈຳນວນໃນຄັງ:", currentVal);
         if (newVal !== null && newVal.trim() !== "") {
@@ -628,7 +663,9 @@
 
         if (!badgeRemaining || !totalCostEl) return;
 
-        let cost = parseInt(costInput.value) || 0;
+        // cost input เป็น text ต้องถอด comma ก่อน
+        let cost = parseInt((costInput.value || "0").replace(/,/g, "")) || 0;
+        // อ่าน initial จาก badge (ข้อความเป็น comma แปลงกลับเป็น int)
         let initial = badgeInitial ? parseInt((badgeInitial.innerText || "0").replace(/,/g, "")) || 0 : 0;
         let added = parseInt(addedInput.value) || 0;
         let used = parseInt(usedInput.value) || 0;
@@ -652,21 +689,31 @@
         
         let grandTodayCostTotal = 0; 
         let itemsDetailsArray = [];
-        coffeeStock.forEach(item => {
+
+        // คำนวณต้นทุนรวมของทุก item ก่อน
+        let costItems = coffeeStock.map(item => {
             let usedToday = item.used || 0;
             let itemCost = item.cost || 0;
-            let totalTodayCost = usedToday * itemCost; 
+            let totalTodayCost = usedToday * itemCost;
             grandTodayCostTotal += totalTodayCost;
-
             if (usedToday > 0) {
                 itemsDetailsArray.push(`${item.name} (${usedToday})`);
+            }
+            return { name: item.name, usedToday, totalTodayCost };
+        });
+
+        // เรียงจากราคารวมมากไปน้อย (ไม่ขึ้นกับลำดับตาราง)
+        costItems
+            .filter(i => i.usedToday > 0)
+            .sort((a, b) => b.totalTodayCost - a.totalTodayCost)
+            .forEach(i => {
                 analyticsList.innerHTML += `
                     <div class="avg-item">
-                        <span>☕ <strong>${item.name}</strong> <span style="font-size: 13px; color: var(--text-muted); margin-left: 5px;">(ໃຊ້: ${usedToday})</span></span>
-                        <span>ລວມ: <strong style="color:var(--danger);">${totalTodayCost.toLocaleString('lo-LA')} ₭</strong></span>
+                        <span>☕ <strong>${i.name}</strong> <span style="font-size: 13px; color: var(--text-muted); margin-left: 5px;">(ໃຊ້: ${i.usedToday})</span></span>
+                        <span>ລວມ: <strong style="color:var(--danger);">${i.totalTodayCost.toLocaleString('lo-LA')} ₭</strong></span>
                     </div>`;
-            }
-        });
+            });
+
         if (analyticsList.innerHTML === "") {
             analyticsList.innerHTML = `<div style="color:var(--text-muted); font-size:14px;">ຍັງບໍ່ມີການນຳໃຊ້ວັດຖຸດິບໃນມື້ນີ້</div>`;
         }
@@ -691,14 +738,26 @@
         
         let targetIdx = currentIdx + direction;
         if (targetIdx < 0 || targetIdx >= coffeeStock.length) return;
+
+        // สลับใน array local ก่อน
         let temp = coffeeStock[currentIdx];
         coffeeStock[currentIdx] = coffeeStock[targetIdx];
         coffeeStock[targetIdx] = temp;
 
+        // อัปเดต indexOrder ใน array
+        coffeeStock[currentIdx].indexOrder = currentIdx;
+        coffeeStock[targetIdx].indexOrder = targetIdx;
+
+        // Render ทันทีโดยไม่ต้องรอ Firebase
+        renderTable();
+
+        // บอก listener ว่านี่คือการ move ไม่ต้อง re-render ซ้ำ
+        isMovingOrder = true;
+
+        // เขียน Firebase เฉพาะ 2 item ที่สลับกัน (ไม่ต้องเขียนทั้งหมด)
         let updates = {};
-        coffeeStock.forEach((item, idx) => {
-            updates[`${item.fbKey}/indexOrder`] = idx;
-        });
+        updates[`${coffeeStock[currentIdx].fbKey}/indexOrder`] = currentIdx;
+        updates[`${coffeeStock[targetIdx].fbKey}/indexOrder`] = targetIdx;
         db.ref('bornToBStock').update(updates);
     }
 
