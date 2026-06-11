@@ -381,7 +381,9 @@
     let currentDayStr = ""; 
     let currentMonthYearStr = ""; 
     let businessDateGlobal = null;
-    let isMovingOrder = false; // flag ป้องกัน Firebase listener re-render ตอน moveOrder
+    let isMovingOrder = false;   // flag: กำลัง move ลำดับ → skip re-render 1 ครั้ง
+    let isUserEditing = false;   // flag: user กำลังพิมพ์ตัวเลขใน added/used → skip re-render
+    let editDebounceTimer = null; // timer reset isUserEditing
 
     // ===== HELPER: จัดรูปแบบตัวเลขให้มี comma =====
     function formatNumber(num) {
@@ -467,35 +469,60 @@
 
     function listenToStockData() {
         db.ref('bornToBStock').on('value', (snapshot) => {
-            // ถ้ากำลัง moveOrder อยู่ให้ update data แต่ไม่ re-render (เพราะ render ไปแล้ว)
-            const skipRender = isMovingOrder;
+            // ดึงค่า flag ปัจจุบัน
+            const skipRenderMove = isMovingOrder;
+            const skipRenderEdit = isUserEditing;
             isMovingOrder = false;
+            // isUserEditing ปล่อยให้ debounce timer จัดการ ไม่ reset ที่นี่
 
             const data = snapshot.val();
-            coffeeStock = [];
             let categories = new Set();
             let updates = {};
             let needsUpdate = false;
 
+            // เก็บค่า added/used ที่ user กำลังพิมพ์อยู่ใน DOM (ก่อน rebuild coffeeStock)
+            // เพื่อไม่ให้ Firebase snapshot ทับค่าที่ user กำลัง input
+            let liveAddedMap = {};
+            let liveUsedMap = {};
+            if (skipRenderEdit) {
+                // อ่านค่าจาก DOM input ที่ user พิมพ์ไว้
+                coffeeStock.forEach(item => {
+                    let addedEl = document.getElementById(`qty-added-${item.fbKey}`);
+                    let usedEl = document.getElementById(`qty-used-${item.fbKey}`);
+                    if (addedEl) liveAddedMap[item.fbKey] = parseInt(addedEl.value) || 0;
+                    if (usedEl) liveUsedMap[item.fbKey] = parseInt(usedEl.value) || 0;
+                });
+            }
+
+            let newStock = [];
+
             if (data) {
                 Object.keys(data).forEach(key => {
-                    let item = data[key];
+                    let item = { ...data[key] }; // clone ไม่แก้ object ต้นฉบับ
                     if (item.category) categories.add(item.category.trim());
                     
+                    // === RESET ตอนข้ามวัน: lastLogDate ≠ วันนี้ ===
                     if (item.lastLogDate && item.lastLogDate !== currentDayStr) {
                         let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
                         if (remaining < 0) remaining = 0;
-                        
-                        updates[`${key}/initialQty`] = remaining;
-                        updates[`${key}/added`] = 0;
-                        updates[`${key}/used`] = 0;
-                        updates[`${key}/lastLogDate`] = currentDayStr;
                         item.initialQty = remaining;
                         item.added = 0;
                         item.used = 0;
                         item.lastLogDate = currentDayStr;
+                        updates[`${key}/initialQty`] = remaining;
+                        updates[`${key}/added`] = 0;
+                        updates[`${key}/used`] = 0;
+                        updates[`${key}/lastLogDate`] = currentDayStr;
+                        needsUpdate = true;
                     }
-                    coffeeStock.push({ fbKey: key, ...item });
+
+                    // ถ้า user กำลังพิมพ์อยู่ → ใช้ค่าจาก DOM แทน Firebase snapshot
+                    if (skipRenderEdit) {
+                        if (liveAddedMap[key] !== undefined) item.added = liveAddedMap[key];
+                        if (liveUsedMap[key] !== undefined) item.used = liveUsedMap[key];
+                    }
+
+                    newStock.push({ fbKey: key, ...item });
                 });
             }
 
@@ -503,9 +530,11 @@
                 db.ref('bornToBStock').update(updates);
             }
 
+            coffeeStock = newStock;
             coffeeStock.sort((a, b) => (a.indexOrder || 0) - (b.indexOrder || 0));
 
-            if (!skipRender) {
+            // skip re-render ถ้ากำลัง move หรือ user กำลัง edit
+            if (!skipRenderMove && !skipRenderEdit) {
                 renderFilterTabs(categories);
                 renderTable();
                 renderAnalyticsAndCosts();
@@ -517,6 +546,8 @@
         const container = document.getElementById("categoryFilters");
         let html = `<button class="filter-btn ${currentCategory === 'ALL' ? 'active' : ''}" onclick="filterCategory('ALL')">ທັງໝົດ</button>`;
         html += `<button class="filter-btn ${currentCategory === 'LOW_STOCK' ? 'low-stock-active' : ''}" onclick="filterCategory('LOW_STOCK')" style="color: var(--danger); border-color: var(--danger);">⚠️ ໃກ້ຈະໝົດ</button>`;
+        html += `<button class="filter-btn ${currentCategory === 'ADDED_TODAY' ? 'active' : ''}" onclick="filterCategory('ADDED_TODAY')" style="color: var(--success); border-color: var(--success);">➕ ເພີ່ມໃນວັນນີ້</button>`;
+        html += `<button class="filter-btn ${currentCategory === 'USED_TODAY' ? 'active' : ''}" onclick="filterCategory('USED_TODAY')" style="color: var(--danger); border-color: var(--danger);">☕ ໃຊ້ໄປໃນວັນນີ້</button>`;
         categories.forEach(cat => {
             html += `<button class="filter-btn ${currentCategory === cat ? 'active' : ''}" onclick="filterCategory('${cat}')">${cat}</button>`;
         });
@@ -530,9 +561,10 @@
         buttons.forEach(btn => btn.classList.remove('active', 'low-stock-active'));
         
         buttons.forEach(btn => {
+            const onclickVal = btn.getAttribute('onclick');
             if (cat === 'LOW_STOCK' && btn.innerText.includes('ໃກ້ຈະໝົດ')) {
                 btn.classList.add('low-stock-active');
-            } else if (btn.getAttribute('onclick') === `filterCategory('${cat}')`) {
+            } else if (onclickVal === `filterCategory('${cat}')`) {
                 btn.classList.add('active');
             }
         });
@@ -548,12 +580,22 @@
                 let remaining = (item.initialQty || 0) + (item.added || 0) - (item.used || 0);
                 return remaining <= 2;
             });
+        } else if (currentCategory === "ADDED_TODAY") {
+            // เฉพาะรายการที่มีการ ຕື່ມ (+) ในวันนี้
+            filteredItems = coffeeStock.filter(item => (item.added || 0) > 0);
+        } else if (currentCategory === "USED_TODAY") {
+            // เฉพาะรายการที่มีการ ໃຊ້ໄປ (-) ในวันนี้
+            filteredItems = coffeeStock.filter(item => (item.used || 0) > 0);
         } else if (currentCategory !== "ALL") {
             filteredItems = coffeeStock.filter(item => item.category === currentCategory);
         }
 
         if (filteredItems.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted);">ບໍ່ມີຂໍ້ມູນວັດຖຸດິບໃນໝວດນີ້</td></tr>`;
+            let emptyMsg = "ບໍ່ມີຂໍ້ມູນວັດຖຸດິບໃນໝວດນີ້";
+            if (currentCategory === "ADDED_TODAY") emptyMsg = "ຍັງບໍ່ມີການຕື່ມວັດຖຸດິບໃນວັນນີ້";
+            if (currentCategory === "USED_TODAY") emptyMsg = "ຍັງບໍ່ມີການໃຊ້ວັດຖຸດິບໃນວັນນີ້";
+            if (currentCategory === "LOW_STOCK") emptyMsg = "ບໍ່ມີວັດຖຸດິບທີ່ໃກ້ຈະໝົດ";
+            tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:20px;">${emptyMsg}</td></tr>`;
             return;
         }
 
@@ -657,16 +699,16 @@
         const costInput = document.getElementById(`qty-cost-${fbKey}`);
         const addedInput = document.getElementById(`qty-added-${fbKey}`);
         const usedInput = document.getElementById(`qty-used-${fbKey}`);
-        const badgeInitial = document.getElementById(`badge-initial-${fbKey}`);
         const badgeRemaining = document.getElementById(`badge-remaining-${fbKey}`);
         const totalCostEl = document.getElementById(`total-cost-${fbKey}`);
 
-        if (!badgeRemaining || !totalCostEl) return;
+        if (!badgeRemaining || !totalCostEl || !costInput || !addedInput || !usedInput) return;
 
-        // cost input เป็น text ต้องถอด comma ก่อน
+        // อ่าน initialQty จาก coffeeStock array (source of truth) ไม่ใช่จาก DOM
+        let stockItem = coffeeStock.find(i => i.fbKey === fbKey);
+        let initial = stockItem ? (stockItem.initialQty || 0) : 0;
+
         let cost = parseInt((costInput.value || "0").replace(/,/g, "")) || 0;
-        // อ่าน initial จาก badge (ข้อความเป็น comma แปลงกลับเป็น int)
-        let initial = badgeInitial ? parseInt((badgeInitial.innerText || "0").replace(/,/g, "")) || 0 : 0;
         let added = parseInt(addedInput.value) || 0;
         let used = parseInt(usedInput.value) || 0;
         let remaining = initial + added - used;
@@ -1029,6 +1071,17 @@
     function updateCloudField(fbKey, field, value) {
         let intValue = parseInt(value) || 0;
         if (intValue < 0) intValue = 0;
+
+        // ตั้ง flag: user กำลัง edit → ห้าม listener re-render ทับ
+        isUserEditing = true;
+        clearTimeout(editDebounceTimer);
+        // รอ 1.5 วินาทีหลังพิมพ์ครั้งสุดท้ายแล้วค่อย unlock
+        editDebounceTimer = setTimeout(() => {
+            isUserEditing = false;
+            // re-render ครั้งเดียวหลัง user หยุดพิมพ์ เพื่อ sync analytics
+            renderAnalyticsAndCosts();
+        }, 1500);
+
         db.ref('bornToBStock/' + fbKey).update({ 
             [field]: intValue,
             lastLogDate: currentDayStr
